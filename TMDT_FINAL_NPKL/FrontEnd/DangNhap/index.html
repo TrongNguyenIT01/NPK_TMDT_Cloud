@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng Nhập - NPKL Sàn Thương Mại Điện Tử Hàng Đầu</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <div class="login-card">
+        <!-- Logo & Header -->
+        <div class="brand-header">
+            <a href="../TrangChinh/index.html" class="logo">NP<span>KL</span></a>
+            <p class="brand-subtitle">Sàn Thương Mại Điện Tử Hàng Đầu</p>
+        </div>
+
+        <h2 class="page-title">Đăng Nhập Tài Khoản</h2>
+
+        <!-- Login Form -->
+        <form id="loginForm">
+            <!-- Username -->
+            <div class="form-group">
+                <label class="form-label" for="username">Tên đăng nhập</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </span>
+                    <input type="text" id="username" class="form-input" placeholder="Nhập tên đăng nhập hoặc email" required />
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label class="form-label" for="password">Mật khẩu</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </span>
+                    <input type="password" id="password" class="form-input" placeholder="Nhập mật khẩu của bạn" required />
+                    <button type="button" id="togglePassword" class="toggle-password" title="Hiện/Ẩn mật khẩu">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" id="remember" />
+                    <span>Ghi nhớ đăng nhập</span>
+                </label>
+                <a href="#" class="forgot-pass">Quên mật khẩu?</a>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-submit">ĐĂNG NHẬP</button>
+        </form>
+
+        <!-- Footer Links -->
+        <div class="card-footer">
+            <p>Chưa có tài khoản? <a href="../DangKy/index.html">Đăng ký ngay</a></p>
+            <a href="../TrangChinh/index.html" class="back-home">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Quay lại trang chủ
+            </a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
