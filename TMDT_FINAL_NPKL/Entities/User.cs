@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace TMDT_FINAL_NPKL.Entities;
 
 public partial class User
 {
+    internal ClaimsIdentity? role;
+
     public string UserId { get; set; } = null!;
 
     public string Username { get; set; } = null!;

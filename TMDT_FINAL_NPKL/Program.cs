@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using TMDT_FINAL_NPKL.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +31,32 @@ object value = builder.Services.AddSwaggerGen();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<WebTmdtContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("WEB_TMDT")));
 
+
+// 1. Đọc cấu hình từ appsettings.json
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var secretKey = jwtSettings["Key"];
+
+// 2. Cấu hình Authentication & JWT
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["Issuer"],      // Lấy Issuer từ appsettings
+        ValidAudience = jwtSettings["Audience"],  // Lấy Audience từ appsettings
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)) // Lấy Key từ appsettings
+    };
+});
+
+builder.Services.AddAuthorization();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
