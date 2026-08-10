@@ -26,6 +26,7 @@ object value = builder.Services.AddSwaggerGen();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddMemoryCache();
 builder.Services.AddDbContext<WebTmdtContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("WEB_TMDT")));
 
 var app = builder.Build();
