@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.querySelector('#username').value.trim();
             const password = passwordInput.value.trim();
@@ -38,9 +38,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Demo success & redirection to home page
-            alert('Đăng nhập thành công! Đang chuyển hướng về Trang Chủ...');
-            window.location.href = '../TrangChinh/index.html';
+            // Save basic user info for display on status page
+            const lowerUser = username.toLowerCase();
+            sessionStorage.setItem('currentUser', JSON.stringify({
+                username: username,
+                email: username.includes('@') ? username : `${username}@example.com`,
+                role: lowerUser.includes('seller') ? 'SELLER' : 'CUSTOMER',
+                registrationDate: new Date().toLocaleDateString('vi-VN')
+            }));
+
+            // Test logic: Check keyword in username to redirect to appropriate status page
+            if (lowerUser.includes('pending') || lowerUser.includes('choduyet')) {
+                alert('Tài khoản của bạn đang ở trạng thái CHỜ DUYỆT (PENDING). Đang chuyển hướng...');
+                window.location.href = '../Status/pending.html';
+            } else if (lowerUser.includes('block') || lowerUser.includes('khoa')) {
+                alert('Tài khoản của bạn đã BỊ KHÓA (BLOCKED). Đang chuyển hướng...');
+                window.location.href = '../Status/blocked.html';
+            } else if (lowerUser.includes('reject') || lowerUser.includes('tuchoi')) {
+                alert('Tài khoản của bạn bị TỪ CHỐI DUYỆT (REJECTED). Đang chuyển hướng...');
+                window.location.href = '../Status/rejected.html';
+            } else {
+                // Default active account
+                alert('Đăng nhập thành công! Đang chuyển hướng về Trang Chủ...');
+                window.location.href = '../TrangChinh/index.html';
+            }
         });
     }
 });
