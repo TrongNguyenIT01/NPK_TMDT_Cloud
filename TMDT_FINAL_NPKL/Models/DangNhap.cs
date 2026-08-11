@@ -14,5 +14,7 @@
         public string RedirectUrl { get; set; } // Đường dẫn frontend cần chuyển trang tới
         public string Token { get; set; }       // Token dùng để xác thực các chức năng sau này
         public string Role { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
     }
 }

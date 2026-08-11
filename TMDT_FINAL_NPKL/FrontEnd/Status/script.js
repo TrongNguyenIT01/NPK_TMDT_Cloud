@@ -1,22 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Read session user data if stored from login
-    const savedUser = JSON.parse(sessionStorage.getItem('currentUser') || localStorage.getItem('currentUser') || '{}');
     
-    if (savedUser.username) {
+    const savedUsername = sessionStorage.getItem('tempUsername');
+    const savedEmail = sessionStorage.getItem('tempEmail');
+    const savedRole = sessionStorage.getItem('tempRole');
+    
+    // 2. Gắn dữ liệu vào HTML nếu tồn tại
+    if (savedUsername) {
         const usernameElem = document.getElementById('userUsername');
-        if (usernameElem) usernameElem.textContent = savedUser.username;
+        if (usernameElem) usernameElem.textContent = savedUsername;
     }
-    if (savedUser.email) {
+    
+    if (savedEmail) {
         const emailElem = document.getElementById('userEmail');
-        if (emailElem) emailElem.textContent = savedUser.email;
+        if (emailElem) emailElem.textContent = savedEmail;
     }
-    if (savedUser.role) {
+    
+    if (savedRole) {
         const roleElem = document.getElementById('userRole');
-        if (roleElem) roleElem.textContent = savedUser.role.toUpperCase();
-    }
-    if (savedUser.registrationDate) {
-        const dateElem = document.getElementById('registrationDate');
-        if (dateElem) dateElem.textContent = savedUser.registrationDate;
+        // Vì blocked.html không có userRole, lệnh if này giúp code không bị lỗi crash
+        if (roleElem) roleElem.textContent = savedRole.toUpperCase(); 
     }
 
     // Handle Refresh Status Button

@@ -40,7 +40,46 @@ namespace TMDT_FINAL_NPKL.Controllers
             }
             if (user.Status != "ACTIVE")
             {
-                return BadRequest(new DangNhapResponse { Success = false, Message = "Tài khoản chưa được kích hoạt vui lòng đợi hoặc liên hệ QTV" });
+                string statusRedirect = "";
+
+                if (user.Status == "PENDING")
+                {
+                    statusRedirect= "../Status/pending.html";
+                    return Ok(new DangNhapResponse
+                    {
+                        Success = false,
+                        Message = "Tài khoản của bạn chưa được duyệt vui lòng đợi hoặc liên hệ QTV",
+                        RedirectUrl = statusRedirect
+                    });
+                }
+                else if(user.Status == "BLOCKED")
+                {
+                    statusRedirect = "../Status/blocked.html";
+                    return Ok(new DangNhapResponse
+                    {
+                        Success = false,
+                        Message = "Tài khoản của bạn đã bị BLOCK liên hệ QTV để được giải quyết!",
+                        RedirectUrl = statusRedirect,
+                        Username = user.Username, 
+                        Role = user.Role,         
+                        Email = user.Email
+                    });
+
+                }
+                else
+                {
+                    statusRedirect = "../Status/rejected.html";
+                    return Ok(new DangNhapResponse
+                    {
+                        Success = false,
+                        Message = "Tài khoản của bạn đã bị từ chối liên hệ QTV để được hỗ trợ",
+                        RedirectUrl = statusRedirect,
+                        Username = user.Username,
+                        Role = user.Role,
+                        Email = user.Email
+                    });
+                }
+
             }
 
             string hashedInputPassword = HassPass.HashPassword(request.Password);
