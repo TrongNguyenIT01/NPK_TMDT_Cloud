@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NPKL - Trang Quản Trị Hệ Thống TMĐT</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand">
+            <a href="../TrangChinh/index.html" class="sidebar-logo">NP<span>KL</span></a>
+            <span class="sidebar-badge">Admin</span>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="menu-category">Mục Chính</li>
+            <li class="menu-item">
+                <a href="#" class="menu-link active" data-tab="dashboardTab" data-title="Tổng Quan và Giám Sát Hệ Thống">
+                    <span>📊</span>
+                    <span>Tổng Quan và Giám Sát</span>
+                </a>
+            </li>
+
+            <li class="menu-category">Quản Lý & Kiểm Duyệt</li>
+            <li class="menu-item">
+                <a href="#" class="menu-link" data-tab="usersTab" data-title="Quản Lý Tài Khoản Người Dùng">
+                    <span>👥</span>
+                    <span>Quản lý Người Dùng</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link" data-tab="shopsTab" data-title="Quản Lý Gian Hàng Cửa Hàng">
+                    <span>🏪</span>
+                    <span>Quản lý Cửa Hàng</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link" data-tab="productsTab" data-title="Kiểm Duyệt Sản Phẩm">
+                    <span>📦</span>
+                    <span>Kiểm Duyệt Sản Phẩm</span>
+                    <span class="count-badge" id="pendingProductBadge">14</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link" data-tab="categoriesTab" data-title="Quản Lý Danh Mục Sản Phẩm">
+                    <span>🏷️</span>
+                    <span>Quản lý Danh Mục</span>
+                </a>
+            </li>
+
+            <li class="menu-category">Giao Dịch & Báo Cáo</li>
+            <li class="menu-item">
+                <a href="#" class="menu-link" data-tab="ordersTab" data-title="Giám Sát Đơn Hàng">
+                    <span>🧾</span>
+                    <span>Giám Sát Đơn Hàng</span>
+                </a>
+            </li>
+
+            <li class="menu-category">TÀI KHOẢN</li>
+            <li class="menu-item">
+                <a href="../DangNhap/index.html" class="menu-link">
+                    <span>↪️</span>
+                    <span>Đăng Xuất</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="admin-avatar">AD</div>
+            <div class="admin-info">
+                <span class="admin-name">Administrator</span>
+                <span class="admin-role">AD0001 (Super Admin)</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="admin-main">
+        <!-- Header Top Bar -->
+        <header class="admin-header">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <button class="btn-toggle-sidebar" id="toggleSidebar" title="Thu gọn / Mở rộng Menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="header-title-box">
+                    <h1 id="pageHeaderTitle">Tổng Quan và Giám Sát Hệ Thống</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="../TrangChinh/index.html" class="btn-header-action">
+                    <span>🌐</span>
+                    <span>Quay lại Sàn TMĐT</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="admin-content">
+
+            <!-- TAB 1: TỔNG QUAN VÀ GIÁM SÁT -->
+            <section class="tab-panel active" id="dashboardTab">
+                <!-- Metric Cards -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-top">
+                            <div class="metric-icon blue">👥</div>
+                            <span class="metric-trend up">↑ +12% tuần này</span>
+                        </div>
+                        <div class="metric-value">1,248</div>
+                        <div class="metric-label">Tổng người dùng hệ thống</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-top">
+                            <div class="metric-icon orange">🏪</div>
+                            <span class="metric-trend warn">5 Chờ duyệt</span>
+                        </div>
+                        <div class="metric-value">86</div>
+                        <div class="metric-label">Cửa hàng đang hoạt động</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-top">
+                            <div class="metric-icon purple">📦</div>
+                            <span class="metric-trend warn">14 Chờ duyệt</span>
+                        </div>
+                        <div class="metric-value">3,420</div>
+                        <div class="metric-label">Sản phẩm trên hệ thống</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-top">
+                            <div class="metric-icon green">💰</div>
+                            <span class="metric-trend up">↑ +18% tháng này</span>
+                        </div>
+                        <div class="metric-value">1.45 Tỷ</div>
+                        <div class="metric-label">Tổng doanh thu giao dịch</div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities & Pending Reviews -->
+                <div class="table-card">
+                    <div class="table-header">
+                        <div class="table-title-box">
+                            <h3>Cần Kiểm Duyệt Gấp (Sản Phẩm Mới Đăng)</h3>
+                            <p>Sản phẩm người bán đăng lên hệ thống đang ở trạng thái Chờ Duyệt</p>
+                        </div>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Sản Phẩm</th>
+                                <th>Tên Sản Phẩm</th>
+                                <th>Tên Cửa Hàng</th>
+                                <th>Giá Bán</th>
+                                <th>Tồn Kho</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>SP0012</strong></td>
+                                <td class="product-name-cell">Sách Kỹ Năng Quản Lý Thời Gian</td>
+                                <td>SH0002 - NPKL Official Shop</td>
+                                <td>95.000đ</td>
+                                <td>150</td>
+                                <td class="product-status-cell"><span class="badge-status pending">Chờ Duyệt</span></td>
+                                <td>
+                                    <div class="btn-action-group">
+                                        <button class="btn-tb approve btn-product-action" data-action="APPROVED">Duyệt</button>
+                                        <button class="btn-tb reject btn-product-action" data-action="REJECTED">Từ chối</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>SP0013</strong></td>
+                                <td class="product-name-cell">Bộ Bút Ký Cao Cấp Kim Loại NPKL</td>
+                                <td>SH0005 - Văn Phòng Phẩm Sài Gòn</td>
+                                <td>320.000đ</td>
+                                <td>80</td>
+                                <td class="product-status-cell"><span class="badge-status pending">Chờ Duyệt</span></td>
+                                <td>
+                                    <div class="btn-action-group">
+                                        <button class="btn-tb approve btn-product-action" data-action="APPROVED">Duyệt</button>
+                                        <button class="btn-tb reject btn-product-action" data-action="REJECTED">Từ chối</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+            <!-- TAB 2: QUẢN LÝ NGƯỜI DÙNG -->
+            <section class="tab-panel" id="usersTab">
+                <div class="table-card">
+                    <div class="table-header">
+                        <div class="table-title-box">
+                            <h3>Danh Sách Người Dùng</h3>
+                            <p>Quản lý quyền hạn và trạng thái kích hoạt hoặc khóa tài khoản người dùng</p>
+                        </div>
+                        <div class="table-filters">
+                            <input type="text" id="userSearchInput" class="search-input-admin" placeholder="Tìm tên, email, tên đăng nhập..." />
+                            <select id="userRoleFilter" class="filter-select">
+                                <option value="ALL">Tất cả vai trò</option>
+                                <option value="ADMIN">Quản Trị Viên</option>
+                                <option value="SELLER">Người Bán</option>
+                                <option value="CUSTOMER">Khách Hàng</option>
+                            </select>
+                            <select id="userStatusFilter" class="filter-select">
+                                <option value="ALL">Tất cả trạng thái</option>
+                                <option value="PENDING">Chờ Duyệt</option>
+                                <option value="ACTIVE">Hoạt Động</option>
+                                <option value="BLOCKED">Đã Khóa</option>
+                                <option value="REJECTED">Bị Từ Chối</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Người Dùng</th>
+                                <th>Họ Và Tên</th>
+                                <th>Tên Đăng Nhập</th>
+                                <th>Email</th>
+                                <th>Số Điện Thoại</th>
+                                <th>Vai Trò</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            <tr data-role="SELLER" data-status="PENDING">
+                                <td><strong>SL0012</strong></td>
+                                <td class="user-name-cell">Nguyễn Văn Bán</td>
+                                <td>nguyenvanban</td>
+                                <td>seller12@gmail.com</td>
+                                <td>0912 345 678</td>
+                                <td><span class="badge-status shipping">Người Bán</span></td>
+                                <td class="status-cell"><span class="badge-status pending">Chờ Duyệt</span></td>
+                                <td>
+                                    <div class="btn-action-group">
+                                        <button class="btn-tb approve btn-user-action" data-action="ACTIVE">Duyệt</button>
+                                        <button class="btn-tb reject btn-user-action" data-action="REJECTED">Từ chối</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-role="CUSTOMER" data-status="PENDING">
+                                <td><strong>CUS0089</strong></td>
+                                <td class="user-name-cell">Hứa Gia Kiên</td>
+                                <td>huagiakien</td>
+                                <td>kiengia@gmail.com</td>
+                                <td>0909 888 999</td>
+                                <td><span class="badge-status shipping">Khách Hàng</span></td>
+                                <td class="status-cell"><span class="badge-status pending">Chờ Duyệt</span></td>
+                                <td>
+                                    <div class="btn-action-group">
+                                        <button class="btn-tb approve btn-user-action" data-action="ACTIVE">Duyệt</button>
+                                        <button class="btn-tb block btn-user-action" data-action="BLOCKED">Khóa</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-role="ADMIN" data-status="ACTIVE">
+                                <td><strong>AD0001</strong></td>
+                                <td class="user-name-cell">Quản Trị Viên Hệ Thống</td>
+                                <td>admin_npkl</td>
+                                <td>admin@npkl.vn</td>
+                                <td>1900 636 081</td>
+                                <td><span class="badge-status banned">Quản Trị Viên</span></td>
+                                <td class="status-cell"><span class="badge-status active">Hoạt Động</span></td>
+                                <td><span style="color:#64748B; font-size:0.8rem;">Hệ thống</span></td>
+                            </tr>
+                            <tr data-role="SELLER" data-status="ACTIVE">
+                                <td><strong>SL0001</strong></td>
+                                <td class="user-name-cell">Cửa Hàng Sách Trẻ</td>
+                                <td>sachtre_official</td>
+                                <td>sachtre@gmail.com</td>
+                                <td>0988 111 222</td>
+                                <td><span class="badge-status shipping">Người Bán</span></td>
+                                <td class="status-cell"><span class="badge-status active">Hoạt Động</span></td>
+                                <td>
+                                    <div class="btn-action-group">
+                                        <button class="btn-tb block btn-user-action" data-action="BLOCKED">Khóa</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+            <!-- TAB 3: QUẢN LÝ CỬA HÀNG -->
+            <section class="tab-panel" id="shopsTab">
+                <div class="table-card">
+                    <div class="table-header">
+                        <div class="table-title-box">
+                            <h3>Danh Sách Gian Hàng</h3>
+                            <p>Kiểm soát thông tin cửa hàng, chuyển trạng thái tạm nghỉ hoặc cấm hoạt động gian hàng vi phạm</p>
+                        </div>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Gian Hàng</th>
+                                <th>Tên Cửa Hàng</th>
+                                <th>Mã Chủ Cửa Hàng</th>
+                                <th>Mô Tả Cửa Hàng</th>
+                                <th>Ngày Tạo</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shopTableBody">
+                            <tr>
+                                <td><strong>SH0001</strong></td>
+                                <td class="shop-name-cell">NPKL Official Bookshop</td>
+                                <td>SL0001</td>
+                                <td>Chuyên cung cấp sách chính hãng và văn phòng phẩm cao cấp</td>
+                                <td>10/01/2026</td>
+                                <td class="shop-status-cell"><span class="badge-status active">Hoạt Động</span></td>
+                                <td>
+                                    <div class="btn-action-group">
+                                        <button class="btn-tb block btn-shop-action" data-action="INACTIVE">Tạm nghỉ</button>
+                                        <button class="btn-tb reject btn-shop-action" data-action="BANNED">Cấm Cửa Hàng</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>SH0002</strong></td>
+                                <td class="shop-name-cell">Văn Phòng Phẩm Sài Gòn</td>
+                                <td>SL0012</td>
+                                <td>Phân phối dụng cụ học sinh, quà tặng tựu trường</td>
+                                <td>02/02/2026</td>
+                                <td class="shop-status-cell"><span class="badge-status active">Hoạt Động</span></td>
+                                <td>
+                                    <div class="btn-action-group">
+                                        <button class="btn-tb block btn-shop-action" data-action="INACTIVE">Tạm nghỉ</button>
+                                        <button class="btn-tb reject btn-shop-action" data-action="BANNED">Cấm Cửa Hàng</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+            <!-- TAB 4: KIỂM DUYỆT SẢN PHẨM -->
+            <section class="tab-panel" id="productsTab">
+                <div class="table-card">
+                    <div class="table-header">
+                        <div class="table-title-box">
+                            <h3>Danh Sách Sản Phẩm Chờ Duyệt</h3>
+                            <p>Kiểm tra thông tin nội dung sản phẩm trước khi cho phép xuất hiện công khai trên sàn</p>
+                        </div>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Sản Phẩm</th>
+                                <th>Tên Sản Phẩm</th>
+                                <th>Tên Cửa Hàng</th>
+                                <th>Danh Mục</th>
+                                <th>Giá Bán</th>
+                                <th>Tồn Kho</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productApprovalBody">
+                            <tr>
+                                <td><strong>SP0014</strong></td>
+                                <td class="product-name-cell">Combo Sổ Tay Moleskine + Bút Ký Lamy</td>
+                                <td>SH0001 - NPKL Official Bookshop</td>
+                                <td>Combo Tiết Kiệm</td>
+                                <td>890.000đ</td>
+                                <td>50</td>
+                                <td class="product-status-cell"><span class="badge-status pending">Chờ Duyệt</span></td>
+                                <td>
+                                    <div class="btn-action-group">
+                                        <button class="btn-tb approve btn-product-action" data-action="APPROVED">Duyệt</button>
+                                        <button class="btn-tb reject btn-product-action" data-action="REJECTED">Từ chối</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+            <!-- TAB 5: QUẢN LÝ DANH MỤC -->
+            <section class="tab-panel" id="categoriesTab">
+                <div class="table-card">
+                    <div class="table-header">
+                        <div class="table-title-box">
+                            <h3>Danh Mục Sản Phẩm Toàn Sàn</h3>
+                            <p>Quản lý các ngành hàng dùng chung cho tất cả các cửa hàng trên sàn</p>
+                        </div>
+                        <button class="btn-tb primary" id="addCatBtn">+ Thêm Danh Mục Mới</button>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Danh Mục</th>
+                                <th>Tên Danh Mục</th>
+                                <th>Mô Tả Chi Tiết</th>
+                                <th>Số Sản Phẩm</th>
+                                <th>Ngày Tạo</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="catTableBody">
+                            <tr>
+                                <td><strong>CAT0001</strong></td>
+                                <td><strong>Sách & Tri Thức</strong></td>
+                                <td>Sách văn học, kỹ năng sống, kinh tế, tiểu thuyết, ngoại ngữ...</td>
+                                <td>1,420 SP</td>
+                                <td>01/01/2026</td>
+                                <td>
+                                    <button class="btn-tb primary">Sửa</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>CAT0002</strong></td>
+                                <td><strong>Văn Phòng Phẩm</strong></td>
+                                <td>Sổ tay, bút viết, bìa hồ sơ, dụng cụ học tập sinh viên</td>
+                                <td>1,200 SP</td>
+                                <td>01/01/2026</td>
+                                <td>
+                                    <button class="btn-tb primary">Sửa</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>CAT0003</strong></td>
+                                <td><strong>Combo Tiết Kiệm</strong></td>
+                                <td>Các bộ sản phẩm đóng gói sẵn giá ưu đãi</td>
+                                <td>800 SP</td>
+                                <td>01/01/2026</td>
+                                <td>
+                                    <button class="btn-tb primary">Sửa</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+            <!-- TAB 6: GIÁM SÁT ĐƠN HÀNG -->
+            <section class="tab-panel" id="ordersTab">
+                <div class="table-card">
+                    <div class="table-header">
+                        <div class="table-title-box">
+                            <h3>Toàn Bộ Đơn Hàng Hệ Thống</h3>
+                            <p>Theo dõi quá trình giao dịch và xử lý đơn giữa Khách Hàng và Người Bán</p>
+                        </div>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Đơn Hàng</th>
+                                <th>Tên Khách Hàng</th>
+                                <th>Cửa Hàng Phụ Trách</th>
+                                <th>Ngày Đặt</th>
+                                <th>Tổng Tiền</th>
+                                <th>Địa Chỉ Giao</th>
+                                <th>Trạng Thái Đơn</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>ORD0001</strong></td>
+                                <td>Hứa Gia Kiên</td>
+                                <td>SH0001 - NPKL Bookshop</td>
+                                <td>11/08/2026 14:20</td>
+                                <td><strong>450.000đ</strong></td>
+                                <td>TP. Hồ Chí Minh</td>
+                                <td><span class="badge-status shipping">Đang Giao</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>ORD0002</strong></td>
+                                <td>Nguyễn Văn A</td>
+                                <td>SH0002 - VPP Sài Gòn</td>
+                                <td>10/08/2026 09:15</td>
+                                <td><strong>120.000đ</strong></td>
+                                <td>Hà Nội</td>
+                                <td><span class="badge-status delivered">Đã Giao</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- MODAL TỪ CHỐI DUYỆT SẢN PHẨM -->
+    <div class="modal-overlay" id="rejectModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Từ Chối Duyệt Sản Phẩm</h3>
+                <button class="btn-close-modal" id="closeRejectModal">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom:12px; font-size:0.9rem; color:#64748B;">Vui lòng ghi rõ lý do từ chối để hệ thống lưu nhật ký kiểm duyệt:</p>
+                <textarea id="rejectNoteInput" style="width:100%; height:100px; padding:10px; border-radius:8px; border:1.5px solid #CBD5E1; font-size:0.9rem;" placeholder="Ví dụ: Hình ảnh mờ, mô tả chứa từ khóa cấm, giá bán không hợp lệ..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-tb primary" id="confirmRejectBtn">Xác Nhận Từ Chối</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL THÊM DANH MỤC MỚI -->
+    <div class="modal-overlay" id="catModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Thêm Danh Mục Sản Phẩm Mới</h3>
+                <button class="btn-close-modal" id="closeCatModal">✕</button>
+            </div>
+            <form id="catForm">
+                <div class="modal-body">
+                    <div style="margin-bottom:14px;">
+                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">Tên Danh Mục</label>
+                        <input type="text" id="catNameInput" class="search-input-admin" style="width:100%;" placeholder="Nhập tên danh mục (VD: Thiết Bị Điện Tử)" required />
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">Mô Tả Chi Tiết</label>
+                        <textarea id="catDescInput" style="width:100%; height:80px; padding:10px; border-radius:8px; border:1.5px solid #CBD5E1; font-size:0.9rem;" placeholder="Mô tả ngành hàng..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-tb primary">Lưu Danh Mục</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
