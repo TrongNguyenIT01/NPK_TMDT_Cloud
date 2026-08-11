@@ -1,48 +1,172 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Wishlist Interactive Logic
-    const wishlistBtns = document.querySelectorAll('.wishlist-btn');
-    const wishlistBadge = document.querySelector('#wishlistBadge');
-    let wishlistCount = parseInt(wishlistBadge ? wishlistBadge.textContent : '1') || 1;
+    // ---------------- Real-time localStorage Sync Helper ----------------
+    function getStoredWishlist() {
+        return JSON.parse(localStorage.getItem('npkl_wishlist')) || [
+            {
+                id: 'wish-1',
+                title: 'Đắc Nhân Tâm',
+                author: 'Dale Carnegie',
+                price: '75.000đ',
+                categoryTag: 'Sách',
+                img: '../TrangChinh/images/dac_nhan_tam.jpg'
+            },
+            {
+                id: 'wish-2',
+                title: 'Sổ Tay Moleskine Classic',
+                author: 'Moleskine',
+                price: '450.000đ',
+                categoryTag: 'Văn Phòng Phẩm',
+                img: '../TrangChinh/images/so_tay_moleskine.jpg'
+            }
+        ];
+    }
 
-    wishlistBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
+    function getStoredCart() {
+        return JSON.parse(localStorage.getItem('npkl_cart_items')) || [
+            {
+                id: 'cart-1',
+                title: 'Đắc Nhân Tâm',
+                author: 'Dale Carnegie',
+                price: 75000,
+                qty: 1,
+                categoryTag: 'Sách',
+                img: '../TrangChinh/images/dac_nhan_tam.jpg'
+            },
+            {
+                id: 'cart-2',
+                title: 'Bộ Bút Gel M&G 12 Màu',
+                author: 'M&G Stationary',
+                price: 120000,
+                qty: 2,
+                categoryTag: 'Văn Phòng Phẩm',
+                img: '../TrangChinh/images/but_gel_mg.jpg'
+            }
+        ];
+    }
+
+    const wishlistBadge = document.querySelector('#wishlistBadge');
+    const cartBadge = document.querySelector('#cartBadge');
+
+    function syncBadgesFromStorage() {
+        const wishlist = getStoredWishlist();
+        const cart = getStoredCart();
+
+        let totalCartQty = 0;
+        cart.forEach(item => totalCartQty += item.qty);
+
+        if (wishlistBadge) wishlistBadge.textContent = wishlist.length;
+        if (cartBadge) cartBadge.textContent = totalCartQty;
+
+        localStorage.setItem('npkl_wishlist', JSON.stringify(wishlist));
+        localStorage.setItem('npkl_cart_items', JSON.stringify(cart));
+        localStorage.setItem('npkl_cart_count', totalCartQty);
+    }
+
+    // Initial Badge Sync & Highlight active wishlist hearts
+    function paintActiveWishlistButtons() {
+        const wishlist = getStoredWishlist();
+        document.querySelectorAll('.product-card').forEach(card => {
+            const title = card.querySelector('.product-title')?.textContent.trim();
+            const btn = card.querySelector('.wishlist-btn');
+            const svgIcon = btn ? btn.querySelector('svg') : null;
+
+            if (btn && title) {
+                const isLiked = wishlist.some(item => item.title === title);
+                if (isLiked) {
+                    btn.classList.add('active');
+                    if (svgIcon) svgIcon.setAttribute('fill', '#EF4444');
+                } else {
+                    btn.classList.remove('active');
+                    if (svgIcon) svgIcon.setAttribute('fill', 'none');
+                }
+            }
+        });
+    }
+
+    syncBadgesFromStorage();
+    paintActiveWishlistButtons();
+
+    // 1 & 2. Interactive Logic with Event Delegation
+    document.addEventListener('click', (e) => {
+        const wishBtn = e.target.closest('.wishlist-btn');
+        if (wishBtn) {
             e.preventDefault();
             e.stopPropagation();
-            const svgIcon = btn.querySelector('svg');
-            
-            if (btn.classList.contains('active')) {
-                btn.classList.remove('active');
+            const card = wishBtn.closest('.product-card');
+            if (!card) return;
+
+            const svgIcon = wishBtn.querySelector('svg');
+            const title = card.querySelector('.product-title')?.textContent.trim() || 'Sản phẩm';
+            const author = card.querySelector('.product-author')?.textContent.trim() || '';
+            const price = card.querySelector('.product-price')?.textContent.trim() || '0đ';
+            const categoryTag = card.querySelector('.category-tag')?.textContent.trim() || 'Sản phẩm';
+            const rawImg = card.querySelector('img')?.getAttribute('src') || '';
+            const img = rawImg.startsWith('../TrangChinh/') ? rawImg : ('../TrangChinh/' + rawImg.replace(/^\.\//, ''));
+
+            let wishlist = getStoredWishlist();
+            const existingIndex = wishlist.findIndex(item => item.title === title);
+
+            if (wishBtn.classList.contains('active') || existingIndex >= 0) {
+                wishBtn.classList.remove('active');
                 if (svgIcon) svgIcon.setAttribute('fill', 'none');
-                wishlistCount = Math.max(0, wishlistCount - 1);
-                showToast('Đã xóa khỏi danh sách yêu thích');
+                if (existingIndex >= 0) wishlist.splice(existingIndex, 1);
+                showToast(`Đã xóa "${title}" khỏi danh sách yêu thích`);
             } else {
-                btn.classList.add('active');
+                wishBtn.classList.add('active');
                 if (svgIcon) svgIcon.setAttribute('fill', '#EF4444');
-                wishlistCount += 1;
-                showToast('Đã thêm vào danh sách yêu thích');
+                wishlist.push({
+                    id: 'wish-' + Date.now(),
+                    title,
+                    author,
+                    price,
+                    categoryTag,
+                    img
+                });
+                showToast(`Đã lưu "${title}" vào trang Yêu Thích! ❤️`);
             }
 
-            if (wishlistBadge) wishlistBadge.textContent = wishlistCount;
-        });
-    });
+            localStorage.setItem('npkl_wishlist', JSON.stringify(wishlist));
+            syncBadgesFromStorage();
+            paintActiveWishlistButtons();
+            return;
+        }
 
-    // 2. Add to Cart Interactive Logic
-    const addCartBtns = document.querySelectorAll('.btn-add-cart');
-    const cartBadge = document.querySelector('#cartBadge');
-    let cartCount = parseInt(cartBadge ? cartBadge.textContent : '1') || 1;
-
-    addCartBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        const addCartBtn = e.target.closest('.btn-add-cart');
+        if (addCartBtn) {
             e.preventDefault();
             e.stopPropagation();
-            const productCard = btn.closest('.product-card');
-            const productTitle = productCard ? productCard.querySelector('.product-title').textContent : 'Sản phẩm';
-            
-            cartCount += 1;
-            if (cartBadge) cartBadge.textContent = cartCount;
+            const card = addCartBtn.closest('.product-card');
+            if (!card) return;
 
-            showToast(`Đã thêm "${productTitle}" vào giỏ hàng!`);
-        });
+            const title = card.querySelector('.product-title')?.textContent.trim() || 'Sản phẩm';
+            const author = card.querySelector('.product-author')?.textContent.trim() || '';
+            const priceText = card.querySelector('.product-price')?.textContent.trim() || '0đ';
+            const priceNum = parseInt(priceText.replace(/[^\d]/g, '')) || 50000;
+            const categoryTag = card.querySelector('.category-tag')?.textContent.trim() || 'Sản phẩm';
+            const rawImg = card.querySelector('img')?.getAttribute('src') || '';
+            const img = rawImg.startsWith('../TrangChinh/') ? rawImg : ('../TrangChinh/' + rawImg.replace(/^\.\//, ''));
+
+            let cart = getStoredCart();
+            const existingItem = cart.find(item => item.title === title);
+
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cart.push({
+                    id: 'cart-' + Date.now(),
+                    title,
+                    author,
+                    price: priceNum,
+                    qty: 1,
+                    categoryTag,
+                    img
+                });
+            }
+
+            localStorage.setItem('npkl_cart_items', JSON.stringify(cart));
+            syncBadgesFromStorage();
+            showToast(`Đã thêm "${title}" vào Giỏ Hàng! 🛒`);
+        }
     });
 
     // 3. Category Block Sections Filtering & Smooth Scroll Logic

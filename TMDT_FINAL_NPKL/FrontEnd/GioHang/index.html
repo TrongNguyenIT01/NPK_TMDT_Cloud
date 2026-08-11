@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Giỏ Hàng của Bạn - NPKL Sàn Thương Mại Điện Tử</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <!-- 1. TOP BAR -->
+    <div class="top-bar">
+        <div class="top-bar-container">
+            <div class="top-bar-left">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="1" y="3" width="15" height="13"></rect>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                </svg>
+                <span>Miễn phí giao hàng cho đơn từ 300.000đ</span>
+            </div>
+            
+                    <span>Hỗ trợ: 1900 636 081</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MAIN HEADER -->
+    <header class="main-header">
+        <div class="header-container">
+            <!-- Logo & Prominent Home Button -->
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <a href="../TrangChinh/index.html" class="logo">NP<span>KL</span></a>
+                <a href="../TrangChinh/index.html" class="btn-back-home" title="Quay về Trang chủ NPKL">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span>Quay về Trang Chủ</span>
+                </a>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <!-- Yêu thích -->
+                <a href="../YeuThich/index.html" class="action-item">
+                    <div class="icon-wrapper">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span class="badge" id="wishlistBadge">3</span>
+                    </div>
+                    <span class="action-label">Yêu thích</span>
+                </a>
+
+                <!-- Giỏ hàng (Active) -->
+                <a href="index.html" class="action-item" style="color: var(--brand-orange);">
+                    <div class="icon-wrapper">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <span class="badge" id="cartBadge">3</span>
+                    </div>
+                    <span class="action-label">Giỏ hàng</span>
+                </a>
+
+                <!-- User Profile / Auth Links -->
+                <a href="../DangNhap/index.html" class="user-profile" style="text-decoration: none;" title="Chuyển đến trang cá nhân / Đăng nhập">
+                    <div class="avatar-circle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name" id="headerUserName">Hứa Gia Kiên</span>
+                        <span class="user-status" id="headerUserStatus"></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. STEPPER BAR -->
+    <div class="cart-stepper-bar">
+        <div class="stepper-container">
+            <div class="step-item active">
+                <span class="step-number">1</span>
+                <span>Giỏ Hàng</span>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step-item">
+                <span class="step-number">2</span>
+                <span>Thông Tin Thanh Toán</span>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step-item">
+                <span class="step-number">3</span>
+                <span>Hoàn Tất Đơn Hàng</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. CART MAIN CONTENT LAYOUT -->
+    <main class="cart-main-container">
+        <div class="cart-layout" id="cartContainer">
+            <!-- Left Column: Cart List -->
+            <div class="cart-left-col">
+                <!-- Freeship Progress Bar Card -->
+                <div class="freeship-card">
+                    <div class="freeship-title" id="freeshipMessage">
+                        🚚 Mua thêm <strong>65.000đ</strong> để được <strong>Miễn Phí Giao Hàng</strong>!
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="freeshipBarFill" style="width: 78%;"></div>
+                    </div>
+                </div>
+
+                <!-- Cart Items Box -->
+                <div class="cart-box">
+                    <div class="cart-box-header">
+                        <span>Sản Phẩm Đã Chọn</span>
+                        <span>Đơn Giá & Số Lượng</span>
+                    </div>
+                    <div class="cart-items-list" id="cartItemsList">
+                        <!-- Dynamic items generated by script.js -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Order Summary -->
+            <div class="cart-right-col">
+                <div class="cart-summary-card">
+                    <h3 class="summary-title">Tóm Tắt Đơn Hàng</h3>
+
+                    <div class="summary-row">
+                        <span>Tạm tính</span>
+                        <span id="cartSubtotal">315.000đ</span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Phí vận chuyển</span>
+                        <span id="cartShipping">Miễn phí</span>
+                    </div>
+
+                    <div class="summary-row total-row">
+                        <span>Tổng tiền</span>
+                        <span class="total-price-big" id="cartTotal">315.000đ</span>
+                    </div>
+
+                    <button type="button" class="btn-checkout" id="btnCheckout">
+                        TIẾN HÀNH THANH TOÁN →
+                    </button>
+
+                    <div class="payment-trust-badge">
+                        <div class="trust-title">Hỗ trợ thanh toán an toàn qua</div>
+                        <div class="trust-icons">
+                            <span>💳 Momo</span> • 
+                            <span>🏧 VNPay</span> • 
+                            <span>💵 COD</span> • 
+                            <span>💳 Visa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty Cart Panel -->
+        <div class="empty-cart-box" id="emptyCartBox">
+            <div class="empty-cart-icon">
+                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+            </div>
+            <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 8px;">Giỏ Hàng Của Bạn Đang Trống</h2>
+            <p style="font-size: 0.92rem; color: var(--text-muted); max-width: 400px; margin: 0 auto 20px auto;">Chưa có sản phẩm nào trong giỏ hàng. Hãy lướt xem các danh mục và chọn cho mình sản phẩm yêu thích nhé!</p>
+            <a href="../TrangChinh/index.html" class="btn-continue-shop">
+                ← Tiếp Tục Mua Sắm
+            </a>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
