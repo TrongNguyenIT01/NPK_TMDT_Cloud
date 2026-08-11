@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 
@@ -35,4 +35,6 @@ public partial class User
     public virtual ICollection<ProductApprovalLog> ProductApprovalLogs { get; set; } = new List<ProductApprovalLog>();
 
     public virtual ICollection<Shop> Shops { get; set; } = new List<Shop>();
+
+    public virtual ICollection<UserBlock> UserBlocks { get; set; } = new List<UserBlock>();
 }

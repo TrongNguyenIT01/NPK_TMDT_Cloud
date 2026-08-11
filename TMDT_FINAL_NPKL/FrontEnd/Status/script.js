@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const savedUsername = sessionStorage.getItem('tempUsername');
     const savedEmail = sessionStorage.getItem('tempEmail');
+    const savedBlockId = sessionStorage.getItem('tempBlockId');
+    const savedBlockReason = sessionStorage.getItem('tempBlockReason');
     const savedRole = sessionStorage.getItem('tempRole');
     
     // 2. Gắn dữ liệu vào HTML nếu tồn tại
@@ -13,6 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (savedEmail) {
         const emailElem = document.getElementById('userEmail');
         if (emailElem) emailElem.textContent = savedEmail;
+    }
+
+    if (savedBlockId) {
+        const blockIdElem = document.getElementById('blockId');
+        if (blockIdElem) blockIdElem.textContent = "#" + savedBlockId;
+
+        // Điền sẵn tiêu đề khiếu nại mặc định kèm mã hồ sơ
+        const subjectElem = document.getElementById('supportSubject');
+        if (subjectElem) {
+            subjectElem.value = `Khiếu nại mở khóa tài khoản #${savedBlockId}`;
+        }
+    }
+
+    if (savedBlockReason) {
+        const reasonElem = document.getElementById('blockReason');
+        if (reasonElem) reasonElem.textContent = savedBlockReason;
     }
     
     if (savedRole) {
@@ -44,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Modal Support / Appeal Handlers
+    // Modal Appeal Handlers
     const openModalBtn = document.getElementById('btnOpenModal');
     const modalOverlay = document.getElementById('supportModal');
     const closeModalBtn = document.getElementById('btnCloseModal');
@@ -69,14 +87,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (supportForm) {
-        supportForm.addEventListener('submit', (e) => {
+        supportForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const title = document.getElementById('supportSubject')?.value.trim();
             const message = document.getElementById('supportMessage')?.value.trim();
-            if (!message) return;
+            if (!title || !message) return;
 
-            modalOverlay.classList.remove('active');
-            showToast('Yêu cầu hỗ trợ của bạn đã được gửi thành công! Quản trị viên sẽ phản hồi sớm nhất.');
-            supportForm.reset();
+            try {
+                const response = await fetch("https://localhost:3001/api/KhieuNai/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        BlockId: savedBlockId || "BLK-982410",
+                        Title: title,
+                        Content: message
+                    })
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    modalOverlay.classList.remove('active');
+                    showToast('Đơn khiếu nại của bạn đã được gửi thành công! Mã khiếu nại: ' + data.appealId);
+                    supportForm.reset();
+
+                    // Cập nhật lại tiêu đề mặc định sau khi reset form
+                    if (savedBlockId) {
+                        const subjectElem = document.getElementById('supportSubject');
+                        if (subjectElem) {
+                            subjectElem.value = `Khiếu nại mở khóa tài khoản #${savedBlockId}`;
+                        }
+                    }
+                } else {
+                    alert(data.message || "Không thể gửi đơn khiếu nại!");
+                }
+            } catch (error) {
+                console.error("Lỗi khi gửi khiếu nại:", error);
+                alert("Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại API!");
+            }
         });
     }
 });

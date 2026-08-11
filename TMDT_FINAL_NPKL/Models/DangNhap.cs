@@ -1,4 +1,4 @@
-﻿namespace TMDT_FINAL_NPKL.Models
+namespace TMDT_FINAL_NPKL.Models
 {
     public class DangNhapRequest
     {
@@ -16,5 +16,7 @@
         public string Role { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
+        public string? BlockId { get; set; }
+        public string? BlockReason { get; set; }
     }
 }

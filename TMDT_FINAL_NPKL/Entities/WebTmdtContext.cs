@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,6 +36,10 @@ public partial class WebTmdtContext : DbContext
     public virtual DbSet<Shop> Shops { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<UserBlock> UserBlocks { get; set; }
+
+    public virtual DbSet<Appeal> Appeals { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -448,6 +452,90 @@ public partial class WebTmdtContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("username");
+        });
+
+        modelBuilder.Entity<UserBlock>(entity =>
+        {
+            entity.HasKey(e => e.BlockId);
+
+            entity.ToTable("user_blocks");
+
+            entity.HasIndex(e => e.UserId, "IX_user_blocks_user_id");
+
+            entity.Property(e => e.BlockId)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("block_id");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("user_id");
+            entity.Property(e => e.Reason)
+                .HasColumnName("reason");
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasDefaultValue("ACTIVE")
+                .HasColumnName("status");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserBlocks)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_user_blocks_user");
+        });
+
+        modelBuilder.Entity<Appeal>(entity =>
+        {
+            entity.HasKey(e => e.AppealId);
+
+            entity.ToTable("appeals");
+
+            entity.HasIndex(e => e.BlockId, "IX_appeals_block_id");
+
+            entity.Property(e => e.AppealId)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("appeal_id");
+            entity.Property(e => e.BlockId)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("block_id");
+            entity.Property(e => e.Title)
+                .HasMaxLength(255)
+                .HasColumnName("title");
+            entity.Property(e => e.Content)
+                .HasColumnName("content");
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasDefaultValue("PENDING")
+                .HasColumnName("status");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.ResolvedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("resolved_at");
+            entity.Property(e => e.ResolvedBy)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("resolved_by");
+            entity.Property(e => e.AdminNote)
+                .HasColumnName("admin_note");
+
+            entity.HasOne(d => d.Block).WithMany(p => p.Appeals)
+                .HasForeignKey(d => d.BlockId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_appeals_block");
+
+            entity.HasOne(d => d.ResolvedByNavigation).WithMany()
+                .HasForeignKey(d => d.ResolvedBy)
+                .HasConstraintName("FK_appeals_admin");
         });
 
         OnModelCreatingPartial(modelBuilder);

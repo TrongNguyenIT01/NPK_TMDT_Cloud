@@ -47,6 +47,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     sessionStorage.setItem("tempUsername", data.username);
                     sessionStorage.setItem("tempRole", data.role);
                     sessionStorage.setItem("tempEmail", data.email);
+                    if (data.blockId) {
+                        sessionStorage.setItem("tempBlockId", data.blockId);
+                    }
+                    if (data.blockReason) {
+                        sessionStorage.setItem("tempBlockReason", data.blockReason);
+                    }
                     window.location.href = data.redirectUrl;
                 } else {
                     alert(data.message);

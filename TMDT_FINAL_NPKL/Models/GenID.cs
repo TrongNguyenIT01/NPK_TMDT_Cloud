@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -57,6 +57,20 @@ namespace TMDT_FINAL_NPKL.Models
                 }
                 return builder.ToString();
             }
+        }
+
+        public static string GenerateBlockId()
+        {
+            // Sử dụng YYMMDDHHMMSSfff để tạo mã hồ sơ xử lý (19 ký tự: BLK- + 15 ký tự thời gian)
+            // Đảm bảo không vượt quá độ dài tối đa VARCHAR(20) của cột CSDL
+            return "BLK-" + DateTime.Now.ToString("yyMMddHHmmssfff");
+        }
+
+        public static string GenerateAppealId()
+        {
+            // Sử dụng YYMMDDHHMMSSfff để tạo mã khiếu nại (18 ký tự: APL + 15 ký tự thời gian)
+            // Đảm bảo không vượt quá độ dài tối đa VARCHAR(20) của cột CSDL
+            return "APL" + DateTime.Now.ToString("yyMMddHHmmssfff");
         }
     }
 }

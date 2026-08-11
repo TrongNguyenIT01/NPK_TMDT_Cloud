@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -55,6 +55,13 @@ namespace TMDT_FINAL_NPKL.Controllers
                 else if(user.Status == "BLOCKED")
                 {
                     statusRedirect = "../Status/blocked.html";
+
+                    // Tìm hồ sơ khóa hoạt động gần nhất
+                    var activeBlock = _context.UserBlocks
+                        .Where(b => b.UserId == user.UserId && b.Status == "ACTIVE")
+                        .OrderByDescending(b => b.CreatedAt)
+                        .FirstOrDefault();
+
                     return Ok(new DangNhapResponse
                     {
                         Success = false,
@@ -62,7 +69,9 @@ namespace TMDT_FINAL_NPKL.Controllers
                         RedirectUrl = statusRedirect,
                         Username = user.Username, 
                         Role = user.Role,         
-                        Email = user.Email
+                        Email = user.Email,
+                        BlockId = activeBlock?.BlockId ?? "BLK-982410",
+                        BlockReason = activeBlock?.Reason ?? "Vi phạm điều khoản đăng bán sản phẩm / Hoạt động có rủi ro bảo mật"
                     });
 
                 }
