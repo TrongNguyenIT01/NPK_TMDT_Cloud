@@ -100,8 +100,8 @@ namespace TMDT_FINAL_NPKL.Controllers
             }
 
             // Sử dụng user.UserId thay vì user.User_id hay user.user_id
-            string redirectUrl = user.UserId.StartsWith("ADM") ? "/admin/dashboard" :
-                                 user.UserId.StartsWith("SLR") ? "/seller/dashboard" : "/home";
+            string redirectUrl = user.UserId.StartsWith("ADM") ? "../Admin/index.html" :
+                                 user.UserId.StartsWith("SLR") ? "../Seller/index.html" : "../FrontEnd/Home/index.html";
 
             // Gọi hàm sinh Token
             string token = GenerateJwtToken(user);
