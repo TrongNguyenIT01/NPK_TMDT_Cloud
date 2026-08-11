@@ -1,17 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const roleBtns = document.querySelectorAll('.role-tab-btn');
-    const selectedRoleInput = document.querySelector('#selectedRole');
+    const roleSelect = document.querySelector('#roleSelect');
     const shopGroup = document.querySelector('#shopGroup');
     const registerForm = document.querySelector('#registerForm');
 
-    // Role Tab Switching
-    roleBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            roleBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const role = btn.getAttribute('data-role');
-            if (selectedRoleInput) selectedRoleInput.value = role;
+    // Role Select Combobox Change Event
+    if (roleSelect) {
+        roleSelect.addEventListener('change', (e) => {
+            const role = e.target.value;
 
             if (role === 'SELLER') {
                 if (shopGroup) shopGroup.style.display = 'block';
@@ -19,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (shopGroup) shopGroup.style.display = 'none';
             }
         });
-    });
+    }
 
     // Form Submission Handling
     if (registerForm) {
@@ -36,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const role = selectedRoleInput ? selectedRoleInput.value : 'CUSTOMER';
+            const role = roleSelect ? roleSelect.value : 'CUSTOMER';
             const roleName = role === 'SELLER' ? 'Người Bán (Seller)' : 'Khách Hàng (Customer)';
 
             alert(`Đăng ký tài khoản ${roleName} thành công!\nTài khoản sẽ ở trạng thái Chờ Duyệt (PENDING).\nĐang chuyển hướng sang trang Đăng Nhập...`);
