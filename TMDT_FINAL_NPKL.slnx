@@ -1,3 +1,20 @@
 <Solution>
+  <Folder Name="/docs/" />
+  <Folder Name="/docs/agile/">
+    <File Path="product-backlog.md" />
+  </Folder>
+  <Folder Name="/docs/agile/sprint-1/">
+    <File Path="daily-standups.md" />
+    <File Path="sprint-planning.md" />
+    <File Path="sprint-retro.md" />
+    <File Path="sprint-review.md" />
+  </Folder>
+  <Folder Name="/docs/agile/sprint-2/">
+    <File Path="daily-standups.md" />
+    <File Path="sprint-planning.md" />
+    <File Path="sprint-retro.md" />
+    <File Path="sprint-review.md" />
+  </Folder>
+  <Folder Name="/docs/architecture/" />
   <Project Path="TMDT_FINAL_NPKL/TMDT_FINAL_NPKL.csproj" />
 </Solution>
