@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NPKL Admin - Cấp Tài Khoản Người Dùng</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand">
+            <a href="../TrangChinh/index.html" class="sidebar-logo">NP<span>KL</span></a>
+            <span class="sidebar-badge">Admin</span>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="menu-category">Mục Chính</li>
+            <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                    <span>📊</span>
+                    <span>Tổng Quan và Giám Sát</span>
+                </a>
+            </li>
+
+            <li class="menu-category">Quản Lý & Kiểm Duyệt</li>
+            <li class="menu-item has-dropdown open">
+                <a href="#" class="menu-link dropdown-toggle active">
+                    <span>👥</span>
+                    <span>Quản lý Người Dùng</span>
+                    <span class="dropdown-arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="cap-tai-khoan.html" class="submenu-link active">
+                            <span>🔑</span>
+                            <span>Cấp tài khoản</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="duyet-tai-khoan.html" class="submenu-link">
+                            <span>✅</span>
+                            <span>Duyệt tài khoản</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-item has-dropdown">
+                <a href="#" class="menu-link dropdown-toggle">
+                    <span>🏪</span>
+                    <span>Quản lý Cửa Hàng</span>
+                    <span class="dropdown-arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="duyet-gian-hang.html" class="submenu-link">
+                            <span>🏢</span>
+                            <span>Duyệt gian hàng</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="duyet-san-pham.html" class="submenu-link">
+                            <span>📦</span>
+                            <span>Duyệt sản phẩm</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                    <span>🏷️</span>
+                    <span>Quản lý Danh Mục</span>
+                </a>
+            </li>
+
+            <li class="menu-category">Giao Dịch & Báo Cáo</li>
+            <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                    <span>🧾</span>
+                    <span>Giám Sát Đơn Hàng</span>
+                </a>
+            </li>
+
+            <li class="menu-category">TÀI KHOẢN</li>
+            <li class="menu-item">
+                <a href="../DangNhap/index.html" class="menu-link">
+                    <span>↪️</span>
+                    <span>Đăng Xuất</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="admin-avatar">AD</div>
+            <div class="admin-info">
+                <span class="admin-name">Administrator</span>
+                <span class="admin-role">AD0001 (Super Admin)</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="admin-main">
+        <!-- Header Top Bar -->
+        <header class="admin-header">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <button class="btn-toggle-sidebar" id="toggleSidebar" title="Thu gọn / Mở rộng Menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="header-title-box">
+                    <h1 id="pageHeaderTitle">Cấp Tài Khoản Người Dùng Mới</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="../TrangChinh/index.html" class="btn-header-action">
+                    <span>🌐</span>
+                    <span>Quay lại Sàn TMĐT</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <!-- FORM CẤP TÀI KHOẢN -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <h3>🔑 Biểu Mẫu Cấp Tài Khoản Hệ Thống</h3>
+                    <p>Khởi tạo tài khoản quản trị viên, người bán hoặc khách hàng nội bộ trực tiếp từ Quản trị hệ thống</p>
+                </div>
+                <form id="grantAccountForm">
+                    <div class="admin-form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Họ và Tên <span class="required">*</span></label>
+                            <input type="text" id="grantFullName" class="form-control-admin" placeholder="VD: Nguyễn Văn Anh" required />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tên Đăng Nhập <span class="required">*</span></label>
+                            <input type="text" id="grantUsername" class="form-control-admin" placeholder="VD: vananh_admin" required />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Hệ Thống <span class="required">*</span></label>
+                            <input type="email" id="grantEmail" class="form-control-admin" placeholder="VD: vananh@npkl.vn" required />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Số Điện Thoại</label>
+                            <input type="tel" id="grantPhone" class="form-control-admin" placeholder="VD: 0912 345 678" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Vai Trò Tài Khoản <span class="required">*</span></label>
+                            <select id="grantRole" class="form-control-admin" required>
+                                <option value="ADMIN">Quản Trị Viên (System Admin)</option>
+                                <option value="SELLER">Người Bán (Seller / Shop)</option>
+                                <option value="CUSTOMER" selected>Khách Hàng (Customer)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Trạng Thái Khởi Tạo</label>
+                            <select id="grantStatus" class="form-control-admin">
+                                <option value="ACTIVE" selected>Kích Hoạt Ngay (Active)</option>
+                                <option value="PENDING">Chờ Xác Nhận (Pending)</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Mật Khẩu Ban Đầu <span class="required">*</span></label>
+                            <input type="password" id="grantPassword" class="form-control-admin" placeholder="Nhập mật khẩu truy cập ban đầu..." value="Npkl@2026" required />
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="reset" class="btn-tb reject">Hủy Bỏ</button>
+                        <button type="submit" class="btn-tb primary" style="padding: 10px 20px; font-size: 0.9rem;">
+                            <span>➕ Cấp Tài Khoản</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- BẢNG DANH SÁCH TÀI KHOẢN ĐÃ CẤP -->
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-title-box">
+                        <h3>Danh Sách Tài Khoản Đã Cấp & Hoạt Động</h3>
+                        <p>Quản lý các tài khoản đã được cấp quyền truy cập trên hệ thống NPKL</p>
+                    </div>
+                    <div class="table-filters">
+                        <input type="text" id="userSearchInput" class="search-input-admin" placeholder="Tìm tên, email, tên đăng nhập..." />
+                        <select id="userRoleFilter" class="filter-select">
+                            <option value="ALL">Tất cả vai trò</option>
+                            <option value="ADMIN">Quản Trị Viên</option>
+                            <option value="SELLER">Người Bán</option>
+                            <option value="CUSTOMER">Khách Hàng</option>
+                        </select>
+                        <select id="userStatusFilter" class="filter-select">
+                            <option value="ALL">Tất cả trạng thái</option>
+                            <option value="ACTIVE">Hoạt Động</option>
+                            <option value="BLOCKED">Đã Khóa</option>
+                        </select>
+                    </div>
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Mã Người Dùng</th>
+                            <th>Họ Và Tên</th>
+                            <th>Tên Đăng Nhập</th>
+                            <th>Email</th>
+                            <th>Số Điện Thoại</th>
+                            <th>Vai Trò</th>
+                            <th>Trạng Thái</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="grantedUserTableBody">
+                        <tr data-role="ADMIN" data-status="ACTIVE">
+                            <td><strong>AD0001</strong></td>
+                            <td class="user-name-cell">Quản Trị Viên Hệ Thống</td>
+                            <td>admin_npkl</td>
+                            <td>admin@npkl.vn</td>
+                            <td>1900 636 081</td>
+                            <td><span class="badge-status banned">Quản Trị Viên</span></td>
+                            <td class="status-cell"><span class="badge-status active">Hoạt Động</span></td>
+                            <td><span style="color:#64748B; font-size:0.8rem;">Hệ thống</span></td>
+                        </tr>
+                        <tr data-role="ADMIN" data-status="ACTIVE">
+                            <td><strong>AD0002</strong></td>
+                            <td class="user-name-cell">Lê Hoàng Nam</td>
+                            <td>namlh_admin</td>
+                            <td>nam.le@npkl.vn</td>
+                            <td>0903 112 233</td>
+                            <td><span class="badge-status banned">Quản Trị Viên</span></td>
+                            <td class="status-cell"><span class="badge-status active">Hoạt Động</span></td>
+                            <td>
+                                <div class="btn-action-group">
+                                    <button class="btn-tb block btn-user-action" data-action="BLOCKED">Khóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-role="SELLER" data-status="ACTIVE">
+                            <td><strong>SL0001</strong></td>
+                            <td class="user-name-cell">Cửa Hàng Sách Trẻ</td>
+                            <td>sachtre_official</td>
+                            <td>sachtre@gmail.com</td>
+                            <td>0988 111 222</td>
+                            <td><span class="badge-status shipping">Người Bán</span></td>
+                            <td class="status-cell"><span class="badge-status active">Hoạt Động</span></td>
+                            <td>
+                                <div class="btn-action-group">
+                                    <button class="btn-tb block btn-user-action" data-action="BLOCKED">Khóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-role="CUSTOMER" data-status="ACTIVE">
+                            <td><strong>CUS0012</strong></td>
+                            <td class="user-name-cell">Phạm Minh Đức</td>
+                            <td>phamminhduc</td>
+                            <td>duc.pm@gmail.com</td>
+                            <td>0977 444 555</td>
+                            <td><span class="badge-status shipping">Khách Hàng</span></td>
+                            <td class="status-cell"><span class="badge-status active">Hoạt Động</span></td>
+                            <td>
+                                <div class="btn-action-group">
+                                    <button class="btn-tb block btn-user-action" data-action="BLOCKED">Khóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

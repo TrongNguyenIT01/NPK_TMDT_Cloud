@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NPKL Admin - Kiểm Duyệt Sản Phẩm</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand">
+            <a href="../TrangChinh/index.html" class="sidebar-logo">NP<span>KL</span></a>
+            <span class="sidebar-badge">Admin</span>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="menu-category">Mục Chính</li>
+            <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                    <span>📊</span>
+                    <span>Tổng Quan và Giám Sát</span>
+                </a>
+            </li>
+
+            <li class="menu-category">Quản Lý & Kiểm Duyệt</li>
+            <li class="menu-item has-dropdown">
+                <a href="#" class="menu-link dropdown-toggle">
+                    <span>👥</span>
+                    <span>Quản lý Người Dùng</span>
+                    <span class="dropdown-arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="cap-tai-khoan.html" class="submenu-link">
+                            <span>🔑</span>
+                            <span>Cấp tài khoản</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="duyet-tai-khoan.html" class="submenu-link">
+                            <span>✅</span>
+                            <span>Duyệt tài khoản</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-item has-dropdown open">
+                <a href="#" class="menu-link dropdown-toggle active">
+                    <span>🏪</span>
+                    <span>Quản lý Cửa Hàng</span>
+                    <span class="dropdown-arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="duyet-gian-hang.html" class="submenu-link">
+                            <span>🏢</span>
+                            <span>Duyệt gian hàng</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="duyet-san-pham.html" class="submenu-link active">
+                            <span>📦</span>
+                            <span>Duyệt sản phẩm</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                    <span>🏷️</span>
+                    <span>Quản lý Danh Mục</span>
+                </a>
+            </li>
+
+            <li class="menu-category">Giao Dịch & Báo Cáo</li>
+            <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                    <span>🧾</span>
+                    <span>Giám Sát Đơn Hàng</span>
+                </a>
+            </li>
+
+            <li class="menu-category">TÀI KHOẢN</li>
+            <li class="menu-item">
+                <a href="../DangNhap/index.html" class="menu-link">
+                    <span>↪️</span>
+                    <span>Đăng Xuất</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="admin-avatar">AD</div>
+            <div class="admin-info">
+                <span class="admin-name">Administrator</span>
+                <span class="admin-role">AD0001 (Super Admin)</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="admin-main">
+        <!-- Header Top Bar -->
+        <header class="admin-header">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <button class="btn-toggle-sidebar" id="toggleSidebar" title="Thu gọn / Mở rộng Menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="header-title-box">
+                    <h1 id="pageHeaderTitle">Kiểm Duyệt Sản Phẩm Đăng Mới</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="../TrangChinh/index.html" class="btn-header-action">
+                    <span>🌐</span>
+                    <span>Quay lại Sàn TMĐT</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <!-- METRIC CARDS -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <div class="metric-icon purple">📦</div>
+                        <span class="metric-trend warn">Chờ duyệt gấp</span>
+                    </div>
+                    <div class="metric-value" id="pendingProductMetric">14</div>
+                    <div class="metric-label">Sản phẩm chờ kiểm duyệt</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <div class="metric-icon green">✅</div>
+                        <span class="metric-trend up">↑ +28 hôm nay</span>
+                    </div>
+                    <div class="metric-value">1,420</div>
+                    <div class="metric-label">Sản phẩm đã duyệt lên sàn</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <div class="metric-icon orange">🚫</div>
+                        <span class="metric-trend warn">Vi phạm mô tả</span>
+                    </div>
+                    <div class="metric-value">3</div>
+                    <div class="metric-label">Sản phẩm bị từ chối duyệt</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <div class="metric-icon blue">🏷️</div>
+                        <span class="metric-trend up">Toàn sàn</span>
+                    </div>
+                    <div class="metric-value">3,420</div>
+                    <div class="metric-label">Tổng sản phẩm đang hoạt động</div>
+                </div>
+            </div>
+
+            <!-- BẢNG SẢN PHẨM CHỜ DUYỆT -->
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-title-box">
+                        <h3>Danh Sách Sản Phẩm Chờ Duyệt Công Khai</h3>
+                        <p>Kiểm tra hình ảnh, thông tin và giá niêm yết sản phẩm trước khi cho phép bán trên NPKL</p>
+                    </div>
+                    <div class="table-filters">
+                        <input type="text" class="search-input-admin" placeholder="Tìm tên sản phẩm, cửa hàng..." />
+                    </div>
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Mã Sản Phẩm</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Tên Cửa Hàng</th>
+                            <th>Danh Mục</th>
+                            <th>Giá Bán</th>
+                            <th>Tồn Kho</th>
+                            <th>Trạng Thái</th>
+                            <th>Thao Tác Phê Duyệt</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productApprovalBody">
+                        <tr>
+                            <td><strong>SP0012</strong></td>
+                            <td class="product-name-cell">Sách Kỹ Năng Quản Lý Thời Gian</td>
+                            <td>SH0002 - NPKL Official Shop</td>
+                            <td>Sách & Tri Thức</td>
+                            <td>95.000đ</td>
+                            <td>150</td>
+                            <td class="product-status-cell"><span class="badge-status pending">Chờ Duyệt</span></td>
+                            <td>
+                                <div class="btn-action-group">
+                                    <button class="btn-tb approve btn-product-action" data-action="APPROVED">✓ Duyệt Bán</button>
+                                    <button class="btn-tb reject btn-product-action" data-action="REJECTED">✕ Từ Chối</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>SP0013</strong></td>
+                            <td class="product-name-cell">Bộ Bút Ký Cao Cấp Kim Loại NPKL</td>
+                            <td>SH0005 - Văn Phòng Phẩm Sài Gòn</td>
+                            <td>Văn Phòng Phẩm</td>
+                            <td>320.000đ</td>
+                            <td>80</td>
+                            <td class="product-status-cell"><span class="badge-status pending">Chờ Duyệt</span></td>
+                            <td>
+                                <div class="btn-action-group">
+                                    <button class="btn-tb approve btn-product-action" data-action="APPROVED">✓ Duyệt Bán</button>
+                                    <button class="btn-tb reject btn-product-action" data-action="REJECTED">✕ Từ Chối</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>SP0014</strong></td>
+                            <td class="product-name-cell">Combo Sổ Tay Moleskine + Bút Ký Lamy</td>
+                            <td>SH0001 - NPKL Official Bookshop</td>
+                            <td>Combo Tiết Kiệm</td>
+                            <td>890.000đ</td>
+                            <td>50</td>
+                            <td class="product-status-cell"><span class="badge-status pending">Chờ Duyệt</span></td>
+                            <td>
+                                <div class="btn-action-group">
+                                    <button class="btn-tb approve btn-product-action" data-action="APPROVED">✓ Duyệt Bán</button>
+                                    <button class="btn-tb reject btn-product-action" data-action="REJECTED">✕ Từ Chối</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL TỪ CHỐI DUYỆT SẢN PHẨM -->
+    <div class="modal-overlay" id="rejectModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Từ Chối Duyệt Sản Phẩm</h3>
+                <button class="btn-close-modal" id="closeRejectModal">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom:12px; font-size:0.9rem; color:#64748B;">Vui lòng ghi rõ lý do từ chối để hệ thống lưu nhật ký kiểm duyệt:</p>
+                <textarea id="rejectNoteInput" style="width:100%; height:100px; padding:10px; border-radius:8px; border:1.5px solid #CBD5E1; font-size:0.9rem;" placeholder="Ví dụ: Hình ảnh mờ, mô tả chứa từ khóa cấm, giá bán không hợp lệ..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-tb primary" id="confirmRejectBtn">Xác Nhận Từ Chối</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

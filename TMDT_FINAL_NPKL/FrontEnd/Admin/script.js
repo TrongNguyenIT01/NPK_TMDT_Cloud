@@ -7,15 +7,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 0.1 Dropdown Submenu Toggle
+    const dropdownToggles = document.querySelectorAll('.menu-item.has-dropdown > .menu-link');
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            const parentItem = toggle.closest('.menu-item');
+            if (parentItem) {
+                parentItem.classList.toggle('open');
+            }
+        });
+    });
+
+    // Auto-expand dropdown if a child link is active
+    document.querySelectorAll('.submenu-link.active').forEach(activeSubLink => {
+        const parentItem = activeSubLink.closest('.menu-item.has-dropdown');
+        if (parentItem) {
+            parentItem.classList.add('open');
+        }
+    });
+
     // 1. Sidebar Navigation Tab Switching
-    const menuLinks = document.querySelectorAll('.menu-link');
+    const menuLinks = document.querySelectorAll('.menu-link:not(.dropdown-toggle)');
     const tabPanels = document.querySelectorAll('.tab-panel');
     const pageHeaderTitle = document.querySelector('#pageHeaderTitle');
 
     menuLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             const targetTab = link.getAttribute('data-tab');
-            if (!targetTab) return; // Để cho phép điều hướng bình thường đối với link Đăng Xuất
+            if (!targetTab) return; // Để cho phép điều hướng bình thường đối với link Đăng Xuất hoặc HTML ngoài
 
             e.preventDefault();
             const title = link.getAttribute('data-title');
@@ -242,4 +262,62 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userRoleFilter) userRoleFilter.addEventListener('change', filterUserTable);
     if (userStatusFilter) userStatusFilter.addEventListener('change', filterUserTable);
     if (userSearchInput) userSearchInput.addEventListener('input', filterUserTable);
+
+    // 7. Grant Account Form Handler
+    const grantAccountForm = document.querySelector('#grantAccountForm');
+    const grantedUserTableBody = document.querySelector('#grantedUserTableBody');
+
+    if (grantAccountForm && grantedUserTableBody) {
+        grantAccountForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const fullName = document.querySelector('#grantFullName').value.trim();
+            const username = document.querySelector('#grantUsername').value.trim();
+            const email = document.querySelector('#grantEmail').value.trim();
+            const phone = document.querySelector('#grantPhone').value.trim();
+            const role = document.querySelector('#grantRole').value;
+            const status = document.querySelector('#grantStatus').value;
+
+            if (!fullName || !username || !email) {
+                alert('Vui lòng điền đầy đủ các thông tin bắt buộc!');
+                return;
+            }
+
+            let prefix = 'CUS';
+            let roleBadge = '<span class="badge-status shipping">Khách Hàng</span>';
+            if (role === 'ADMIN') {
+                prefix = 'AD';
+                roleBadge = '<span class="badge-status banned">Quản Trị Viên</span>';
+            } else if (role === 'SELLER') {
+                prefix = 'SL';
+                roleBadge = '<span class="badge-status shipping">Người Bán</span>';
+            }
+
+            const userId = prefix + Math.floor(1000 + Math.random() * 9000);
+            const statusBadge = status === 'ACTIVE' 
+                ? '<span class="badge-status active">Hoạt Động</span>' 
+                : '<span class="badge-status pending">Chờ Duyệt</span>';
+
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-role', role);
+            tr.setAttribute('data-status', status);
+            tr.innerHTML = `
+                <td><strong>${userId}</strong></td>
+                <td class="user-name-cell">${fullName}</td>
+                <td>${username}</td>
+                <td>${email}</td>
+                <td>${phone || '---'}</td>
+                <td>${roleBadge}</td>
+                <td class="status-cell">${statusBadge}</td>
+                <td>
+                    <div class="btn-action-group">
+                        <button class="btn-tb block btn-user-action" data-action="BLOCKED">Khóa</button>
+                    </div>
+                </td>
+            `;
+
+            grantedUserTableBody.prepend(tr);
+            alert(`Cấp thành công tài khoản [${userId}] cho "${fullName}" với vai trò ${role}!`);
+            grantAccountForm.reset();
+        });
+    }
 });

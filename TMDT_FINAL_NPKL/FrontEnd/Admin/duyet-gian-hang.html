@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NPKL Admin - Duyệt & Quản Lý Gian Hàng</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand">
+            <a href="../TrangChinh/index.html" class="sidebar-logo">NP<span>KL</span></a>
+            <span class="sidebar-badge">Admin</span>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="menu-category">Mục Chính</li>
+            <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                    <span>📊</span>
+                    <span>Tổng Quan và Giám Sát</span>
+                </a>
+            </li>
+
+            <li class="menu-category">Quản Lý & Kiểm Duyệt</li>
+            <li class="menu-item has-dropdown">
+                <a href="#" class="menu-link dropdown-toggle">
+                    <span>👥</span>
+                    <span>Quản lý Người Dùng</span>
+                    <span class="dropdown-arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="cap-tai-khoan.html" class="submenu-link">
+                            <span>🔑</span>
+                            <span>Cấp tài khoản</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="duyet-tai-khoan.html" class="submenu-link">
+                            <span>✅</span>
+                            <span>Duyệt tài khoản</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-item has-dropdown open">
+                <a href="#" class="menu-link dropdown-toggle active">
+                    <span>🏪</span>
+                    <span>Quản lý Cửa Hàng</span>
+                    <span class="dropdown-arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="duyet-gian-hang.html" class="submenu-link active">
+                            <span>🏢</span>
+                            <span>Duyệt gian hàng</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="duyet-san-pham.html" class="submenu-link">
+                            <span>📦</span>
+                            <span>Duyệt sản phẩm</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                    <span>🏷️</span>
+                    <span>Quản lý Danh Mục</span>
+                </a>
+            </li>
+
+            <li class="menu-category">Giao Dịch & Báo Cáo</li>
+            <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                    <span>🧾</span>
+                    <span>Giám Sát Đơn Hàng</span>
+                </a>
+            </li>
+
+            <li class="menu-category">TÀI KHOẢN</li>
+            <li class="menu-item">
+                <a href="../DangNhap/index.html" class="menu-link">
+                    <span>↪️</span>
+                    <span>Đăng Xuất</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="admin-avatar">AD</div>
+            <div class="admin-info">
+                <span class="admin-name">Administrator</span>
+                <span class="admin-role">AD0001 (Super Admin)</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="admin-main">
+        <!-- Header Top Bar -->
+        <header class="admin-header">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <button class="btn-toggle-sidebar" id="toggleSidebar" title="Thu gọn / Mở rộng Menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="header-title-box">
+                    <h1 id="pageHeaderTitle">Kiểm Duyệt & Quản Lý Gian Hàng Cửa Hàng</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="../TrangChinh/index.html" class="btn-header-action">
+                    <span>🌐</span>
+                    <span>Quay lại Sàn TMĐT</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <!-- METRIC CARDS -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <div class="metric-icon orange">🏪</div>
+                        <span class="metric-trend warn">5 Chờ duyệt</span>
+                    </div>
+                    <div class="metric-value">86</div>
+                    <div class="metric-label">Cửa hàng đang hoạt động</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <div class="metric-icon blue">⏳</div>
+                        <span class="metric-trend warn">Cần duyệt mớii</span>
+                    </div>
+                    <div class="metric-value">5</div>
+                    <div class="metric-label">Đơn mở gian hàng chờ xét duyệt</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <div class="metric-icon purple">⏸️</div>
+                        <span class="metric-trend warn">Tạm ngưng</span>
+                    </div>
+                    <div class="metric-value">3</div>
+                    <div class="metric-label">Gian hàng đang tạm nghỉ</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <div class="metric-icon green">⭐</div>
+                        <span class="metric-trend up">↑ 98% uy tín</span>
+                    </div>
+                    <div class="metric-value">4.9 / 5</div>
+                    <div class="metric-label">Đánh giá uy tín gian hàng trung bình</div>
+                </div>
+            </div>
+
+            <!-- BẢNG QUẢN LÝ GIAN HÀNG -->
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-title-box">
+                        <h3>Danh Sách Gian Hàng Cửa Hàng Toàn Sàn</h3>
+                        <p>Kiểm soát thông tin cửa hàng, phê duyệt gian hàng mới mở hoặc cấm hoạt động các gian hàng vi phạm</p>
+                    </div>
+                    <div class="table-filters">
+                        <input type="text" class="search-input-admin" placeholder="Tìm tên gian hàng, mã gian hàng..." />
+                        <select class="filter-select">
+                            <option value="ALL">Tất cả trạng thái</option>
+                            <option value="ACTIVE">Đang Hoạt Động</option>
+                            <option value="PENDING">Chờ Phê Duyệt</option>
+                            <option value="INACTIVE">Tạm Nghỉ</option>
+                            <option value="BANNED">Bị Cấm</option>
+                        </select>
+                    </div>
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Mã Gian Hàng</th>
+                            <th>Tên Cửa Hàng</th>
+                            <th>Mã Chủ Cửa Hàng</th>
+                            <th>Mô Tả Cửa Hàng</th>
+                            <th>Ngày Tạo</th>
+                            <th>Trạng Thái</th>
+                            <th>Thao Tác Phê Duyệt</th>
+                        </tr>
+                    </thead>
+                    <tbody id="shopTableBody">
+                        <tr>
+                            <td><strong>SH0001</strong></td>
+                            <td class="shop-name-cell">NPKL Official Bookshop</td>
+                            <td>SL0001</td>
+                            <td>Chuyên cung cấp sách chính hãng và văn phòng phẩm cao cấp</td>
+                            <td>10/01/2026</td>
+                            <td class="shop-status-cell"><span class="badge-status active">Hoạt Động</span></td>
+                            <td>
+                                <div class="btn-action-group">
+                                    <button class="btn-tb block btn-shop-action" data-action="INACTIVE">Tạm nghỉ</button>
+                                    <button class="btn-tb reject btn-shop-action" data-action="BANNED">Cấm Cửa Hàng</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>SH0002</strong></td>
+                            <td class="shop-name-cell">Văn Phòng Phẩm Sài Gòn</td>
+                            <td>SL0012</td>
+                            <td>Phân phối dụng cụ học sinh, quà tặng tựu trường</td>
+                            <td>02/02/2026</td>
+                            <td class="shop-status-cell"><span class="badge-status active">Hoạt Động</span></td>
+                            <td>
+                                <div class="btn-action-group">
+                                    <button class="btn-tb block btn-shop-action" data-action="INACTIVE">Tạm nghỉ</button>
+                                    <button class="btn-tb reject btn-shop-action" data-action="BANNED">Cấm Cửa Hàng</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>SH0003</strong></td>
+                            <td class="shop-name-cell">Hiệu Sách Tri Thức Mới</td>
+                            <td>SL0018</td>
+                            <td>Sách tham khảo đại học, tài liệu lập trình và kỹ thuật</td>
+                            <td>12/02/2026</td>
+                            <td class="shop-status-cell"><span class="badge-status pending">Chờ Duyệt Mở</span></td>
+                            <td>
+                                <div class="btn-action-group">
+                                    <button class="btn-tb approve btn-shop-action" data-action="ACTIVE">Duyệt Gian Hàng</button>
+                                    <button class="btn-tb reject btn-shop-action" data-action="BANNED">Từ Chối</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>SH0004</strong></td>
+                            <td class="shop-name-cell">Sổ Tay Handmade NPKL</td>
+                            <td>SL0022</td>
+                            <td>Sổ bọc da, vật phẩm trang trí bàn học tự làm</td>
+                            <td>14/02/2026</td>
+                            <td class="shop-status-cell"><span class="badge-status pending">Chờ Duyệt Mở</span></td>
+                            <td>
+                                <div class="btn-action-group">
+                                    <button class="btn-tb approve btn-shop-action" data-action="ACTIVE">Duyệt Gian Hàng</button>
+                                    <button class="btn-tb reject btn-shop-action" data-action="BANNED">Từ Chối</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
