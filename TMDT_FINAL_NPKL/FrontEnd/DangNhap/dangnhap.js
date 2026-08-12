@@ -55,6 +55,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (data.blockReason) {
                         sessionStorage.setItem("tempBlockReason", data.blockReason);
                     }
+                    if (data.rejectReason) {
+                        sessionStorage.setItem("tempRejectReason", data.rejectReason);
+                    }
                     window.location.href = data.redirectUrl;
                 } else {
                     alert(data.message);

@@ -26,6 +26,8 @@ public partial class User
 
     public string Status { get; set; } = null!;
 
+    public string? RejectReason { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public virtual Cart? Cart { get; set; }

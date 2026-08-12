@@ -38,6 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Vì blocked.html không có userRole, lệnh if này giúp code không bị lỗi crash
         if (roleElem) roleElem.textContent = savedRole.toUpperCase(); 
     }
+    
+    const savedRejectReason = sessionStorage.getItem('tempRejectReason');
+    if (savedRejectReason) {
+        const rejectReasonElem = document.getElementById('rejectReason');
+        if (rejectReasonElem) rejectReasonElem.textContent = savedRejectReason;
+    }
 
     // Handle Refresh Status Button
     const refreshBtn = document.getElementById('btnRefreshStatus');

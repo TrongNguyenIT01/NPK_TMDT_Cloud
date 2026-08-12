@@ -57,30 +57,237 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 2. User Approval & Action Buttons
+    // 2. User Approval & Action Buttons (Dynamic API)
     const userTableBody = document.querySelector('#userTableBody');
+    
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
+    async function loadPendingUsers() {
+        const token = localStorage.getItem("jwtToken");
+        if (!token) {
+            alert("Bạn chưa đăng nhập hoặc không có quyền truy cập!");
+            window.location.href = "../DangNhap/index.html";
+            return;
+        }
+
+        const roleFilter = document.querySelector('#userRoleFilter')?.value || 'ALL';
+        const statusFilter = document.querySelector('#userStatusFilter')?.value || 'ALL';
+        const searchVal = document.querySelector('#userSearchInput')?.value || '';
+
+        try {
+            const response = await fetch(`https://localhost:3001/api/Admin/users?status=${statusFilter}&role=${roleFilter}&search=${encodeURIComponent(searchVal)}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const result = await response.json();
+            if (response.ok && result.success) {
+                renderPendingUserTable(result.data);
+            } else {
+                console.error("Lỗi tải người dùng:", result.message);
+            }
+        } catch (error) {
+            console.error("Lỗi kết nối API:", error);
+        }
+    }
+
+    function renderPendingUserTable(users) {
+        const tbody = document.getElementById("userTableBody");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        if (users.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #64748B;">Không có tài khoản nào phù hợp</td></tr>`;
+            return;
+        }
+
+        users.forEach(user => {
+            let roleName = user.role === "ADMIN" ? "Quản Trị" : (user.role === "SELLER" ? "Người Bán" : "Khách Hàng");
+            let roleClass = user.role === "ADMIN" ? "banned" : "shipping";
+
+            let statusName = "Chờ Duyệt";
+            let statusClass = "pending";
+            if (user.status === "ACTIVE") {
+                statusName = "Hoạt Động";
+                statusClass = "active";
+            } else if (user.status === "BLOCKED") {
+                statusName = "Đã Khóa";
+                statusClass = "blocked";
+            } else if (user.status === "REJECTED") {
+                statusName = "Bị Từ Chối";
+                statusClass = "rejected";
+            }
+
+            let actionHtml = "";
+            const currentUsername = localStorage.getItem("userName");
+
+            if (user.username === currentUsername || user.userId === "AD0001") {
+                actionHtml = `<span style="color:#64748B; font-size:0.8rem;">Hệ thống</span>`;
+            } else if (user.status === "PENDING" || user.status === "REJECTED") {
+                actionHtml = `
+                    <div class="btn-action-group">
+                        <button class="btn-tb approve btn-user-action" data-id="${user.userId}" data-action="ACTIVE">✓ Duyệt</button>
+                        <button class="btn-tb reject btn-user-action" data-id="${user.userId}" data-action="REJECTED">✕ Từ Chối</button>
+                    </div>
+                `;
+            } else if (user.status === "ACTIVE") {
+                actionHtml = `
+                    <div class="btn-action-group">
+                        <button class="btn-tb block btn-user-action" data-id="${user.userId}" data-action="BLOCKED">Khóa</button>
+                    </div>
+                `;
+            } else if (user.status === "BLOCKED") {
+                actionHtml = `
+                    <div class="btn-action-group">
+                        <button class="btn-tb primary btn-user-action" data-id="${user.userId}" data-action="UNBLOCK" style="background-color: #10B981;">Mở Khóa</button>
+                    </div>
+                `;
+            }
+
+            const tr = document.createElement("tr");
+            tr.setAttribute("data-role", user.role);
+            tr.setAttribute("data-status", user.status);
+            tr.innerHTML = `
+                <td><strong>${user.userId}</strong></td>
+                <td class="user-name-cell">${user.fullName}</td>
+                <td>${user.username}</td>
+                <td>${user.email}</td>
+                <td>${user.phone || "---"}</td>
+                <td><span class="badge-status ${roleClass}">${roleName}</span></td>
+                <td class="status-cell"><span class="badge-status ${statusClass}">${statusName}</span></td>
+                <td>${actionHtml}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
     if (userTableBody) {
-        userTableBody.addEventListener('click', (e) => {
+        loadPendingUsers();
+
+        userTableBody.addEventListener('click', async (e) => {
             const btn = e.target.closest('.btn-user-action');
             if (!btn) return;
 
             const action = btn.getAttribute('data-action');
+            const userId = btn.getAttribute('data-id');
             const row = btn.closest('tr');
-            const statusCell = row.querySelector('.status-cell');
             const userName = row.querySelector('.user-name-cell').textContent;
+            const token = localStorage.getItem("jwtToken");
+
+            if (!token) {
+                alert("Bạn chưa đăng nhập hoặc không có quyền truy cập!");
+                return;
+            }
 
             if (action === 'ACTIVE') {
-                statusCell.innerHTML = `<span class="badge-status active">Hoạt Động</span>`;
-                row.setAttribute('data-status', 'ACTIVE');
-                alert(`Đã duyệt kích hoạt tài khoản: ${userName}`);
-            } else if (action === 'BLOCKED') {
-                statusCell.innerHTML = `<span class="badge-status blocked">Đã Khóa</span>`;
-                row.setAttribute('data-status', 'BLOCKED');
-                alert(`Đã khóa tài khoản: ${userName}`);
+                if (confirm(`Bạn có chắc muốn duyệt kích hoạt tài khoản: ${userName}?`)) {
+                    try {
+                        const response = await fetch(`https://localhost:3001/api/Admin/approve/${userId}`, {
+                            method: "POST",
+                            headers: {
+                                "Authorization": `Bearer ${token}`,
+                                "Content-Type": "application/json"
+                            }
+                        });
+                        const data = await response.json();
+                        if (response.ok && data.success) {
+                            alert(data.message);
+                            loadPendingUsers();
+                        } else {
+                            alert(data.message || "Duyệt thất bại!");
+                        }
+                    } catch (error) {
+                        console.error("Lỗi API:", error);
+                        alert("Không thể kết nối đến máy chủ!");
+                    }
+                }
             } else if (action === 'REJECTED') {
-                statusCell.innerHTML = `<span class="badge-status rejected">Bị Từ Chối</span>`;
-                row.setAttribute('data-status', 'REJECTED');
-                alert(`Đã từ chối tài khoản: ${userName}`);
+                const reason = prompt(`Nhập lý do từ chối tài khoản ${userName}:`);
+                if (reason === null) return;
+                if (!reason.trim()) {
+                    alert("Lý do từ chối không được để trống!");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`https://localhost:3001/api/Admin/reject/${userId}`, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ Reason: reason })
+                    });
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        alert(data.message);
+                        loadPendingUsers();
+                    } else {
+                        alert(data.message || "Từ chối thất bại!");
+                    }
+                } catch (error) {
+                    console.error("Lỗi API:", error);
+                    alert("Không thể kết nối đến máy chủ!");
+                }
+            } else if (action === 'BLOCKED') {
+                const reason = prompt(`Nhập lý do khóa tài khoản ${userName}:`);
+                if (reason === null) return;
+                if (!reason.trim()) {
+                    alert("Lý do khóa không được để trống!");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`https://localhost:3001/api/Admin/block/${userId}`, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ Reason: reason })
+                    });
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        alert(data.message);
+                        loadPendingUsers();
+                    } else {
+                        alert(data.message || "Khóa thất bại!");
+                    }
+                } catch (error) {
+                    console.error("Lỗi API:", error);
+                    alert("Không thể kết nối đến máy chủ!");
+                }
+            } else if (action === 'UNBLOCK') {
+                if (confirm(`Bạn có chắc muốn mở khóa tài khoản: ${userName}?`)) {
+                    try {
+                        const response = await fetch(`https://localhost:3001/api/Admin/unblock/${userId}`, {
+                            method: "POST",
+                            headers: {
+                                "Authorization": `Bearer ${token}`,
+                                "Content-Type": "application/json"
+                            }
+                        });
+                        const data = await response.json();
+                        if (response.ok && data.success) {
+                            alert(data.message);
+                            loadPendingUsers();
+                        } else {
+                            alert(data.message || "Mở khóa thất bại!");
+                        }
+                    } catch (error) {
+                        console.error("Lỗi API:", error);
+                        alert("Không thể kết nối đến máy chủ!");
+                    }
+                }
             }
         });
     }
@@ -237,31 +444,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const userSearchInput = document.querySelector('#userSearchInput');
 
     function filterUserTable() {
-        const roleVal = userRoleFilter ? userRoleFilter.value : 'ALL';
-        const statusVal = userStatusFilter ? userStatusFilter.value : 'ALL';
-        const searchVal = userSearchInput ? userSearchInput.value.toLowerCase().trim() : '';
+        if (userTableBody) {
+            loadPendingUsers();
+        } else {
+            const roleVal = userRoleFilter ? userRoleFilter.value : 'ALL';
+            const statusVal = userStatusFilter ? userStatusFilter.value : 'ALL';
+            const searchVal = userSearchInput ? userSearchInput.value.toLowerCase().trim() : '';
 
-        const rows = userTableBody ? userTableBody.querySelectorAll('tr') : [];
-        rows.forEach(row => {
-            const role = row.getAttribute('data-role');
-            const status = row.getAttribute('data-status');
-            const text = row.textContent.toLowerCase();
+            const rows = document.querySelectorAll('table tbody tr');
+            rows.forEach(row => {
+                const role = row.getAttribute('data-role');
+                const status = row.getAttribute('data-status');
+                const text = row.textContent.toLowerCase();
 
-            const roleMatch = (roleVal === 'ALL' || role === roleVal);
-            const statusMatch = (statusVal === 'ALL' || status === statusVal);
-            const searchMatch = (searchVal === '' || text.includes(searchVal));
+                const roleMatch = (roleVal === 'ALL' || role === roleVal);
+                const statusMatch = (statusVal === 'ALL' || status === statusVal);
+                const searchMatch = (searchVal === '' || text.includes(searchVal));
 
-            if (roleMatch && statusMatch && searchMatch) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
+                if (roleMatch && statusMatch && searchMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
     }
 
     if (userRoleFilter) userRoleFilter.addEventListener('change', filterUserTable);
     if (userStatusFilter) userStatusFilter.addEventListener('change', filterUserTable);
-    if (userSearchInput) userSearchInput.addEventListener('input', filterUserTable);
+    if (userSearchInput) userSearchInput.addEventListener('input', debounce(filterUserTable, 300));
 
     // 7. Grant Account Form Handler
     const grantAccountForm = document.querySelector('#grantAccountForm');

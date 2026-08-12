@@ -448,6 +448,8 @@ public partial class WebTmdtContext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValue("PENDING")
                 .HasColumnName("status");
+            entity.Property(e => e.RejectReason)
+                .HasColumnName("reject_reason");
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .IsUnicode(false)

@@ -1,6 +1,80 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Gọi hàm load dữ liệu ngay khi trang web vừa tải xong
     loadGrantedUsers();
+
+    // Đăng ký sự kiện click cho các nút hành động trong bảng (Khóa / Mở Khóa)
+    const tbody = document.getElementById("grantedUserTableBody");
+    if (tbody) {
+        tbody.addEventListener("click", async function (e) {
+            const btn = e.target.closest(".btn-user-action");
+            if (!btn) return;
+
+            const userId = btn.getAttribute("data-id");
+            const action = btn.getAttribute("data-action");
+            const row = btn.closest("tr");
+            const userName = row.querySelector(".user-name-cell").textContent;
+            const token = localStorage.getItem("jwtToken");
+
+            if (!token) {
+                alert("Bạn chưa đăng nhập hoặc không có quyền truy cập!");
+                return;
+            }
+
+            if (action === "BLOCKED") {
+                const reason = prompt(`Nhập lý do khóa tài khoản ${userName}:`);
+                if (reason === null) return; // Nhấn Hủy
+                if (!reason.trim()) {
+                    alert("Lý do khóa không được để trống!");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`https://localhost:3001/api/Admin/block/${userId}`, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ Reason: reason })
+                    });
+
+                    const result = await response.json();
+                    if (response.ok && result.success) {
+                        alert(result.message || "Khóa tài khoản thành công!");
+                        loadGrantedUsers(); // Refresh lại danh sách
+                    } else {
+                        alert(result.message || "Khóa tài khoản thất bại!");
+                    }
+                } catch (error) {
+                    console.error("Lỗi khóa tài khoản:", error);
+                    alert("Không thể kết nối đến máy chủ!");
+                }
+            } else if (action === "ACTIVE") {
+                if (confirm(`Bạn có chắc muốn mở khóa cho tài khoản ${userName}?`)) {
+                    try {
+                        const response = await fetch(`https://localhost:3001/api/Admin/unblock/${userId}`, {
+                            method: "POST",
+                            headers: {
+                                "Authorization": `Bearer ${token}`,
+                                "Content-Type": "application/json"
+                            }
+                        });
+
+                        const result = await response.json();
+                        if (response.ok && result.success) {
+                            alert(result.message || "Mở khóa tài khoản thành công!");
+                            loadGrantedUsers(); // Refresh lại danh sách
+                        } else {
+                            alert(result.message || "Mở khóa tài khoản thất bại!");
+                        }
+                    } catch (error) {
+                        console.error("Lỗi mở khóa tài khoản:", error);
+                        alert("Không thể kết nối đến máy chủ!");
+                    }
+                }
+            }
+        });
+    }
 });
 
 async function loadGrantedUsers() {

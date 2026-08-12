@@ -19,5 +19,6 @@ namespace TMDT_FINAL_NPKL.Models
         public string Email { get; set; }
         public string? BlockId { get; set; }
         public string? BlockReason { get; set; }
+        public string? RejectReason { get; set; }
     }
 }

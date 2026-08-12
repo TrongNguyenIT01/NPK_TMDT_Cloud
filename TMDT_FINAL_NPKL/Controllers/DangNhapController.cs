@@ -85,7 +85,8 @@ namespace TMDT_FINAL_NPKL.Controllers
                         RedirectUrl = statusRedirect,
                         Username = user.Username,
                         Role = user.Role,
-                        Email = user.Email
+                        Email = user.Email,
+                        RejectReason = user.RejectReason
                     });
                 }
 
