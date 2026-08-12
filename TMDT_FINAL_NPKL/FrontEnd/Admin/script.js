@@ -315,9 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </td>
             `;
 
-            grantedUserTableBody.prepend(tr);
-            alert(`Cấp thành công tài khoản [${userId}] cho "${fullName}" với vai trò ${role}!`);
-            grantAccountForm.reset();
+
         });
     }
 });

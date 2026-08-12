@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NPKL Seller - Kênh Quản Lý Cửa Hàng</title>
+    <script src="../DangNhap/checkUser.js"></script>
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -59,7 +60,7 @@
 
             <li class="menu-category">TÀI KHOẢN</li>
             <li class="menu-item">
-                <a href="../DangNhap/index.html" class="menu-link">
+                <a href="javascript:void(0)" onclick="handleLogout()" class="menu-link">
                     <span>↪️</span>
                     <span>Đăng Xuất</span>
                 </a>
@@ -572,5 +573,21 @@
     </div>
 
     <script src="script.js"></script>
+        <script>
+        function handleLogout() {
+    // 1. Xóa JWT Token và các thông tin liên quan khỏi bộ nhớ trình duyệt
+    localStorage.removeItem("jwtToken"); 
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("fullName");
+   
+
+   
+    alert("Bạn đã đăng xuất thành công!");
+
+    // 3. Chuyển hướng về trang đăng nhập
+    window.location.href = "../TrangChinh/index.html"; 
+}
+    </script>
 </body>
 </html>

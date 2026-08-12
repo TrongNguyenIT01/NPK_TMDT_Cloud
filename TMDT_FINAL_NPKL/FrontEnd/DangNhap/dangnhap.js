@@ -38,6 +38,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Lưu Token và Role vào Local Storage để dùng cho việc gọi API sau này
                 localStorage.setItem("jwtToken", data.token);
                 localStorage.setItem("userRole", data.role);
+                localStorage.setItem("userName",data.username);
+                localStorage.setItem("fullName",data.fullName);
 
                 // Chuyển hướng đến Dashboard (Admin/Seller/Home)
                 window.location.href = data.redirectUrl;

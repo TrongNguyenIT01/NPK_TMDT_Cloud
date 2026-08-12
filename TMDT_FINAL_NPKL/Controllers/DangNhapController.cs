@@ -112,7 +112,9 @@ namespace TMDT_FINAL_NPKL.Controllers
                 Message = "Đăng nhập thành công!",
                 RedirectUrl = redirectUrl,
                 Token = token,
-                Role = user.Role // Sử dụng user.Role thay vì user.role
+                Role = user.Role, // Sử dụng user.Role thay vì user.role
+                Username = user.Username,
+                FullName = user.FullName
             });
         }
 
