@@ -83,5 +83,37 @@ namespace TMDT_FINAL_NPKL.Controllers
                 return StatusCode(500, new { Message = "Lỗi máy chủ: " + ex.Message });
             }
         }
+        [HttpGet("DanhSach")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetDanhSachTaiKhoan()
+        {
+            try
+            {
+
+                var users = await _context.Users
+                    .Where(u => u.Status == "ACTIVE" || u.Status == "BLOCKED")
+                    .Select(u => new
+                    {
+                        u.UserId,
+                        u.FullName,
+                        u.Username,
+                        u.Email,
+                        u.Phone,
+                        u.Role,
+                        u.Status
+                    })
+                    .ToListAsync();
+
+                return Ok(new
+                {
+                    Success = true,
+                    Data = users
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
     }
 }
