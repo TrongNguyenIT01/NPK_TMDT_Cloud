@@ -1,53 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
     // ---------------- Real-time localStorage Sync Helper ----------------
     function getStoredWishlist() {
-        return JSON.parse(localStorage.getItem('npkl_wishlist')) || [
-            {
-                id: 'wish-1',
-                title: 'Đắc Nhân Tâm',
-                author: 'Dale Carnegie',
-                price: '75.000đ',
-                categoryTag: 'Sách',
-                img: '../TrangChinh/images/dac_nhan_tam.jpg'
-            },
-            {
-                id: 'wish-2',
-                title: 'Sổ Tay Moleskine Classic',
-                author: 'Moleskine',
-                price: '450.000đ',
-                categoryTag: 'Văn Phòng Phẩm',
-                img: '../TrangChinh/images/so_tay_moleskine.jpg'
-            }
-        ];
+        const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+        if (!token) return []; // Chưa đăng nhập -> 0 sản phẩm yêu thích
+        return JSON.parse(localStorage.getItem('npkl_wishlist')) || [];
     }
 
     function getStoredCart() {
-        return JSON.parse(localStorage.getItem('npkl_cart_items')) || [
-            {
-                id: 'cart-1',
-                title: 'Đắc Nhân Tâm',
-                author: 'Dale Carnegie',
-                price: 75000,
-                qty: 1,
-                categoryTag: 'Sách',
-                img: '../TrangChinh/images/dac_nhan_tam.jpg'
-            },
-            {
-                id: 'cart-2',
-                title: 'Bộ Bút Gel M&G 12 Màu',
-                author: 'M&G Stationary',
-                price: 120000,
-                qty: 2,
-                categoryTag: 'Văn Phòng Phẩm',
-                img: '../TrangChinh/images/but_gel_mg.jpg'
-            }
-        ];
+        const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+        if (!token) return []; // Chưa đăng nhập -> 0 sản phẩm trong giỏ hàng
+        return JSON.parse(localStorage.getItem('npkl_cart_items')) || [];
     }
 
     const wishlistBadge = document.querySelector('#wishlistBadge');
     const cartBadge = document.querySelector('#cartBadge');
 
     function syncBadgesFromStorage() {
+        const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+        if (!token) {
+            if (wishlistBadge) wishlistBadge.textContent = '0';
+            if (cartBadge) cartBadge.textContent = '0';
+            return;
+        }
+
         const wishlist = getStoredWishlist();
         const cart = getStoredCart();
 
@@ -88,10 +63,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1 & 2. Interactive Logic with Event Delegation
     document.addEventListener('click', (e) => {
+        // Kiểm tra Đăng nhập khi bấm nút Yêu thích hoặc Giỏ hàng trên Header
+        const headerWishlistLink = e.target.closest('a[href*="YeuThich"]');
+        if (headerWishlistLink) {
+            const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+            if (!token) {
+                e.preventDefault();
+                alert('Vui lòng đăng nhập để xem danh sách sản phẩm yêu thích!');
+                window.location.href = '../DangNhap/index.html';
+                return;
+            }
+        }
+
+        const headerCartLink = e.target.closest('a[href*="GioHang"]');
+        if (headerCartLink) {
+            const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+            if (!token) {
+                e.preventDefault();
+                alert('Vui lòng đăng nhập để xem giỏ hàng của bạn!');
+                window.location.href = '../DangNhap/index.html';
+                return;
+            }
+        }
+
         const wishBtn = e.target.closest('.wishlist-btn');
         if (wishBtn) {
             e.preventDefault();
             e.stopPropagation();
+
+            const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+            if (!token) {
+                alert('Vui lòng đăng nhập để lưu sản phẩm yêu thích!');
+                window.location.href = '../DangNhap/index.html';
+                return;
+            }
+
             const card = wishBtn.closest('.product-card');
             if (!card) return;
 
@@ -135,6 +141,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (addCartBtn) {
             e.preventDefault();
             e.stopPropagation();
+
+            const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+            if (!token) {
+                alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
+                window.location.href = '../DangNhap/index.html';
+                return;
+            }
+
             const card = addCartBtn.closest('.product-card');
             if (!card) return;
 
@@ -572,4 +586,107 @@ document.addEventListener('DOMContentLoaded', () => {
             toast.remove();
         }, 3000);
     }
+
+    // ---------------- User Auth State & Header Sync ----------------
+    function initUserAuthState() {
+        const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+        const role = sessionStorage.getItem('userRole') || localStorage.getItem('userRole');
+        const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
+        const fullName = sessionStorage.getItem('fullName') || localStorage.getItem('fullName');
+
+        const sellerLink = document.getElementById('sellerLink');
+        const sellerDivider = document.getElementById('sellerDivider');
+        const adminLink = document.getElementById('adminLink');
+        const adminDivider = document.getElementById('adminDivider');
+
+        const userProfileBtn = document.getElementById('userProfileBtn');
+        const headerUserName = document.getElementById('headerUserName');
+        const headerUserStatus = document.getElementById('headerUserStatus');
+        const userDropdownMenu = document.getElementById('userDropdownMenu');
+        const dropdownUserName = document.getElementById('dropdownUserName');
+        const dropdownUserRole = document.getElementById('dropdownUserRole');
+        const btnLogout = document.getElementById('btnLogout');
+
+        const navLoginItem = document.getElementById('navLoginItem');
+        const navRegisterItem = document.getElementById('navRegisterItem');
+
+        if (token) {
+            // Tên hiển thị người dùng
+            const displayName = fullName || userName || 'Khách Hàng';
+
+            // Ẩn Kênh Người Bán & Quản trị Admin khi khách hàng đăng nhập
+            if (role === 'CUSTOMER' || !role) {
+                if (sellerLink) sellerLink.style.display = 'none';
+                if (sellerDivider) sellerDivider.style.display = 'none';
+                if (adminLink) adminLink.style.display = 'none';
+                if (adminDivider) adminDivider.style.display = 'none';
+            }
+
+            // Ẩn nút Đăng Nhập & Đăng Ký trên thanh menu điều hướng
+            if (navLoginItem) navLoginItem.style.display = 'none';
+            if (navRegisterItem) navRegisterItem.style.display = 'none';
+
+            // Thay đổi chữ "Đăng Nhập" trên góc phải thành tên người dùng mới đăng nhập
+            if (headerUserName) headerUserName.textContent = displayName;
+            if (headerUserStatus) headerUserStatus.textContent = role === 'CUSTOMER' ? 'Khách Hàng' : (role || 'Thành viên');
+
+            if (dropdownUserName) dropdownUserName.textContent = displayName;
+            if (dropdownUserRole) dropdownUserRole.textContent = role === 'CUSTOMER' ? 'Tài Khoản Khách Hàng' : (role || 'Thành viên');
+
+            // Bấm vào tên account -> Hiển thị/Ẩn menu chứa nút Đăng xuất
+            if (userProfileBtn) {
+                userProfileBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (userDropdownMenu) {
+                        const isVisible = userDropdownMenu.style.display === 'block';
+                        userDropdownMenu.style.display = isVisible ? 'none' : 'block';
+                    }
+                });
+            }
+
+            // Đóng dropdown menu khi bấm ra ngoài
+            document.addEventListener('click', (e) => {
+                if (userDropdownMenu && !e.target.closest('.user-profile-container')) {
+                    userDropdownMenu.style.display = 'none';
+                }
+            });
+
+            // Xử lý sự kiện bấm nút Đăng Xuất
+            if (btnLogout) {
+                btnLogout.addEventListener('click', () => {
+                    sessionStorage.clear();
+                    localStorage.removeItem('jwtToken');
+                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('userName');
+                    localStorage.removeItem('fullName');
+                    localStorage.removeItem('npkl_wishlist');
+                    localStorage.removeItem('npkl_cart_items');
+                    localStorage.removeItem('npkl_cart_count');
+
+                    showToast('Đã đăng xuất tài khoản thành công!');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 800);
+                });
+            }
+        } else {
+            // Chưa đăng nhập: Hiển thị đầy đủ giao diện mặc định
+            if (sellerLink) sellerLink.style.display = '';
+            if (sellerDivider) sellerDivider.style.display = '';
+            if (adminLink) adminLink.style.display = '';
+            if (adminDivider) adminDivider.style.display = '';
+
+            if (navLoginItem) navLoginItem.style.display = '';
+            if (navRegisterItem) navRegisterItem.style.display = '';
+
+            if (headerUserName) headerUserName.textContent = 'Đăng Nhập';
+            if (headerUserStatus) headerUserStatus.textContent = '';
+            if (userDropdownMenu) userDropdownMenu.style.display = 'none';
+        }
+    }
+
+    // Khởi chạy đồng bộ trạng thái đăng nhập
+    initUserAuthState();
 });
+

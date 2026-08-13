@@ -1,3 +1,18 @@
+// Global Logout Handler for Admin pages
+window.handleLogout = function handleLogout() {
+    sessionStorage.clear();
+    localStorage.removeItem("jwtToken"); 
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("fullName");
+    localStorage.removeItem("npkl_wishlist");
+    localStorage.removeItem("npkl_cart_items");
+    localStorage.removeItem("npkl_cart_count");
+
+    alert("Bạn đã đăng xuất khỏi trang Quản Trị thành công!");
+    window.location.href = "../TrangChinh/index.html"; 
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     // 0. Toggle Sidebar Collapse/Expand
     const toggleSidebarBtn = document.querySelector('#toggleSidebar');
@@ -69,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function loadPendingUsers() {
-        const token = localStorage.getItem("jwtToken");
+        const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
         if (!token) {
             alert("Bạn chưa đăng nhập hoặc không có quyền truy cập!");
             window.location.href = "../DangNhap/index.html";
@@ -181,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const userId = btn.getAttribute('data-id');
             const row = btn.closest('tr');
             const userName = row.querySelector('.user-name-cell').textContent;
-            const token = localStorage.getItem("jwtToken");
+            const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
 
             if (!token) {
                 alert("Bạn chưa đăng nhập hoặc không có quyền truy cập!");

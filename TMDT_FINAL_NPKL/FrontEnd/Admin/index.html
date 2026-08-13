@@ -580,19 +580,21 @@
 
     <script>
         function handleLogout() {
-    // 1. Xóa JWT Token và các thông tin liên quan khỏi bộ nhớ trình duyệt
-    localStorage.removeItem("jwtToken"); 
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("fullName");
-   
+            // 1. Xóa toàn bộ Token và dữ liệu phiên làm việc
+            sessionStorage.clear();
+            localStorage.removeItem("jwtToken"); 
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("userName");
+            localStorage.removeItem("fullName");
+            localStorage.removeItem("npkl_wishlist");
+            localStorage.removeItem("npkl_cart_items");
+            localStorage.removeItem("npkl_cart_count");
 
-   
-    alert("Bạn đã đăng xuất thành công!");
+            alert("Bạn đã đăng xuất khỏi trang Quản Trị thành công!");
 
-    // 3. Chuyển hướng về trang đăng nhập
-    window.location.href = "../TrangChinh/index.html"; 
-}
+            // 2. Chuyển hướng về trang chủ chưa đăng nhập
+            window.location.href = "../TrangChinh/index.html"; 
+        }
     </script>
 </body>
 </html>

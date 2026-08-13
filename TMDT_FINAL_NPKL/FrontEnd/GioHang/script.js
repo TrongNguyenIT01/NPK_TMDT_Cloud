@@ -1,12 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Sync User Account Name from Session
-    const savedUser = JSON.parse(sessionStorage.getItem('currentUser') || localStorage.getItem('currentUser') || '{}');
-    if (savedUser.username) {
-        const nameElem = document.getElementById('headerUserName');
-        if (nameElem) nameElem.textContent = savedUser.username;
-        const statusElem = document.getElementById('headerUserStatus');
-        if (statusElem) statusElem.textContent = savedUser.role ? `${savedUser.role.toUpperCase()} NPKL` : 'Thành viên NPKL';
+    // 1. Kiểm tra Đăng nhập - Bắt buộc phải đăng nhập mới được xem giỏ hàng
+    const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+    if (!token) {
+        alert('Vui lòng đăng nhập để xem giỏ hàng của bạn!');
+        window.location.href = '../DangNhap/index.html';
+        return;
     }
+
+    // Sync User Account Name from Storage
+    const nameElem = document.getElementById('headerUserName');
+    const statusElem = document.getElementById('headerUserStatus');
+    const displayName = sessionStorage.getItem('fullName') || localStorage.getItem('fullName') || sessionStorage.getItem('userName') || localStorage.getItem('userName') || 'Khách Hàng';
+    const role = sessionStorage.getItem('userRole') || localStorage.getItem('userRole');
+    if (nameElem) nameElem.textContent = displayName;
+    if (statusElem) statusElem.textContent = role === 'CUSTOMER' ? 'Khách Hàng' : (role || '');
+
     const cartContainer = document.getElementById('cartContainer');
     const emptyCartBox = document.getElementById('emptyCartBox');
     const cartItemsList = document.getElementById('cartItemsList');
@@ -23,29 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Checkout
     const btnCheckout = document.getElementById('btnCheckout');
 
-    // Sample cart data if none in localStorage
-    const defaultCart = [
-        {
-            id: 'cart-1',
-            title: 'Đắc Nhân Tâm',
-            author: 'Dale Carnegie',
-            price: 75000,
-            qty: 1,
-            categoryTag: 'Sách',
-            img: '../TrangChinh/images/dac_nhan_tam.jpg'
-        },
-        {
-            id: 'cart-2',
-            title: 'Bộ Bút Gel M&G 12 Màu',
-            author: 'M&G Stationary',
-            price: 120000,
-            qty: 2,
-            categoryTag: 'Văn Phòng Phẩm',
-            img: '../TrangChinh/images/but_gel_mg.jpg'
-        }
-    ];
-
-    let cartItems = JSON.parse(localStorage.getItem('npkl_cart_items')) || defaultCart;
+    // Cart data from localStorage
+    let cartItems = JSON.parse(localStorage.getItem('npkl_cart_items')) || [];
     const FREESHIP_THRESHOLD = 300000;
     const STANDARD_SHIPPING = 30000;
 

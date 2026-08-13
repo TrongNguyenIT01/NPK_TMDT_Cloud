@@ -1,12 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Sync User Account Name from Session
-    const savedUser = JSON.parse(sessionStorage.getItem('currentUser') || localStorage.getItem('currentUser') || '{}');
-    if (savedUser.username) {
-        const nameElem = document.getElementById('headerUserName');
-        if (nameElem) nameElem.textContent = savedUser.username;
-        const statusElem = document.getElementById('headerUserStatus');
-        if (statusElem) statusElem.textContent = savedUser.role ? `${savedUser.role.toUpperCase()} NPKL` : 'Thành viên NPKL';
+    // 1. Kiểm tra Đăng nhập - Bắt buộc phải đăng nhập mới được xem danh sách yêu thích
+    const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+    if (!token) {
+        alert('Vui lòng đăng nhập để xem danh sách sản phẩm yêu thích của bạn!');
+        window.location.href = '../DangNhap/index.html';
+        return;
     }
+
+    // Sync User Account Name from Storage
+    const nameElem = document.getElementById('headerUserName');
+    const statusElem = document.getElementById('headerUserStatus');
+    const displayName = sessionStorage.getItem('fullName') || localStorage.getItem('fullName') || sessionStorage.getItem('userName') || localStorage.getItem('userName') || 'Khách Hàng';
+    const role = sessionStorage.getItem('userRole') || localStorage.getItem('userRole');
+    if (nameElem) nameElem.textContent = displayName;
+    if (statusElem) statusElem.textContent = role === 'CUSTOMER' ? 'Khách Hàng' : (role || '');
+
     const wishlistGrid = document.getElementById('wishlistGrid');
     const emptyState = document.getElementById('emptyState');
     const wishlistCountElem = document.getElementById('wishlistCount');
@@ -15,36 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnClearAll = document.getElementById('btnClearAll');
     const btnMoveAllToCart = document.getElementById('btnMoveAllToCart');
 
-    // Default sample data if none in localStorage
-    const defaultWishlist = [
-        {
-            id: 'wish-1',
-            title: 'Đắc Nhân Tâm',
-            author: 'Dale Carnegie',
-            price: '75.000đ',
-            categoryTag: 'Sách',
-            img: '../TrangChinh/images/dac_nhan_tam.jpg'
-        },
-        {
-            id: 'wish-2',
-            title: 'Sổ Tay Moleskine Classic',
-            author: 'Moleskine',
-            price: '450.000đ',
-            categoryTag: 'Văn Phòng Phẩm',
-            img: '../TrangChinh/images/so_tay_moleskine.jpg'
-        },
-        {
-            id: 'wish-3',
-            title: 'Combo Tựu Trường (Balo+Vở)',
-            author: 'NPKL Special',
-            price: '499.000đ',
-            categoryTag: 'Combo',
-            img: '../TrangChinh/images/combo_tuu_truong.jpg'
-        }
-    ];
-
-    // Load items
-    let wishlistItems = JSON.parse(localStorage.getItem('npkl_wishlist')) || defaultWishlist;
+    // Wishlist data from localStorage
+    let wishlistItems = JSON.parse(localStorage.getItem('npkl_wishlist')) || [];
     let cartItemsCount = parseInt(localStorage.getItem('npkl_cart_count') || '2');
 
     function updateBadgeCounts() {

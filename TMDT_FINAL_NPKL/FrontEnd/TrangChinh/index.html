@@ -45,16 +45,16 @@
                     </svg>
                     <span>Hỗ trợ: 1900 636 081</span>
                 </a>
-                <span class="top-bar-divider">|</span>
-                <a href="../Seller/index.html" class="top-bar-item" style="color: #6EE7B7; font-weight: 700;">
+                <span class="top-bar-divider" id="sellerDivider">|</span>
+                <a href="../Seller/index.html" class="top-bar-item" id="sellerLink" style="color: #6EE7B7; font-weight: 700;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
                     </svg>
                     <span>Kênh Người Bán</span>
                 </a>
-                <span class="top-bar-divider">|</span>
-                <a href="../Admin/index.html" class="top-bar-item" style="color: #FDBA74; font-weight: 700;">
+                <span class="top-bar-divider" id="adminDivider">|</span>
+                <a href="../Admin/index.html" class="top-bar-item" id="adminLink" style="color: #FDBA74; font-weight: 700;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7"></rect>
                         <rect x="14" y="3" width="7" height="7"></rect>
@@ -125,18 +125,45 @@
                 </a>
 
                 <!-- User Profile / Auth Links -->
-                <a href="../DangNhap/index.html" class="user-profile" style="text-decoration: none;" title="Chuyển đến trang Đăng nhập / Đăng ký">
-                    <div class="avatar-circle">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
+                <div class="user-profile-container" style="position: relative;">
+                    <a href="../DangNhap/index.html" class="user-profile" id="userProfileBtn" style="text-decoration: none;" title="Đăng nhập / Tài khoản">
+                        <div class="avatar-circle">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name" id="headerUserName">Đăng Nhập</span>
+                            <span class="user-status" id="headerUserStatus"></span>
+                        </div>
+                    </a>
+
+                    <!-- User Dropdown Menu (Hiển thị khi người dùng đã đăng nhập) -->
+                    <div class="user-dropdown-menu" id="userDropdownMenu" style="display: none;">
+                        <div class="user-dropdown-header">
+                            <div class="dropdown-avatar">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </div>
+                            <div class="dropdown-info">
+                                <span class="dropdown-name" id="dropdownUserName">Tên Người Dùng</span>
+                                <span class="dropdown-role" id="dropdownUserRole">Khách hàng</span>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <button type="button" class="dropdown-item logout-btn" id="btnLogout">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            <span>Đăng Xuất</span>
+                        </button>
                     </div>
-                    <div class="user-info">
-                        <span class="user-name" id="headerUserName">Đăng Nhập</span>
-                        <span class="user-status" id="headerUserStatus"></span>
-                    </div>
-                </a>
+                </div>
             </div>
         </div>
     </header>
@@ -231,7 +258,7 @@
                 </div>
             </div>
 
-            <div class="nav-item">
+            <div class="nav-item" id="navLoginItem">
                 <a href="../DangNhap/index.html" class="nav-link">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
@@ -241,7 +268,7 @@
                     Đăng Nhập
                 </a>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" id="navRegisterItem">
                 <a href="../DangKy/index.html" class="nav-link">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
