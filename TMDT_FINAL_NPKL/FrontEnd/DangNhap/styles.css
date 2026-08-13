@@ -7,6 +7,12 @@
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+/* Hide native browser password reveal icon (Edge/Chrome) */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
 :root {
     --primary-navy: #0B2238;
     --primary-navy-hover: #173859;

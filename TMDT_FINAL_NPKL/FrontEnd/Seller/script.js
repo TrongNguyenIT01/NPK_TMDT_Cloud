@@ -7,6 +7,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 0.1 Dropdown Submenu Accordion Toggle
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            const parentItem = toggle.closest('.has-dropdown');
+            if (parentItem) {
+                parentItem.classList.toggle('open');
+            }
+        });
+    });
+
     // 1. Sidebar Navigation Tab Switching
     const menuLinks = document.querySelectorAll('.menu-link');
     const tabPanels = document.querySelectorAll('.tab-panel');

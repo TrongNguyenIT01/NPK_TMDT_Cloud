@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NPKL Seller - Đăng Sản Phẩm Mới</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="seller-sidebar">
+        <div class="sidebar-brand">
+            <a href="../TrangChinh/index.html" class="sidebar-logo">🏪 NPKL <span>Seller</span></a>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="menu-category">TỔNG QUAN CỬA HÀNG</li>
+            <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                    <span>🎯</span>
+                    <span>Tổng Quan Kênh</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="thong-tin-cua-hang.html" class="menu-link">
+                    <span>🏪</span>
+                    <span>Thông Tin Cửa Hàng</span>
+                </a>
+            </li>
+
+            <li class="menu-category">QUẢN LÝ HÀNG HÓA</li>
+            <li class="menu-item has-dropdown open">
+                <a href="#" class="menu-link dropdown-toggle active">
+                    <span>📦</span>
+                    <span>Quản Lý Sản Phẩm</span>
+                    <span class="dropdown-arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="dang-san-pham.html" class="submenu-link active">
+                            <span>➕</span>
+                            <span>Đăng sản phẩm mới</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="danh-sach-san-pham.html" class="submenu-link">
+                            <span>📋</span>
+                            <span>Danh sách sản phẩm</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="cap-nhat-gia-kho.html" class="submenu-link">
+                            <span>🏭</span>
+                            <span>Cập nhật giá & tồn kho</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-category">ĐƠN HÀNG & DOANH THU</li>
+            <li class="menu-item has-dropdown">
+                <a href="#" class="menu-link dropdown-toggle">
+                    <span>🚚</span>
+                    <span>Quản Lý Đơn Hàng</span>
+                    <span class="dropdown-arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="xu-ly-don-hang.html" class="submenu-link">
+                            <span>🧾</span>
+                            <span>Xử lý đơn hàng</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="theo-doi-doanh-thu.html" class="submenu-link">
+                            <span>📊</span>
+                            <span>Theo dõi doanh thu</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-category">TÀI KHOẢN</li>
+            <li class="menu-item">
+                <a href="../DangNhap/index.html" class="menu-link">
+                    <span>↪️</span>
+                    <span>Đăng Xuất</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="seller-avatar">NB</div>
+            <div class="seller-info">
+                <span class="seller-name">NPKL Official Bookshop</span>
+                <span class="seller-role">Mã Shop: SH0001</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="seller-main">
+        <!-- Header Top Bar -->
+        <header class="seller-header">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <button class="btn-toggle-sidebar" id="toggleSidebar" title="Thu gọn / Mở rộng Menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="header-title-box">
+                    <h1>➕ Đăng Sản Phẩm Mới Cho Cửa Hàng</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="danh-sach-san-pham.html" class="btn-header-action">
+                    <span>📋</span>
+                    <span>Xem Danh Sách Sản Phẩm</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="seller-content">
+            <form id="newProductForm">
+                <!-- Section 1: Thông Tin Cơ Bản -->
+                <div class="profile-card" style="margin-bottom: 24px;">
+                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">1. Thông Tin Cơ Bản Sản Phẩm</h3>
+                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Tên sản phẩm, danh mục và mã phân loại sản phẩm</p>
+
+                    <div class="form-grid-seller">
+                        <div class="form-group-full">
+                            <label class="form-label-seller">Tên Sản Phẩm <span style="color:#DC2626;">*</span></label>
+                            <input type="text" id="prodName" class="form-input-seller" placeholder="Ví dụ: Sách Nghệ Thuật Ứng Xử Đắc Nhân Tâm (Khổ Lớn)" required />
+                        </div>
+
+                        <div>
+                            <label class="form-label-seller">Danh Mục Sản Phẩm <span style="color:#DC2626;">*</span></label>
+                            <select id="prodCategory" class="form-input-seller" style="font-weight:600;" required>
+                                <option value="Sách & Tri Thức">Sách & Tri Thức (Sách văn học, kỹ năng...)</option>
+                                <option value="Văn Phòng Phẩm">Văn Phòng Phẩm (Sổ tay, bút ký...)</option>
+                                <option value="Combo Tiết Kiệm">Combo Tiết Kiệm (Bộ quà tặng...)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="form-label-seller">Mã SKU Sản Phẩm (Tùy chọn)</label>
+                            <input type="text" id="prodSKU" class="form-input-seller" placeholder="VD: SKU-SACH-001" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Giá Bán & Tồn Kho -->
+                <div class="profile-card" style="margin-bottom: 24px;">
+                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">2. Giá Bán & Quản Lý Tồn Kho</h3>
+                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Thiết lập giá bán niêm yết và số lượng tồn kho sản phẩm</p>
+
+                    <div class="form-grid-seller">
+                        <div>
+                            <label class="form-label-seller">Giá Bán Niêm Yết (VNĐ) <span style="color:#DC2626;">*</span></label>
+                            <input type="number" id="prodPrice" class="form-input-seller" placeholder="VD: 150000" required />
+                        </div>
+
+                        <div>
+                            <label class="form-label-seller">Số Lượng Tồn Kho Ban Đầu (stock_quantity) <span style="color:#DC2626;">*</span></label>
+                            <input type="number" id="prodStock" class="form-input-seller" placeholder="100" value="100" required />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Hình Ảnh Sản Phẩm -->
+                <div class="profile-card" style="margin-bottom: 24px;">
+                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">3. Hình Ảnh Sản Phẩm</h3>
+                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Tải lên ảnh đại diện sản phẩm rõ nét (Định dạng JPG, PNG)</p>
+
+                    <div class="form-grid-seller">
+                        <div class="form-group-full">
+                            <label class="form-label-seller">Đường Dẫn / Chọn Ảnh Đại Diện Sản Phẩm <span style="color:#DC2626;">*</span></label>
+                            <input type="text" id="prodImgUrl" class="form-input-seller" placeholder="VD: ../TrangChinh/images/dac_nhan_tam.jpg" value="../TrangChinh/images/dac_nhan_tam.jpg" required />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Mô Tả Chi Tiết -->
+                <div class="profile-card" style="margin-bottom: 24px;">
+                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">4. Mô Tả Chi Tiết Sản Phẩm</h3>
+                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Giới thiệu nội dung, thông số và ưu điểm của sản phẩm</p>
+
+                    <div class="form-group-full">
+                        <textarea id="prodDescription" class="form-input-seller" style="height:120px;" placeholder="Nhập mô tả chi tiết sản phẩm..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="text-align: right; margin-bottom: 40px;">
+                    <a href="danh-sach-san-pham.html" class="btn-tb reject" style="padding:12px 24px; font-size:0.95rem; text-decoration:none; margin-right:12px;">Hủy Bỏ</a>
+                    <button type="submit" class="btn-tb primary" style="padding:12px 32px; font-size:0.95rem;">
+                        <span>🚀 Đăng Sản Phẩm (Gửi Admin Duyệt)</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

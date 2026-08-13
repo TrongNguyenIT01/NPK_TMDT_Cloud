@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NPKL Seller - Danh Sách Sản Phẩm</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="seller-sidebar">
+        <div class="sidebar-brand">
+            <a href="../TrangChinh/index.html" class="sidebar-logo">🏪 NPKL <span>Seller</span></a>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="menu-category">TỔNG QUAN CỬA HÀNG</li>
+            <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                    <span>🎯</span>
+                    <span>Tổng Quan Kênh</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="thong-tin-cua-hang.html" class="menu-link">
+                    <span>🏪</span>
+                    <span>Thông Tin Cửa Hàng</span>
+                </a>
+            </li>
+
+            <li class="menu-category">QUẢN LÝ HÀNG HÓA</li>
+            <li class="menu-item has-dropdown open">
+                <a href="#" class="menu-link dropdown-toggle active">
+                    <span>📦</span>
+                    <span>Quản Lý Sản Phẩm</span>
+                    <span class="dropdown-arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="dang-san-pham.html" class="submenu-link">
+                            <span>➕</span>
+                            <span>Đăng sản phẩm mới</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="danh-sach-san-pham.html" class="submenu-link active">
+                            <span>📋</span>
+                            <span>Danh sách sản phẩm</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="cap-nhat-gia-kho.html" class="submenu-link">
+                            <span>🏭</span>
+                            <span>Cập nhật giá & tồn kho</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-category">ĐƠN HÀNG & DOANH THU</li>
+            <li class="menu-item has-dropdown">
+                <a href="#" class="menu-link dropdown-toggle">
+                    <span>🚚</span>
+                    <span>Quản Lý Đơn Hàng</span>
+                    <span class="dropdown-arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="xu-ly-don-hang.html" class="submenu-link">
+                            <span>🧾</span>
+                            <span>Xử lý đơn hàng</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="theo-doi-doanh-thu.html" class="submenu-link">
+                            <span>📊</span>
+                            <span>Theo dõi doanh thu</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-category">TÀI KHOẢN</li>
+            <li class="menu-item">
+                <a href="../DangNhap/index.html" class="menu-link">
+                    <span>↪️</span>
+                    <span>Đăng Xuất</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="seller-avatar">NB</div>
+            <div class="seller-info">
+                <span class="seller-name">NPKL Official Bookshop</span>
+                <span class="seller-role">Mã Shop: SH0001</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="seller-main">
+        <!-- Header Top Bar -->
+        <header class="seller-header">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <button class="btn-toggle-sidebar" id="toggleSidebar" title="Thu gọn / Mở rộng Menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="header-title-box">
+                    <h1>📋 Danh Sách Sản Phẩm Cửa Hàng</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="dang-san-pham.html" class="btn-tb primary" style="text-decoration:none; padding:10px 18px;">
+                    <span>➕ Đăng Sản Phẩm Mới</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="seller-content">
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-title-box">
+                        <h3>Tất Cả Sản Phẩm Trong Gian Hàng</h3>
+                        <p>Theo dõi trạng thái kiểm duyệt của Admin, quản lý tồn kho và cài đặt ẩn/hiện sản phẩm</p>
+                    </div>
+                    <div class="table-filters">
+                        <input type="text" id="prodSearchInput" class="search-input-seller" placeholder="Tìm tên sản phẩm..." />
+                        <select id="prodCatFilter" class="filter-select">
+                            <option value="ALL">Tất cả danh mục</option>
+                            <option value="Sách & Tri Thức">Sách & Tri Thức</option>
+                            <option value="Văn Phòng Phẩm">Văn Phòng Phẩm</option>
+                            <option value="Combo Tiết Kiệm">Combo Tiết Kiệm</option>
+                        </select>
+                    </div>
+                </div>
+                <table class="seller-table">
+                    <thead>
+                        <tr>
+                            <th>Mã SP</th>
+                            <th>Sản Phẩm</th>
+                            <th>Danh Mục</th>
+                            <th>Giá Bán</th>
+                            <th>Tồn Kho</th>
+                            <th>Duyệt Admin</th>
+                            <th>Hiển Thị</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                        <tr>
+                            <td><strong>SP0001</strong></td>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <img src="../TrangChinh/images/dac_nhan_tam.jpg" class="product-img-thumb" alt="Đắc Nhân Tâm">
+                                    <div>
+                                        <strong>Đắc Nhân Tâm (Khổ Lớn)</strong>
+                                        <p style="font-size:0.78rem; color:#64748B;">Sách nghệ thuật ứng xử nổi tiếng</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Sách & Tri Thức</td>
+                            <td><strong>110.000đ</strong></td>
+                            <td>120 SP</td>
+                            <td><span class="badge-status active">Đã Duyệt</span></td>
+                            <td class="display-status-cell"><span class="badge-status active">Đang Bán</span></td>
+                            <td>
+                                <div class="btn-action-group">
+                                    <button class="btn-tb block btn-toggle-vis">Ẩn SP</button>
+                                    <button class="btn-tb reject" onclick="if(confirm('Xóa sản phẩm này?')) this.closest('tr').remove();">Xóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>SP0002</strong></td>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <img src="../TrangChinh/images/so_tay_moleskine.jpg" class="product-img-thumb" alt="Sổ Tay Moleskine">
+                                    <div>
+                                        <strong>Sổ Tay Moleskine Classic Notebook</strong>
+                                        <p style="font-size:0.78rem; color:#64748B;">Sổ tay bìa cứng cao cấp</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Văn Phòng Phẩm</td>
+                            <td><strong>290.000đ</strong></td>
+                            <td>45 SP</td>
+                            <td><span class="badge-status active">Đã Duyệt</span></td>
+                            <td class="display-status-cell"><span class="badge-status active">Đang Bán</span></td>
+                            <td>
+                                <div class="btn-action-group">
+                                    <button class="btn-tb block btn-toggle-vis">Ẩn SP</button>
+                                    <button class="btn-tb reject" onclick="if(confirm('Xóa sản phẩm này?')) this.closest('tr').remove();">Xóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>SP0014</strong></td>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <img src="../TrangChinh/images/combo_doc_sach.jpg" class="product-img-thumb" alt="Combo Đọc Sách">
+                                    <div>
+                                        <strong>Combo Sổ Tay Moleskine + Bút Ký Lamy</strong>
+                                        <p style="font-size:0.78rem; color:#64748B;">Bộ quà tặng cao cấp</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Combo Tiết Kiệm</td>
+                            <td><strong>890.000đ</strong></td>
+                            <td>50 SP</td>
+                            <td><span class="badge-status pending">Chờ Duyệt (PENDING)</span></td>
+                            <td class="display-status-cell"><span class="badge-status active">Đang Bán</span></td>
+                            <td>
+                                <div class="btn-action-group">
+                                    <button class="btn-tb block btn-toggle-vis">Ẩn SP</button>
+                                    <button class="btn-tb reject" onclick="if(confirm('Xóa sản phẩm này?')) this.closest('tr').remove();">Xóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,6 +1,16 @@
 // Đợi cho HTML load xong toàn bộ rồi mới gán sự kiện
 document.addEventListener("DOMContentLoaded", function () {
     const grantAccountForm = document.getElementById("grantAccountForm");
+    const toggleGrantPasswordBtn = document.getElementById("toggleGrantPassword");
+    const grantPasswordInput = document.getElementById("grantPassword");
+
+    // Xử lý ẩn/hiện mật khẩu
+    if (toggleGrantPasswordBtn && grantPasswordInput) {
+        toggleGrantPasswordBtn.addEventListener("click", function () {
+            const type = grantPasswordInput.getAttribute("type") === "password" ? "text" : "password";
+            grantPasswordInput.setAttribute("type", type);
+        });
+    }
 
     // Kiểm tra xem form có tồn tại trên trang không
     if (grantAccountForm) {
@@ -14,9 +24,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 username: document.getElementById("grantUsername").value.trim(),
                 email: document.getElementById("grantEmail").value.trim(),
                 phone: document.getElementById("grantPhone").value.trim(),
+                address: document.getElementById("grantAddress") ? document.getElementById("grantAddress").value.trim() : "",
                 role: document.getElementById("grantRole").value,
                 status: document.getElementById("grantStatus").value,
-                password: document.getElementById("grantPassword").value
+                password: grantPasswordInput.value
             };
 
             // 3. Lấy Token đã lưu trong bộ nhớ (Nhớ dùng đúng tên key của anh nhé)

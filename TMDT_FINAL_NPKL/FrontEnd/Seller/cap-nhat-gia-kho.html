@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NPKL Seller - Cập Nhật Giá & Tồn Kho</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="seller-sidebar">
+        <div class="sidebar-brand">
+            <a href="../TrangChinh/index.html" class="sidebar-logo">🏪 NPKL <span>Seller</span></a>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="menu-category">TỔNG QUAN CỬA HÀNG</li>
+            <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                    <span>🎯</span>
+                    <span>Tổng Quan Kênh</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="thong-tin-cua-hang.html" class="menu-link">
+                    <span>🏪</span>
+                    <span>Thông Tin Cửa Hàng</span>
+                </a>
+            </li>
+
+            <li class="menu-category">QUẢN LÝ HÀNG HÓA</li>
+            <li class="menu-item has-dropdown open">
+                <a href="#" class="menu-link dropdown-toggle active">
+                    <span>📦</span>
+                    <span>Quản Lý Sản Phẩm</span>
+                    <span class="dropdown-arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="dang-san-pham.html" class="submenu-link">
+                            <span>➕</span>
+                            <span>Đăng sản phẩm mới</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="danh-sach-san-pham.html" class="submenu-link">
+                            <span>📋</span>
+                            <span>Danh sách sản phẩm</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="cap-nhat-gia-kho.html" class="submenu-link active">
+                            <span>🏭</span>
+                            <span>Cập nhật giá & tồn kho</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-category">ĐƠN HÀNG & DOANH THU</li>
+            <li class="menu-item has-dropdown">
+                <a href="#" class="menu-link dropdown-toggle">
+                    <span>🚚</span>
+                    <span>Quản Lý Đơn Hàng</span>
+                    <span class="dropdown-arrow">▼</span>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="xu-ly-don-hang.html" class="submenu-link">
+                            <span>🧾</span>
+                            <span>Xử lý đơn hàng</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="theo-doi-doanh-thu.html" class="submenu-link">
+                            <span>📊</span>
+                            <span>Theo dõi doanh thu</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-category">TÀI KHOẢN</li>
+            <li class="menu-item">
+                <a href="../DangNhap/index.html" class="menu-link">
+                    <span>↪️</span>
+                    <span>Đăng Xuất</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="seller-avatar">NB</div>
+            <div class="seller-info">
+                <span class="seller-name">NPKL Official Bookshop</span>
+                <span class="seller-role">Mã Shop: SH0001</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="seller-main">
+        <!-- Header Top Bar -->
+        <header class="seller-header">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <button class="btn-toggle-sidebar" id="toggleSidebar" title="Thu gọn / Mở rộng Menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="header-title-box">
+                    <h1>🏭 Cập Nhật Nhanh Giá Bán & Tồn Kho</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="../TrangChinh/index.html" class="btn-header-action">
+                    <span>🌐</span>
+                    <span>Xem Trang Sàn TMĐT</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="seller-content">
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-title-box">
+                        <h3>Cập Nhật Trực Tiếp Giá Bán & Số Lượng Tồn Kho (stock_quantity)</h3>
+                        <p>Thay đổi giá niêm yết, giá khuyến mãi và số lượng tồn kho tức thì không cần vào chi tiết sản phẩm</p>
+                    </div>
+                </div>
+                <table class="seller-table">
+                    <thead>
+                        <tr>
+                            <th>Mã SP</th>
+                            <th>Sản Phẩm</th>
+                            <th>Giá Bán Niêm Yết (VNĐ)</th>
+                            <th>Tồn Kho (stock_quantity)</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>SP0001</strong></td>
+                            <td><strong>Đắc Nhân Tâm (Khổ Lớn)</strong></td>
+                            <td><input type="number" class="form-input-seller" value="110000" style="width:160px;" /></td>
+                            <td><input type="number" class="form-input-seller" value="120" style="width:130px;" /></td>
+                            <td>
+                                <button class="btn-tb approve" onclick="alert('Đã cập nhật giá & tồn kho cho SP0001 thành công!')">💾 Lưu Giá & Kho</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>SP0002</strong></td>
+                            <td><strong>Sổ Tay Moleskine Classic Notebook</strong></td>
+                            <td><input type="number" class="form-input-seller" value="290000" style="width:160px;" /></td>
+                            <td><input type="number" class="form-input-seller" value="45" style="width:130px;" /></td>
+                            <td>
+                                <button class="btn-tb approve" onclick="alert('Đã cập nhật giá & tồn kho cho SP0002 thành công!')">💾 Lưu Giá & Kho</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
