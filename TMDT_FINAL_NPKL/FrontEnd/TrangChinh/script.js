@@ -614,19 +614,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Tên hiển thị người dùng
             const displayName = fullName || userName || 'Khách Hàng';
 
-            // Phân quyền hiển thị Top Bar theo vai trò người dùng
-            if (role === 'SELLER') {
-                if (sellerLink) sellerLink.style.display = '';
-                if (sellerDivider) sellerDivider.style.display = '';
-                if (adminLink) adminLink.style.display = 'none';
-                if (adminDivider) adminDivider.style.display = 'none';
-            } else if (role === 'ADMIN') {
-                if (adminLink) adminLink.style.display = '';
-                if (adminDivider) adminDivider.style.display = '';
-                if (sellerLink) sellerLink.style.display = 'none';
-                if (sellerDivider) sellerDivider.style.display = 'none';
-            } else {
-                // Khách hàng (CUSTOMER) hoặc chưa đăng nhập -> Ẩn cả 2 trang quản trị
+            // Ẩn Kênh Người Bán & Quản trị Admin khi khách hàng đăng nhập
+            if (role === 'CUSTOMER' || !role) {
                 if (sellerLink) sellerLink.style.display = 'none';
                 if (sellerDivider) sellerDivider.style.display = 'none';
                 if (adminLink) adminLink.style.display = 'none';
