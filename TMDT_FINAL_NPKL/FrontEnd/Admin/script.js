@@ -14,7 +14,15 @@ window.handleLogout = function handleLogout() {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 0. Toggle Sidebar Collapse/Expand
+    // 0. Phân quyền truy cập trang Admin (Page Guard)
+    const userRole = sessionStorage.getItem('userRole') || localStorage.getItem('userRole');
+    if (userRole === 'SELLER') {
+        alert('Tài khoản của bạn là Người Bán (SELLER), không có quyền truy cập trang Quản Trị Admin!');
+        window.location.href = '../Seller/index.html';
+        return;
+    }
+
+    // 0.1 Toggle Sidebar Collapse/Expand
     const toggleSidebarBtn = document.querySelector('#toggleSidebar');
     if (toggleSidebarBtn) {
         toggleSidebarBtn.addEventListener('click', () => {

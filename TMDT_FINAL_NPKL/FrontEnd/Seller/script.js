@@ -1,5 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 0. Toggle Sidebar Collapse/Expand
+    // 0. Phân quyền bảo vệ Kênh Người Bán (Page Guard)
+    const userRole = sessionStorage.getItem('userRole') || localStorage.getItem('userRole');
+    if (userRole === 'CUSTOMER') {
+        alert('Tài khoản của bạn là Khách Hàng (CUSTOMER), không thể truy cập Kênh Người Bán!');
+        window.location.href = '../TrangChinh/index.html';
+        return;
+    }
+
+    // 0.1 Toggle Sidebar Collapse/Expand
     const toggleSidebarBtn = document.querySelector('#toggleSidebar');
     if (toggleSidebarBtn) {
         toggleSidebarBtn.addEventListener('click', () => {
