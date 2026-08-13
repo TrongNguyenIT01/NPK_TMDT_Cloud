@@ -82,8 +82,6 @@
                 <select class="category-select" id="globalCategorySelect">
                     <option value="all">Tất cả danh mục</option>
                     <option value="sach">Sách & Tri thức</option>
-                    <option value="vpp">Văn phòng phẩm</option>
-                    <option value="combo">Combo sản phẩm</option>
                 </select>
                 <button class="search-btn" id="btnExecuteSearch" title="Tìm kiếm & Cuộn tới mua hàng">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -207,57 +205,6 @@
                 </div>
             </div>
 
-            <!-- VĂN PHÒNG PHẨM -->
-            <div class="nav-item">
-                <a href="#bestsellers" class="nav-link nav-category-trigger" data-category="VPP" data-name="VĂN PHÒNG PHẨM">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 20h9"></path>
-                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                    </svg>
-                    Văn Phòng Phẩm ▾
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" data-category="VPP" data-name="TẤT CẢ VĂN PHÒNG PHẨM">
-                        <span>✏️ Tất Cả Văn Phòng Phẩm</span>
-                    </a>
-                    <a class="dropdown-item" data-category="VPP" data-name="SỔ TAY & VỞ">
-                        <span>📓 Sổ Tay & Vở Viết</span>
-                        <span class="item-badge">Bán chạy</span>
-                    </a>
-                    <a class="dropdown-item" data-category="VPP" data-name="BÚT & DỤNG CỤ VẼ">
-                        <span>🖊️ Bút & Dụng Cụ Vẽ</span>
-                    </a>
-                    <a class="dropdown-item" data-category="VPP" data-name="BÌA HỒ SƠ & FILE">
-                        <span>📁 Bìa Hồ Sơ & File</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- COMBO -->
-            <div class="nav-item">
-                <a href="#bestsellers" class="nav-link nav-category-trigger" data-category="COMBO" data-name="COMBO">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                    </svg>
-                    Combo ▾
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" data-category="COMBO" data-name="TẤT CẢ COMBO">
-                        <span>🎁 Tất Cả Combo</span>
-                        <span class="item-badge">-20%</span>
-                    </a>
-                    <a class="dropdown-item" data-category="COMBO" data-name="COMBO HỌC TẬP">
-                        <span>🎒 Combo Học Tập</span>
-                    </a>
-                    <a class="dropdown-item" data-category="COMBO" data-name="COMBO ĐỌC SÁCH THƯ GIÃN">
-                        <span>☕ Combo Đọc Sách Thư Giãn</span>
-                    </a>
-                    <a class="dropdown-item" data-category="COMBO" data-name="COMBO VĂN PHÒNG">
-                        <span>💼 Combo Văn Phòng</span>
-                    </a>
-                </div>
-            </div>
-
             <div class="nav-item" id="navLoginItem">
                 <a href="../DangNhap/index.html" class="nav-link">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -302,7 +249,7 @@
     <!-- 5. CATEGORY HIGHLIGHT CARDS -->
     <section class="category-section">
         <div class="category-grid">
-            <!-- Card 1: Sách -->
+            <!-- Card 1: Sách (Làm mẫu) -->
             <div class="cat-card" data-category="SACH">
                 <div class="cat-icon-box green">
                     📗
@@ -310,30 +257,6 @@
                 <div class="cat-info">
                     <h3 class="cat-title">SÁCH</h3>
                     <p class="cat-desc">Khám phá câu chuyện và kiến thức.</p>
-                    <span class="cat-link">MUA NGAY →</span>
-                </div>
-            </div>
-
-            <!-- Card 2: Văn Phòng Phẩm -->
-            <div class="cat-card" data-category="VPP">
-                <div class="cat-icon-box orange">
-                    ✏️
-                </div>
-                <div class="cat-info">
-                    <h3 class="cat-title">VĂN PHÒNG PHẨM</h3>
-                    <p class="cat-desc">Giúp thời gian học tập có tổ chức hơn.</p>
-                    <span class="cat-link">MUA NGAY →</span>
-                </div>
-            </div>
-
-            <!-- Card 3: Combo -->
-            <div class="cat-card" data-category="COMBO">
-                <div class="cat-icon-box purple">
-                    🎁
-                </div>
-                <div class="cat-info">
-                    <h3 class="cat-title">COMBO</h3>
-                    <p class="cat-desc">Mọi thứ bạn cần, được đóng gói cùng nhau.</p>
                     <span class="cat-link">MUA NGAY →</span>
                 </div>
             </div>
@@ -352,12 +275,6 @@
                 </button>
                 <button class="filter-btn" data-filter="SACH" data-name="SÁCH & TRI THỨC">
                     📗 Sách & Tri Thức
-                </button>
-                <button class="filter-btn" data-filter="VPP" data-name="VĂN PHÒNG PHẨM">
-                    ✏️ Văn Phòng Phẩm
-                </button>
-                <button class="filter-btn" data-filter="COMBO" data-name="COMBO TIẾT KIỆM">
-                    🎁 Combo Tiết Kiệm
                 </button>
             </div>
         </div>
@@ -378,7 +295,7 @@
             </div>
 
             <div class="products-grid">
-                <!-- Product 1: Sách -->
+                <!-- Product 1: Sách (Làm mẫu) -->
                 <div class="product-card" data-category="SACH">
                     <div class="product-image-box">
                         <span class="category-tag green-tag">Sách</span>
@@ -396,295 +313,6 @@
                         <span class="reviews-count">(890)</span>
                     </div>
                     <div class="product-price">75.000đ</div>
-                    <button class="btn-add-cart">
-                        🛒 THÊM VÀO GIỎ
-                    </button>
-                </div>
-
-                <!-- Product 2: Sách -->
-                <div class="product-card" data-category="SACH">
-                    <div class="product-image-box">
-                        <span class="category-tag green-tag">Sách</span>
-                        <img src="images/nha_gia_kim.jpg" alt="Nhà Giả Kim" />
-                        <button class="wishlist-btn" title="Yêu thích">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <h3 class="product-title">Nhà Giả Kim</h3>
-                    <p class="product-author">Paulo Coelho</p>
-                    <div class="rating-box">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews-count">(1200)</span>
-                    </div>
-                    <div class="product-price">65.000đ</div>
-                    <button class="btn-add-cart">
-                        🛒 THÊM VÀO GIỎ
-                    </button>
-                </div>
-
-                <!-- Product 3: Sách -->
-                <div class="product-card" data-category="SACH">
-                    <div class="product-image-box">
-                        <span class="category-tag green-tag">Sách</span>
-                        <img src="images/tuoi_tre_dang_gia_bao_nhieu.jpg" alt="Tuổi Trẻ Đáng Giá Bao Nhiêu" />
-                        <button class="wishlist-btn" title="Yêu thích">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <h3 class="product-title">Tuổi Trẻ Đáng Giá Bao Nhiêu</h3>
-                    <p class="product-author">Rosie Nguyễn</p>
-                    <div class="rating-box">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews-count">(950)</span>
-                    </div>
-                    <div class="product-price">80.000đ</div>
-                    <button class="btn-add-cart">
-                        🛒 THÊM VÀO GIỎ
-                    </button>
-                </div>
-
-                <!-- Product 4: Sách -->
-                <div class="product-card" data-category="SACH">
-                    <div class="product-image-box">
-                        <span class="category-tag green-tag">Sách</span>
-                        <img src="images/dac_nhan_tam.jpg" alt="Cây Cam Ngọt Của Tôi" />
-                        <button class="wishlist-btn" title="Yêu thích">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <h3 class="product-title">Cây Cam Ngọt Của Tôi</h3>
-                    <p class="product-author">José Mauro de Vasconcelos</p>
-                    <div class="rating-box">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews-count">(740)</span>
-                    </div>
-                    <div class="product-price">92.000đ</div>
-                    <button class="btn-add-cart">
-                        🛒 THÊM VÀO GIỎ
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ✏️ KHU VỰC 2: VĂN PHÒNG PHẨM -->
-        <div class="category-block-section" id="section-vpp" data-category-block="VPP">
-            <div class="category-banner-header orange-banner">
-                <div class="banner-title-group">
-                    <span class="category-emoji">✏️</span>
-                    <div>
-                        <h3 class="category-block-title">VĂN PHÒNG PHẨM & DỤNG CỤ</h3>
-                        <p class="category-block-desc">Dụng cụ học tập & sổ tay chất lượng cao giúp tăng cảm hứng công việc</p>
-                    </div>
-                </div>
-                <button class="btn-view-more" data-category="VPP" data-name="VĂN PHÒNG PHẨM">
-                    Xem tất cả Văn Phòng Phẩm →
-                </button>
-            </div>
-
-            <div class="products-grid">
-                <!-- Product 1: VPP -->
-                <div class="product-card" data-category="VPP">
-                    <div class="product-image-box">
-                        <span class="category-tag orange-tag">Văn Phòng Phẩm</span>
-                        <img src="images/so_tay_moleskine.jpg" alt="Sổ Tay Moleskine Classic" />
-                        <button class="wishlist-btn" title="Yêu thích">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <h3 class="product-title">Sổ Tay Moleskine Classic</h3>
-                    <p class="product-author">Moleskine</p>
-                    <div class="rating-box">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews-count">(120)</span>
-                    </div>
-                    <div class="product-price">450.000đ</div>
-                    <button class="btn-add-cart">
-                        🛒 THÊM VÀO GIỎ
-                    </button>
-                </div>
-
-                <!-- Product 2: VPP -->
-                <div class="product-card" data-category="VPP">
-                    <div class="product-image-box">
-                        <span class="category-tag orange-tag">Văn Phòng Phẩm</span>
-                        <img src="images/but_gel_mg.jpg" alt="Bộ Bút Gel M&G 12 Màu" />
-                        <button class="wishlist-btn" title="Yêu thích">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <h3 class="product-title">Bộ Bút Gel M&G 12 Màu</h3>
-                    <p class="product-author">M&G Stationary</p>
-                    <div class="rating-box">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews-count">(430)</span>
-                    </div>
-                    <div class="product-price">120.000đ</div>
-                    <button class="btn-add-cart">
-                        🛒 THÊM VÀO GIỎ
-                    </button>
-                </div>
-
-                <!-- Product 3: VPP -->
-                <div class="product-card" data-category="VPP">
-                    <div class="product-image-box">
-                        <span class="category-tag orange-tag">Văn Phòng Phẩm</span>
-                        <img src="images/but_may_lamy.jpg" alt="Bút Máy Lamy Safari" />
-                        <button class="wishlist-btn" title="Yêu thích">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <h3 class="product-title">Bút Máy Lamy Safari</h3>
-                    <p class="product-author">Lamy Germany</p>
-                    <div class="rating-box">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews-count">(210)</span>
-                    </div>
-                    <div class="product-price">680.000đ</div>
-                    <button class="btn-add-cart">
-                        🛒 THÊM VÀO GIỎ
-                    </button>
-                </div>
-
-                <!-- Product 4: VPP -->
-                <div class="product-card" data-category="VPP">
-                    <div class="product-image-box">
-                        <span class="category-tag orange-tag">Văn Phòng Phẩm</span>
-                        <img src="images/so_tay_moleskine.jpg" alt="Bìa Còng File Hồ Sơ A4 Premium" />
-                        <button class="wishlist-btn" title="Yêu thích">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <h3 class="product-title">Bìa Còng File Hồ Sơ A4 Premium</h3>
-                    <p class="product-author">Deli Office</p>
-                    <div class="rating-box">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews-count">(180)</span>
-                    </div>
-                    <div class="product-price">85.000đ</div>
-                    <button class="btn-add-cart">
-                        🛒 THÊM VÀO GIỎ
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 🎁 KHU VỰC 3: COMBO TIẾT KIỆM -->
-        <div class="category-block-section" id="section-combo" data-category-block="COMBO">
-            <div class="category-banner-header purple-banner">
-                <div class="banner-title-group">
-                    <span class="category-emoji">🎁</span>
-                    <div>
-                        <h3 class="category-block-title">COMBO TIẾT KIỆM & QUÀ TẶNG</h3>
-                        <p class="category-block-desc">Đóng gói trọn gói thông minh - Tiết kiệm đến 30% ngân sách</p>
-                    </div>
-                </div>
-                <button class="btn-view-more" data-category="COMBO" data-name="COMBO TIẾT KIỆM">
-                    Xem tất cả Combo →
-                </button>
-            </div>
-
-            <div class="products-grid">
-                <!-- Product 1: Combo -->
-                <div class="product-card" data-category="COMBO">
-                    <div class="product-image-box">
-                        <span class="category-tag purple-tag">Combo</span>
-                        <img src="images/combo_tuu_truong.jpg" alt="Combo Tựu Trường (Balo+Vở)" />
-                        <button class="wishlist-btn" title="Yêu thích">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <h3 class="product-title">Combo Tựu Trường (Balo+Vở)</h3>
-                    <p class="product-author">NPKL Special Set</p>
-                    <div class="rating-box">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews-count">(150)</span>
-                    </div>
-                    <div class="product-price">499.000đ</div>
-                    <button class="btn-add-cart">
-                        🛒 THÊM VÀO GIỎ
-                    </button>
-                </div>
-
-                <!-- Product 2: Combo -->
-                <div class="product-card" data-category="COMBO">
-                    <div class="product-image-box">
-                        <span class="category-tag purple-tag">Combo</span>
-                        <img src="images/combo_doc_sach.jpg" alt="Combo Đọc Sách Thư Giãn (Sách+Trà)" />
-                        <button class="wishlist-btn" title="Yêu thích">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <h3 class="product-title">Combo Đọc Sách Thư Giãn (Sách+Trà)</h3>
-                    <p class="product-author">NPKL Premium Gift</p>
-                    <div class="rating-box">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews-count">(310)</span>
-                    </div>
-                    <div class="product-price">250.000đ</div>
-                    <button class="btn-add-cart">
-                        🛒 THÊM VÀO GIỎ
-                    </button>
-                </div>
-
-                <!-- Product 3: Combo -->
-                <div class="product-card" data-category="COMBO">
-                    <div class="product-image-box">
-                        <span class="category-tag purple-tag">Combo</span>
-                        <img src="images/combo_tuu_truong.jpg" alt="Combo Văn Phòng Sang Trọng" />
-                        <button class="wishlist-btn" title="Yêu thích">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <h3 class="product-title">Combo Văn Phòng Sang Trọng</h3>
-                    <p class="product-author">NPKL Executive</p>
-                    <div class="rating-box">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews-count">(280)</span>
-                    </div>
-                    <div class="product-price">690.000đ</div>
-                    <button class="btn-add-cart">
-                        🛒 THÊM VÀO GIỎ
-                    </button>
-                </div>
-
-                <!-- Product 4: Combo -->
-                <div class="product-card" data-category="COMBO">
-                    <div class="product-image-box">
-                        <span class="category-tag purple-tag">Combo</span>
-                        <img src="images/combo_doc_sach.jpg" alt="Combo Quà Tặng Độc Quyền NPKL" />
-                        <button class="wishlist-btn" title="Yêu thích">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <h3 class="product-title">Combo Quà Tặng Độc Quyền NPKL</h3>
-                    <p class="product-author">NPKL Signature</p>
-                    <div class="rating-box">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews-count">(520)</span>
-                    </div>
-                    <div class="product-price">399.000đ</div>
                     <button class="btn-add-cart">
                         🛒 THÊM VÀO GIỎ
                     </button>

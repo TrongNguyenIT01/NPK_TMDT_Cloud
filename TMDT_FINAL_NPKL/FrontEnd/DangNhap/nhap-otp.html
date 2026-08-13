@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bước 2: Nhập Mã OTP - NPKL</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-card">
+        <!-- Brand Header -->
+        <div class="brand-header">
+            <a href="../TrangChinh/index.html" class="logo">
+                <span>NP</span>KL
+            </a>
+            <p class="brand-subtitle">Sàn Thương Mại Điện Tử Hàng Đầu</p>
+        </div>
+
+        <!-- Step Indicator -->
+        <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 20px;">
+            <span style="background: #E2E8F0; color: #64748B; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">1</span>
+            <span style="background: var(--brand-orange); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">2</span>
+            <span style="background: #E2E8F0; color: #64748B; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">3</span>
+        </div>
+
+        <h1 class="page-title">Nhập Mã OTP</h1>
+        <p style="font-size: 0.85rem; color: #1E40AF; background: #EFF6FF; border: 1px solid #BFDBFE; padding: 10px 14px; border-radius: 8px; text-align: center; margin-top: -10px; margin-bottom: 20px;">
+            Mã OTP đã được gửi đến email:<br><strong id="displayEmail">email@example.com</strong>
+        </p>
+
+        <!-- Form Bước 2: Nhập OTP -->
+        <form id="otpForm">
+            <div class="form-group">
+                <label for="otp" class="form-label">Mã OTP (6 chữ số) <span style="color: #DC2626;">*</span></label>
+                <div class="input-wrapper">
+                    <span class="input-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </span>
+                    <input type="text" id="otp" class="form-input" placeholder="123456" maxlength="6" minlength="6" required style="letter-spacing: 4px; font-size: 1.1rem; font-weight: 700; text-align: center;" autocomplete="off" />
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="btnVerifyOtp" class="btn-submit">
+                Xác Nhận Mã OTP ➔
+            </button>
+        </form>
+
+        <!-- Resend OTP Option -->
+        <div style="text-align: center; margin-top: 16px; font-size: 0.86rem; color: var(--text-muted);">
+            <span>Chưa nhận được mã? </span>
+            <button type="button" id="btnResend" style="background: none; border: none; color: var(--brand-orange); font-weight: 700; cursor: pointer; text-decoration: underline;" disabled>
+                Gửi lại mã OTP
+            </button>
+            <span id="countdownText" style="color: var(--text-muted); font-size: 0.82rem;">(60s)</span>
+        </div>
+
+        <!-- Card Footer -->
+        <div class="card-footer">
+            <a href="quen-mat-khau.html" class="back-home">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Quay lại đổi email khác
+            </a>
+        </div>
+    </div>
+
+    <!-- POPUP ALERT MODAL -->
+    <div id="alertPopupModal" class="alert-popup-overlay" style="display: none;">
+        <div class="alert-popup-card">
+            <div class="alert-popup-icon" id="popupIcon">🔑</div>
+            <h3 class="alert-popup-title" id="popupTitle">Thông Báo</h3>
+            <p class="alert-popup-message" id="popupMessage">Nội dung thông báo sẽ hiển thị ở đây...</p>
+            <button type="button" class="alert-popup-btn" id="btnPopupConfirm">Đồng Ý</button>
+        </div>
+    </div>
+
+    <script src="nhap-otp.js"></script>
+</body>
+</html>
