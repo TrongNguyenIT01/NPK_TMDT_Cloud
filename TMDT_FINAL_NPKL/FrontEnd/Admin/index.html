@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NPKL - Trang Quản Trị Hệ Thống TMĐT</title>
     <script src="../DangNhap/checkUser.js"></script>
+    <script src="../Admin/dashboard.js"></script>
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -101,8 +102,9 @@
         <div class="sidebar-footer">
             <div class="admin-avatar">AD</div>
             <div class="admin-info">
-                <span class="admin-name">Administrator</span>
-                <span class="admin-role">AD0001 (Super Admin)</span>
+                <span class="admin-name" id="fullname"></span>
+                <span class="admin-role" id="role"></span>
+
             </div>
         </div>
     </aside>
@@ -140,27 +142,27 @@
                     <div class="metric-card">
                         <div class="metric-top">
                             <div class="metric-icon blue">👥</div>
-                            <span class="metric-trend up">↑ +12% tuần này</span>
+                            <span class="metric-trend up" id ="pending-user">chưa duyệt :--- tài khoản</span>
                         </div>
-                        <div class="metric-value">1,248</div>
+                        <div class="metric-value" id ="total-user">----</div>
                         <div class="metric-label">Tổng người dùng hệ thống</div>
                     </div>
 
                     <div class="metric-card">
                         <div class="metric-top">
                             <div class="metric-icon orange">🏪</div>
-                            <span class="metric-trend warn">5 Chờ duyệt</span>
+                    
                         </div>
-                        <div class="metric-value">86</div>
+                        <div class="metric-value" id="total-shop">-----</div>
                         <div class="metric-label">Cửa hàng đang hoạt động</div>
                     </div>
 
                     <div class="metric-card">
                         <div class="metric-top">
                             <div class="metric-icon purple">📦</div>
-                            <span class="metric-trend warn">14 Chờ duyệt</span>
+                            <span class="metric-trend warn" id="pending-item">......Chờ duyệt</span>
                         </div>
-                        <div class="metric-value">3,420</div>
+                        <div class="metric-value" id="total-item">.......</div>
                         <div class="metric-label">Sản phẩm trên hệ thống</div>
                     </div>
 
@@ -169,7 +171,7 @@
                             <div class="metric-icon green">💰</div>
                             <span class="metric-trend up">↑ +18% tháng này</span>
                         </div>
-                        <div class="metric-value">1.45 Tỷ</div>
+                        <div class="metric-value">--</div>
                         <div class="metric-label">Tổng doanh thu giao dịch</div>
                     </div>
                 </div>
@@ -576,7 +578,7 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js"></scrip>
 
     <script>
         function handleLogout() {

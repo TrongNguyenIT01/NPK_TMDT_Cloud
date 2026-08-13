@@ -1,7 +1,15 @@
+document.addEventListener("DOMContentLoaded", function(){
+    const fullName = sessionStorage.getItem('fullName') || 'Unknown';
+    const role = sessionStorage.getItem("userRole") || localStorage.getItem("userRole"); 
+    document.getElementById('fullname').textContent = fullName;
+    document.getElementById('role').textContent = role;
+});
+
 function checkAccessRight() {
     // 1. Lấy thông tin từ sessionStorage hoặc localStorage
     const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
     const role = sessionStorage.getItem("userRole") || localStorage.getItem("userRole"); 
+
 
     // Lấy đường dẫn hiện tại của trình duyệt để biết người dùng đang ở trang nào
     const currentPath = window.location.pathname.toLowerCase();

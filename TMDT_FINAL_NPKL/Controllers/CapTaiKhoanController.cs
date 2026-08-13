@@ -63,7 +63,8 @@ namespace TMDT_FINAL_NPKL.Controllers
                     Email = request.Email,
                     Phone = request.Phone,
                     Role = roleInput,
-                    Status = statusInput // Lấy Status trực tiếp từ Admin truyền lên
+                    Status = statusInput, // Lấy Status trực tiếp từ Admin truyền lên
+                    Address = request.Address,
                 };
 
                 // 5. Lưu vào Database

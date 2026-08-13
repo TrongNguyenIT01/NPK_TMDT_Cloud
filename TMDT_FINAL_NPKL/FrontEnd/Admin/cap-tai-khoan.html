@@ -6,6 +6,7 @@
     <title>NPKL Admin - Cấp Tài Khoản Người Dùng</title>
     <script src="../Admin/captaikhoan.js"></script>
     <script src="../Admin/danhsachtk.js"></script>
+    <script src="../DangNhap/checkUser.js"></script>
 
     <link rel="stylesheet" href="styles.css" />
 </head>
@@ -103,10 +104,10 @@
         <div class="sidebar-footer">
             <div class="admin-avatar">AD</div>
             <div class="admin-info">
-                <span class="admin-name">Administrator</span>
-                <span class="admin-role">AD0001 (Super Admin)</span>
+                <span class="admin-name" id="fullname"></span>
+                <span class="admin-role" id="role"></span>
+
             </div>
-        </div>
     </aside>
 
     <!-- MAIN CONTENT AREA -->
@@ -200,96 +201,49 @@
             </div>
 
             <!-- BẢNG DANH SÁCH TÀI KHOẢN ĐÃ CẤP -->
-            <div class="table-card">
-                <div class="table-header">
-                    <div class="table-title-box">
-                        <h3>Danh Sách Tài Khoản Đã Cấp & Hoạt Động</h3>
-                        <p>Quản lý các tài khoản đã được cấp quyền truy cập trên hệ thống NPKL</p>
-                    </div>
-                    <div class="table-filters">
-                        <input type="text" id="userSearchInput" class="search-input-admin" placeholder="Tìm tên, email, tên đăng nhập..." />
-                        <select id="userRoleFilter" class="filter-select">
-                            <option value="ALL">Tất cả vai trò</option>
-                            <option value="ADMIN">Quản Trị Viên</option>
-                            <option value="SELLER">Người Bán</option>
-                            <option value="CUSTOMER">Khách Hàng</option>
-                        </select>
-                        <select id="userStatusFilter" class="filter-select">
-                            <option value="ALL">Tất cả trạng thái</option>
-                            <option value="ACTIVE">Hoạt Động</option>
-                            <option value="BLOCKED">Đã Khóa</option>
-                        </select>
-                    </div>
-                </div>
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Mã Người Dùng</th>
-                            <th>Họ Và Tên</th>
-                            <th>Tên Đăng Nhập</th>
-                            <th>Email</th>
-                            <th>Số Điện Thoại</th>
-                            <th>Vai Trò</th>
-                            <th>Trạng Thái</th>
-                            <th>Thao Tác</th>
-                        </tr>
-                    </thead>
-                    <tbody id="grantedUserTableBody">
-                        <tr data-role="ADMIN" data-status="ACTIVE">
-                            <td><strong>AD0001</strong></td>
-                            <td class="user-name-cell">Quản Trị Viên Hệ Thống</td>
-                            <td>admin_npkl</td>
-                            <td>admin@npkl.vn</td>
-                            <td>1900 636 081</td>
-                            <td><span class="badge-status banned">Quản Trị Viên</span></td>
-                            <td class="status-cell"><span class="badge-status active">Hoạt Động</span></td>
-                            <td><span style="color:#64748B; font-size:0.8rem;">Hệ thống</span></td>
-                        </tr>
-                        <tr data-role="ADMIN" data-status="ACTIVE">
-                            <td><strong>AD0002</strong></td>
-                            <td class="user-name-cell">Lê Hoàng Nam</td>
-                            <td>namlh_admin</td>
-                            <td>nam.le@npkl.vn</td>
-                            <td>0903 112 233</td>
-                            <td><span class="badge-status banned">Quản Trị Viên</span></td>
-                            <td class="status-cell"><span class="badge-status active">Hoạt Động</span></td>
-                            <td>
-                                <div class="btn-action-group">
-                                    <button class="btn-tb block btn-user-action" data-action="BLOCKED">Khóa</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-role="SELLER" data-status="ACTIVE">
-                            <td><strong>SL0001</strong></td>
-                            <td class="user-name-cell">Cửa Hàng Sách Trẻ</td>
-                            <td>sachtre_official</td>
-                            <td>sachtre@gmail.com</td>
-                            <td>0988 111 222</td>
-                            <td><span class="badge-status shipping">Người Bán</span></td>
-                            <td class="status-cell"><span class="badge-status active">Hoạt Động</span></td>
-                            <td>
-                                <div class="btn-action-group">
-                                    <button class="btn-tb block btn-user-action" data-action="BLOCKED">Khóa</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-role="CUSTOMER" data-status="ACTIVE">
-                            <td><strong>CUS0012</strong></td>
-                            <td class="user-name-cell">Phạm Minh Đức</td>
-                            <td>phamminhduc</td>
-                            <td>duc.pm@gmail.com</td>
-                            <td>0977 444 555</td>
-                            <td><span class="badge-status shipping">Khách Hàng</span></td>
-                            <td class="status-cell"><span class="badge-status active">Hoạt Động</span></td>
-                            <td>
-                                <div class="btn-action-group">
-                                    <button class="btn-tb block btn-user-action" data-action="BLOCKED">Khóa</button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+          <div class="table-card" style="overflow-x: auto;"> <!-- Thêm overflow-x: auto để tạo thanh cuộn ngang -->
+    <div class="table-header">
+        <div class="table-title-box">
+            <h3>Danh Sách Tài Khoản Đã Cấp & Hoạt Động</h3>
+            <p>Quản lý các tài khoản đã được cấp quyền truy cập trên hệ thống NPKL</p>
+        </div>
+        <div class="table-filters">
+            <input type="text" id="userSearchInput" class="search-input-admin" placeholder="Tìm tên, email, tên đăng nhập..." />
+            <select id="userRoleFilter" class="filter-select">
+                <option value="ALL">Tất cả vai trò</option>
+                <option value="ADMIN">Quản Trị Viên</option>
+                <option value="SELLER">Người Bán</option>
+                <option value="CUSTOMER">Khách Hàng</option>
+            </select>
+            <select id="userStatusFilter" class="filter-select">
+                <option value="ALL">Tất cả trạng thái</option>
+                <option value="ACTIVE">Hoạt Động</option>
+                <option value="BLOCKED">Đã Khóa</option>
+            </select>
+        </div>
+    </div>
+    
+    <!-- Nên thêm CSS min-width (VD: 800px hoặc 1000px) vào admin-table để bảng không bị ép co rúm lại -->
+    <table class="admin-table" style="min-width: 1000px; width: 100%;">
+        <thead>
+            <tr>
+                <th>Mã Người Dùng</th>
+                <th>Họ Và Tên</th>
+                <th>Tên Đăng Nhập</th>
+                <th>Email</th>
+                <th>Số Điện Thoại</th>
+                <th>Vai Trò</th>
+                <th>Trạng Thái</th>
+                <th>Thao Tác</th>
+            </tr>
+        </thead>
+        
+        <!-- Phần dữ liệu ảo đã được xóa sạch. API của bạn sẽ dùng JS đè dữ liệu vào id này -->
+        <tbody id="grantedUserTableBody">
+            <!-- Dữ liệu sẽ được render từ API thông qua JavaScript -->
+        </tbody>
+    </table>
+</div>
         </div>
     </main>
 
