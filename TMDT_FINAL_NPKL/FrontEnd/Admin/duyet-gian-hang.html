@@ -140,18 +140,18 @@
                 <div class="metric-card">
                     <div class="metric-top">
                         <div class="metric-icon orange">🏪</div>
-                        <span class="metric-trend warn">5 Chờ duyệt</span>
+                        <span class="metric-trend warn" id="pendingShopsTrend">-- Chờ duyệt</span>
                     </div>
-                    <div class="metric-value">86</div>
+                    <div class="metric-value" id="activeShopsCount">0</div>
                     <div class="metric-label">Cửa hàng đang hoạt động</div>
                 </div>
 
                 <div class="metric-card">
                     <div class="metric-top">
                         <div class="metric-icon blue">⏳</div>
-                        <span class="metric-trend warn">Cần duyệt mớii</span>
+                        <span class="metric-trend warn">Yêu cầu mới</span>
                     </div>
-                    <div class="metric-value">5</div>
+                    <div class="metric-value" id="pendingShopsCount">0</div>
                     <div class="metric-label">Đơn mở gian hàng chờ xét duyệt</div>
                 </div>
 
@@ -160,7 +160,7 @@
                         <div class="metric-icon purple">⏸️</div>
                         <span class="metric-trend warn">Tạm ngưng</span>
                     </div>
-                    <div class="metric-value">3</div>
+                    <div class="metric-value" id="inactiveShopsCount">0</div>
                     <div class="metric-label">Gian hàng đang tạm nghỉ</div>
                 </div>
 
@@ -182,13 +182,14 @@
                         <p>Kiểm soát thông tin cửa hàng, phê duyệt gian hàng mới mở hoặc cấm hoạt động các gian hàng vi phạm</p>
                     </div>
                     <div class="table-filters">
-                        <input type="text" class="search-input-admin" placeholder="Tìm tên gian hàng, mã gian hàng..." />
-                        <select class="filter-select">
+                        <input type="text" id="shopSearchInput" class="search-input-admin" placeholder="Tìm tên gian hàng, mã gian hàng..." />
+                        <select id="shopStatusFilter" class="filter-select">
                             <option value="ALL">Tất cả trạng thái</option>
-                            <option value="ACTIVE">Đang Hoạt Động</option>
-                            <option value="PENDING">Chờ Phê Duyệt</option>
-                            <option value="INACTIVE">Tạm Nghỉ</option>
-                            <option value="BANNED">Bị Cấm</option>
+                            <option value="PENDING">Chờ Phê Duyệt (PENDING)</option>
+                            <option value="ACTIVE">Đang Hoạt Động (ACTIVE)</option>
+                            <option value="INACTIVE">Tạm Nghỉ (INACTIVE)</option>
+                            <option value="BANNED">Bị Cấm (BANNED)</option>
+                            <option value="REJECTED">Bị Từ Chối (REJECTED)</option>
                         </select>
                     </div>
                 </div>

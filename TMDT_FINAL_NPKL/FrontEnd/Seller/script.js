@@ -1,4 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Navigation Guard: Kiểm tra quyền truy cập của Seller dựa trên trạng thái Shop
+    async function checkShopAccessGuard() {
+        const currentPath = window.location.pathname.toLowerCase();
+        if (currentPath.includes("thong-tin-cua-hang.html")) {
+            return;
+        }
+
+        const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
+        if (!token) return; // checkUser.js sẽ tự xử lý đẩy về trang Login
+
+        try {
+            const response = await fetch("https://localhost:3001/api/Shop/my-shop", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            const result = await response.json();
+            
+            let status = "NONE";
+            if (result.success && result.data) {
+                status = result.data.status;
+            }
+
+            localStorage.setItem("myShopStatus", status);
+
+            if (status !== "ACTIVE" && status !== "INACTIVE") {
+                alert("Cửa hàng của bạn cần phải ở trạng thái HOẠT ĐỘNG (ACTIVE) để sử dụng các chức năng quản lý! Hệ thống sẽ chuyển hướng bạn về trang Thiết Lập Hồ Sơ.");
+                window.location.href = "thong-tin-cua-hang.html";
+            }
+        } catch (error) {
+            console.error("Lỗi kiểm tra quyền truy cập cửa hàng:", error);
+        }
+    }
+    
+    checkShopAccessGuard();
+
     // 0. Toggle Sidebar Collapse/Expand
     const toggleSidebarBtn = document.querySelector('#toggleSidebar');
     if (toggleSidebarBtn) {
@@ -181,21 +218,228 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Shop Profile Save Form
+    // 4. Shop Profile Save Form & API Integration
     const shopProfileForm = document.querySelector('#shopProfileForm');
-    if (shopProfileForm) {
-        shopProfileForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const shopName = document.querySelector('#profileShopName').value.trim();
-            const shopStatus = document.querySelector('#profileShopStatus').value;
 
-            const headerShopTitle = document.querySelector('#headerShopTitle');
-            if (headerShopTitle && shopName) {
-                headerShopTitle.textContent = shopName;
+    async function loadShopProfile() {
+        const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
+        if (!token) return;
+
+        try {
+            const response = await fetch("https://localhost:3001/api/Shop/my-shop", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            const result = await response.json();
+
+            const shopIdInput = document.querySelector('#profileShopId');
+            const sellerIdInput = document.querySelector('#profileSellerId');
+            const shopNameInput = document.querySelector('#profileShopName');
+            const phoneInput = document.querySelector('#profilePhone');
+            const emailInput = document.querySelector('#profileEmail');
+            const addressInput = document.querySelector('#profileAddress');
+            const descInput = document.querySelector('#profileDescription');
+            const statusSelect = document.querySelector('#profileShopStatus');
+            const submitBtn = document.querySelector('#btnSubmitProfile');
+            const formTitle = document.querySelector('#formTitle');
+            
+            const banner = document.querySelector('#shopStatusBanner');
+            const bannerText = document.querySelector('#shopStatusBannerText');
+            const bannerIcon = document.querySelector('#shopStatusBannerIcon');
+
+            const headerShopName = document.querySelector('#headerShopName');
+            const headerShopSubtitle = document.querySelector('#headerShopSubtitle');
+            const headerShopAvatar = document.querySelector('#headerShopAvatar');
+
+            const sidebarName = document.querySelector('.seller-info .seller-name');
+            const sidebarRole = document.querySelector('.seller-info .seller-role');
+            const sidebarAvatar = document.querySelector('.seller-avatar');
+
+            if (result.success && result.data) {
+                const shop = result.data;
+                if (shopIdInput) shopIdInput.value = shop.shopId;
+                if (sellerIdInput) sellerIdInput.value = shop.sellerId;
+                if (shopNameInput) shopNameInput.value = shop.shopName;
+                if (phoneInput) phoneInput.value = shop.phone || '';
+                if (emailInput) emailInput.value = shop.email || '';
+                if (addressInput) addressInput.value = shop.address || '';
+                if (descInput) descInput.value = shop.description || '';
+                
+                if (headerShopName) headerShopName.textContent = shop.shopName;
+                if (headerShopSubtitle) headerShopSubtitle.textContent = `Mã Shop: ${shop.shopId} | Chủ: ${shop.sellerId}`;
+                if (headerShopAvatar) headerShopAvatar.textContent = shop.shopName.substring(0, 2).toUpperCase();
+
+                if (sidebarName) sidebarName.textContent = shop.shopName;
+                if (sidebarRole) sidebarRole.textContent = `Mã Shop: ${shop.shopId}`;
+                if (sidebarAvatar) sidebarAvatar.textContent = shop.shopName.substring(0, 2).toUpperCase();
+
+                localStorage.setItem("myShopStatus", shop.status);
+
+                if (shop.status === "PENDING") {
+                    if (statusSelect) {
+                        statusSelect.value = "PENDING";
+                        statusSelect.disabled = true;
+                    }
+                    if (banner) {
+                        banner.style.display = "flex";
+                        banner.style.backgroundColor = "#FEF3C7";
+                        banner.style.borderColor = "#F59E0B";
+                        banner.style.color = "#D97706";
+                        bannerText.textContent = "Cửa hàng đang chờ Admin phê duyệt. Bạn chưa thể đăng bán sản phẩm.";
+                        bannerIcon.textContent = "⏳";
+                    }
+                    if (submitBtn) {
+                        submitBtn.textContent = "Cập Nhật Thông Tin";
+                    }
+                } 
+                else if (shop.status === "REJECTED") {
+                    if (statusSelect) {
+                        statusSelect.value = "PENDING";
+                        statusSelect.disabled = true;
+                    }
+                    if (banner) {
+                        banner.style.display = "flex";
+                        banner.style.backgroundColor = "#FFEDD5";
+                        banner.style.borderColor = "#F97316";
+                        banner.style.color = "#EA580C";
+                        bannerText.textContent = "Đơn mở gian hàng của bạn đã bị từ chối. Vui lòng chỉnh sửa lại thông tin và gửi lại yêu cầu duyệt.";
+                        bannerIcon.textContent = "❌";
+                    }
+                    if (submitBtn) {
+                        submitBtn.textContent = "Gửi Lại Yêu Cầu Duyệt";
+                    }
+                }
+                else if (shop.status === "BANNED") {
+                    if (statusSelect) {
+                        statusSelect.value = "BANNED";
+                        statusSelect.disabled = true;
+                    }
+                    if (shopNameInput) shopNameInput.disabled = true;
+                    if (phoneInput) phoneInput.disabled = true;
+                    if (emailInput) emailInput.disabled = true;
+                    if (addressInput) addressInput.disabled = true;
+                    if (descInput) descInput.disabled = true;
+                    if (submitBtn) submitBtn.disabled = true;
+
+                    if (banner) {
+                        banner.style.display = "flex";
+                        banner.style.backgroundColor = "#FEE2E2";
+                        banner.style.borderColor = "#EF4444";
+                        banner.style.color = "#DC2626";
+                        bannerText.textContent = "Cửa hàng của bạn đã bị cấm hoạt động. Vui lòng liên hệ QTV để được giải quyết.";
+                        bannerIcon.textContent = "🚫";
+                    }
+                } 
+                else {
+                    if (statusSelect) {
+                        statusSelect.value = shop.status;
+                        statusSelect.disabled = false;
+                        Array.from(statusSelect.options).forEach(opt => {
+                            if (opt.value === "ACTIVE" || opt.value === "INACTIVE") {
+                                opt.disabled = false;
+                            } else {
+                                opt.disabled = true;
+                            }
+                        });
+                    }
+                    if (banner) banner.style.display = "none";
+                    if (submitBtn) submitBtn.textContent = "Lưu Thay Đổi Hồ Sơ";
+                }
+            } 
+            else if (result.code === "NO_SHOP") {
+                localStorage.setItem("myShopStatus", "NONE");
+
+                if (formTitle) formTitle.textContent = "Đăng Ký Mở Cửa Hàng Mới";
+                if (shopIdInput) shopIdInput.value = "Hệ thống tự động sinh";
+                if (sellerIdInput) sellerIdInput.value = "Tài khoản hiện tại";
+                
+                if (phoneInput) phoneInput.value = result.data?.phone || '';
+                if (emailInput) emailInput.value = result.data?.email || '';
+                if (addressInput) addressInput.value = result.data?.address || '';
+
+                if (statusSelect) {
+                    statusSelect.value = "PENDING";
+                    statusSelect.disabled = true;
+                }
+
+                if (banner) {
+                    banner.style.display = "flex";
+                    banner.style.backgroundColor = "#DBEAFE";
+                    banner.style.borderColor = "#3B82F6";
+                    banner.style.color = "#1D4ED8";
+                    bannerText.textContent = "Bạn chưa đăng ký cửa hàng. Vui lòng điền thông tin và gửi yêu cầu phê duyệt.";
+                    bannerIcon.textContent = "🏪";
+                }
+
+                if (submitBtn) {
+                    submitBtn.textContent = "Đăng Ký Mở Cửa Hàng";
+                }
+
+                if (headerShopName) headerShopName.textContent = "Chưa có cửa hàng";
+                if (headerShopSubtitle) headerShopSubtitle.textContent = "Vui lòng đăng ký mới";
+            }
+        } catch (error) {
+            console.error("Lỗi khi tải thông tin cửa hàng:", error);
+        }
+    }
+
+    if (shopProfileForm) {
+        shopProfileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
+            if (!token) return;
+
+            const shopName = document.querySelector('#profileShopName').value.trim();
+            const phone = document.querySelector('#profilePhone').value.trim();
+            const email = document.querySelector('#profileEmail').value.trim();
+            const address = document.querySelector('#profileAddress').value.trim();
+            const description = document.querySelector('#profileDescription').value.trim();
+            const status = document.querySelector('#profileShopStatus').value;
+
+            const isNewShop = localStorage.getItem("myShopStatus") === "NONE";
+            const url = isNewShop ? "https://localhost:3001/api/Shop/create" : "https://localhost:3001/api/Shop/update-profile";
+            const method = isNewShop ? "POST" : "PUT";
+
+            const payload = {
+                shopName,
+                phone,
+                email,
+                address,
+                description
+            };
+
+            if (!isNewShop) {
+                payload.status = status;
             }
 
-            const statusText = shopStatus === 'ACTIVE' ? 'Hoạt Động' : 'Tạm Nghỉ';
-            alert(`Cập nhật thông tin Cửa Hàng "${shopName}" thành công!\nTrạng thái: ${statusText}`);
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    alert(result.message || "Cập nhật thành công!");
+                    loadShopProfile();
+                } else {
+                    alert("Thất bại: " + (result.message || "Có lỗi xảy ra!"));
+                }
+            } catch (error) {
+                console.error("Lỗi gửi form:", error);
+                alert("Lỗi kết nối máy chủ!");
+            }
         });
+    }
+
+    // Tự động tải dữ liệu nếu đang ở trang cấu hình cửa hàng
+    if (document.querySelector('#shopProfileForm')) {
+        loadShopProfile();
     }
 });

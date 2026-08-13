@@ -127,83 +127,91 @@
             <!-- Shop Header Banner Preview -->
             <div class="shop-banner-card">
                 <div class="shop-banner-info" style="display:flex; align-items:center; gap:16px;">
-                    <div class="shop-avatar-large">NB</div>
+                    <div class="shop-avatar-large" id="headerShopAvatar">NB</div>
                     <div class="shop-banner-details">
                         <h2 style="font-size:1.4rem; font-weight:800; color:#FFFFFF; margin-bottom:4px; display:flex; align-items:center; gap:8px;">
-                            NPKL Official Bookshop 
-                            <span class="badge-verified" style="background:#E05A2B; color:#FFF; font-size:0.75rem; padding:3px 8px; border-radius:6px; font-weight:700;">✓ Shop Chính Hãng</span>
+                            <span id="headerShopName">Tên Cửa Hàng</span>
+                            <span id="shopVerifiedBadge" class="badge-verified" style="background:#E05A2B; color:#FFF; font-size:0.75rem; padding:3px 8px; border-radius:6px; font-weight:700;">✓ Shop Chính Hãng</span>
                         </h2>
-                        <p style="font-size:0.86rem; color:#94A3B8;">Mã Shop: SH0001 | Chủ Gian Hàng: SL0001 (Nguyễn Văn Bán)</p>
+                        <p style="font-size:0.86rem; color:#94A3B8;" id="headerShopSubtitle">Mã Shop: -- | Chủ Gian Hàng: --</p>
                     </div>
                 </div>
                 <div class="shop-banner-stats" style="display:flex; gap:24px;">
                     <div class="stat-item" style="text-align:center;">
-                        <div class="val" style="font-size:1.3rem; font-weight:800; color:#FFFFFF;">42</div>
+                        <div class="val" style="font-size:1.3rem; font-weight:800; color:#FFFFFF;">0</div>
                         <div class="lbl" style="font-size:0.78rem; color:#94A3B8;">Sản Phẩm</div>
                     </div>
                     <div class="stat-item" style="text-align:center;">
-                        <div class="val" style="font-size:1.3rem; font-weight:800; color:#F59E0B;">4.9 ⭐</div>
-                        <div class="lbl" style="font-size:0.78rem; color:#94A3B8;">Đánh Giá (158)</div>
+                        <div class="val" style="font-size:1.3rem; font-weight:800; color:#F59E0B;">5.0 ⭐</div>
+                        <div class="lbl" style="font-size:0.78rem; color:#94A3B8;">Đánh Giá (0)</div>
                     </div>
                     <div class="stat-item" style="text-align:center;">
-                        <div class="val" style="font-size:1.3rem; font-weight:800; color:#10B981;">95.2%</div>
+                        <div class="val" style="font-size:1.3rem; font-weight:800; color:#10B981;">100%</div>
                         <div class="lbl" style="font-size:0.78rem; color:#94A3B8;">Giao Thành Công</div>
                     </div>
                 </div>
             </div>
 
+            <!-- Warning Banner for Shop Status -->
+            <div id="shopStatusBanner" style="display:none; padding:16px; border-radius:8px; margin-bottom:20px; font-weight:600; display:flex; align-items:center; gap:12px; border: 1px solid;">
+                <span id="shopStatusBannerIcon" style="font-size:1.5rem;">⚠️</span>
+                <div id="shopStatusBannerText" style="font-size: 0.95rem;">Cửa hàng đang chờ Admin duyệt. Bạn chưa thể đăng bán sản phẩm.</div>
+            </div>
+
             <!-- Full Width Profile Form Card -->
             <div class="profile-card">
-                <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px; color:#0B2238;">Chi Tiết Hồ Sơ Cửa Hàng</h3>
+                <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px; color:#0B2238;" id="formTitle">Chi Tiết Hồ Sơ Cửa Hàng</h3>
                 <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Cập nhật thông tin chi tiết tên shop, thông tin liên hệ, địa chỉ kho lấy hàng và trạng thái mở cửa (Khớp bảng dbo.shops & dbo.users)</p>
 
                 <form id="shopProfileForm">
                     <div class="form-grid-seller">
                         <div>
                             <label class="form-label-seller">Mã Cửa Hàng (Shop ID)</label>
-                            <input type="text" class="form-input-seller" value="SH0001" disabled style="background:#E2E8F0; font-weight:700;" />
+                            <input type="text" id="profileShopId" class="form-input-seller" value="" disabled style="background:#E2E8F0; font-weight:700;" />
                         </div>
                         <div>
                             <label class="form-label-seller">Mã Chủ Cửa Hàng (Seller ID)</label>
-                            <input type="text" class="form-input-seller" value="SL0001" disabled style="background:#E2E8F0; font-weight:700;" />
+                            <input type="text" id="profileSellerId" class="form-input-seller" value="" disabled style="background:#E2E8F0; font-weight:700;" />
                         </div>
 
                         <div class="form-group-full">
                             <label class="form-label-seller">Tên Cửa Hàng / Gian Hàng (shop_name) <span style="color:#DC2626;">*</span></label>
-                            <input type="text" id="profileShopName" class="form-input-seller" value="NPKL Official Bookshop" required />
+                            <input type="text" id="profileShopName" class="form-input-seller" value="" required />
                         </div>
 
                         <div>
                             <label class="form-label-seller">Số Điện Thoại Hotline (Phone)</label>
-                            <input type="tel" class="form-input-seller" value="0988 111 222" required />
+                            <input type="tel" id="profilePhone" class="form-input-seller" value="" required />
                         </div>
                         <div>
                             <label class="form-label-seller">Email Chăm Sóc Khách Hàng (Email)</label>
-                            <input type="email" class="form-input-seller" value="support.bookshop@npkl.vn" required />
+                            <input type="email" id="profileEmail" class="form-input-seller" value="" required />
                         </div>
 
                         <div class="form-group-full">
                             <label class="form-label-seller">Địa Chỉ Kho Hàng / Lấy Hàng Giao (Address)</label>
-                            <input type="text" class="form-input-seller" value="123 Đường Nguyễn Trãi, Quận 5, TP. Hồ Chí Minh" required />
+                            <input type="text" id="profileAddress" class="form-input-seller" value="" required />
                         </div>
 
                         <div class="form-group-full">
                             <label class="form-label-seller">Mô Tả Giới Thiệu Cửa Hàng (description)</label>
-                            <textarea class="form-input-seller" style="height:90px;" required>Chuyên phân phối sách văn học, sách kỹ năng sống chính hãng và dụng cụ văn phòng phẩm cao cấp NPKL.</textarea>
+                            <textarea id="profileDescription" class="form-input-seller" style="height:90px;" required></textarea>
                         </div>
 
                         <div class="form-group-full">
                             <label class="form-label-seller">Trạng Thái Hoạt Động Cửa Hàng (status)</label>
                             <select id="profileShopStatus" class="form-input-seller" style="font-weight:700;">
-                                <option value="ACTIVE" selected>Hoạt Động (ACTIVE - Đang mở cửa nhận đơn)</option>
+                                <option value="PENDING" selected>Đang Chờ Duyệt (PENDING)</option>
+                                <option value="ACTIVE">Hoạt Động (ACTIVE - Đang mở cửa nhận đơn)</option>
                                 <option value="INACTIVE">Tạm Nghỉ (INACTIVE - Tạm đóng cửa nhận đơn)</option>
+                                <option value="REJECTED" disabled>Bị Từ Chối (REJECTED)</option>
                                 <option value="BANNED" disabled>Đã Bị Cấm (BANNED - Do Admin quản lý)</option>
                             </select>
                         </div>
                     </div>
 
                     <div style="margin-top:24px; text-align:right;">
-                        <button type="submit" class="btn-tb primary" style="padding:12px 28px; font-size:0.95rem;">Lưu Thay Đổi Hồ Sơ</button>
+                        <button type="submit" id="btnSubmitProfile" class="btn-tb primary" style="padding:12px 28px; font-size:0.95rem;">Lưu Thay Đổi Hồ Sơ</button>
                     </div>
                 </form>
             </div>
