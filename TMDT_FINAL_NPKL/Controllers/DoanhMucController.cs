@@ -106,5 +106,30 @@ namespace TMDT_FINAL_NPKL.Controllers
                 return StatusCode(500, $"Lỗi server: {ex.Message}");
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategories()
+        {
+            try
+            {
+                // Lấy danh sách danh mục, sắp xếp mới nhất lên đầu
+                var categories = await _context.Categories
+                    .OrderByDescending(c => c.CreatedAt)
+                    .Select(c => new
+                    {
+                        CategoryId = c.CategoryId,
+                        CategoryName = c.CategoryName,
+                        Description = c.Description,
+                        CreatedAt = c.CreatedAt
+              
+                    })
+                    .ToListAsync();
+
+                return Ok(categories);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi server: {ex.Message}");
+            }
+        }
     }
 }
