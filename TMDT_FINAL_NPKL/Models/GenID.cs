@@ -72,5 +72,27 @@ namespace TMDT_FINAL_NPKL.Models
             // Đảm bảo không vượt quá độ dài tối đa VARCHAR(20) của cột CSDL
             return "APL" + DateTime.Now.ToString("yyMMddHHmmssfff");
         }
+
+
+        public static string GenerateCategoryId(string categoryName, DateTime createdAt)
+        {
+            // 1. Tiền tố cố định
+            string prefix = "CAT";
+
+            // 2. Định dạng thời gian (Lấy đầy đủ yyMMddHHmmss để đảm bảo độ phân giải cao nhất)
+            string timePart = createdAt.ToString("yyMMddHHmmss");
+
+            // 3. Ghép chuỗi cần Hash: Tên danh mục + thời gian tạo
+            string rawData = $"{categoryName}{timePart}";
+
+            // 4. Băm (Hash) chuỗi bằng thuật toán SHA256 (tái sử dụng hàm GetHashString)
+            string hashPart = GetHashString(rawData);
+
+            // 5. Cắt lấy 5 ký tự đầu tiên của chuỗi đã Hash, chuyển thành in hoa
+            string shortHash = hashPart.Substring(0, 5).ToUpper();
+
+            // 6. Trả về kết quả: CAT + 5 ký tự Hash
+            return $"{prefix}{shortHash}";
+        }
     }
 }

@@ -307,27 +307,189 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Shop Status Action Buttons
+    // 3. Shop Status Action Buttons & Dynamic API Integration
     const shopTableBody = document.querySelector('#shopTableBody');
+    const shopSearchInput = document.querySelector('#shopSearchInput');
+    const shopStatusFilter = document.querySelector('#shopStatusFilter');
+
+    async function loadAdminShops() {
+        const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
+        if (!token) return;
+
+        const searchVal = shopSearchInput?.value || '';
+        const statusFilter = shopStatusFilter?.value || 'ALL';
+
+        try {
+            const response = await fetch(`https://localhost:3001/api/Admin/shops?status=ALL&search=${encodeURIComponent(searchVal)}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            const result = await response.json();
+            if (!result.success || !result.data) {
+                console.error("Lỗi lấy danh sách shop:", result.message);
+                return;
+            }
+
+            const allShops = result.data;
+
+            // Tính toán số liệu cho Metric Cards
+            const activeCount = allShops.filter(s => s.status === 'ACTIVE').length;
+            const pendingCount = allShops.filter(s => s.status === 'PENDING').length;
+            const inactiveCount = allShops.filter(s => s.status === 'INACTIVE').length;
+
+            const activeCard = document.querySelector('#activeShopsCount');
+            const pendingCard = document.querySelector('#pendingShopsCount');
+            const inactiveCard = document.querySelector('#inactiveShopsCount');
+            const pendingTrend = document.querySelector('#pendingShopsTrend');
+
+            if (activeCard) activeCard.textContent = activeCount;
+            if (pendingCard) pendingCard.textContent = pendingCount;
+            if (inactiveCard) inactiveCard.textContent = inactiveCount;
+            if (pendingTrend) pendingTrend.textContent = `${pendingCount} Chờ duyệt`;
+
+            // Lọc theo trạng thái đã chọn để hiển thị ra bảng
+            let filteredShops = allShops;
+            if (statusFilter !== 'ALL') {
+                filteredShops = allShops.filter(s => s.status === statusFilter);
+            }
+
+            // Render vào bảng
+            if (!shopTableBody) return;
+            shopTableBody.innerHTML = '';
+            
+            if (filteredShops.length === 0) {
+                shopTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color: #64748B;">Không tìm thấy gian hàng nào.</td></tr>`;
+                return;
+            }
+
+            filteredShops.forEach(shop => {
+                const tr = document.createElement('tr');
+                const date = new Date(shop.createdAt);
+                const dateStr = date.toLocaleDateString('vi-VN');
+
+                let statusBadge = '';
+                if (shop.status === 'ACTIVE') {
+                    statusBadge = '<span class="badge-status active">Hoạt Động</span>';
+                } else if (shop.status === 'PENDING') {
+                    statusBadge = '<span class="badge-status pending">Chờ Duyệt Mở</span>';
+                } else if (shop.status === 'INACTIVE') {
+                    statusBadge = '<span class="badge-status warning" style="background:#FEF3C7; color:#D97706; padding: 4px 8px; border-radius: 6px; font-size: 0.78rem; font-weight:700;">Tạm Nghỉ</span>';
+                } else if (shop.status === 'BANNED') {
+                    statusBadge = '<span class="badge-status banned">Bị Cấm</span>';
+                } else if (shop.status === 'REJECTED') {
+                    statusBadge = '<span class="badge-status rejected" style="background:#FEE2E2; color:#DC2626; padding: 4px 8px; border-radius: 6px; font-size: 0.78rem; font-weight:700;">Bị Từ Chối</span>';
+                } else {
+                    statusBadge = `<span class="badge-status">${shop.status}</span>`;
+                }
+
+                let actionButtons = '';
+                if (shop.status === 'PENDING') {
+                    actionButtons = `
+                        <button class="btn-tb approve btn-shop-action" data-shopid="${shop.shopId}" data-action="APPROVE">Duyệt</button>
+                        <button class="btn-tb reject btn-shop-action" data-shopid="${shop.shopId}" data-action="REJECT">Từ Chối</button>
+                    `;
+                } else if (shop.status === 'ACTIVE') {
+                    actionButtons = `
+                        <button class="btn-tb block btn-shop-action" data-shopid="${shop.shopId}" data-action="SUSPEND">Tạm nghỉ</button>
+                        <button class="btn-tb reject btn-shop-action" data-shopid="${shop.shopId}" data-action="BAN">Cấm Shop</button>
+                    `;
+                } else if (shop.status === 'INACTIVE') {
+                    actionButtons = `
+                        <button class="btn-tb approve btn-shop-action" data-shopid="${shop.shopId}" data-action="APPROVE">Mở Lại</button>
+                        <button class="btn-tb reject btn-shop-action" data-shopid="${shop.shopId}" data-action="BAN">Cấm Shop</button>
+                    `;
+                } else if (shop.status === 'BANNED') {
+                    actionButtons = `
+                        <button class="btn-tb approve btn-shop-action" data-shopid="${shop.shopId}" data-action="UNBAN">Mở Khóa</button>
+                    `;
+                } else if (shop.status === 'REJECTED') {
+                    actionButtons = `<span style="font-size:0.8rem; color:#64748B;">Chờ Seller sửa hồ sơ</span>`;
+                }
+
+                tr.innerHTML = `
+                    <td><strong>${shop.shopId}</strong></td>
+                    <td class="shop-name-cell">${shop.shopName}</td>
+                    <td>${shop.sellerId}</td>
+                    <td>${shop.description || 'Chưa có mô tả'}</td>
+                    <td>${dateStr}</td>
+                    <td class="shop-status-cell">${statusBadge}</td>
+                    <td>
+                        <div class="btn-action-group">
+                            ${actionButtons}
+                        </div>
+                    </td>
+                `;
+                shopTableBody.appendChild(tr);
+            });
+        } catch (error) {
+            console.error("Lỗi khi tải danh sách cửa hàng:", error);
+        }
+    }
+
     if (shopTableBody) {
-        shopTableBody.addEventListener('click', (e) => {
+        loadAdminShops();
+
+        if (shopSearchInput) {
+            shopSearchInput.addEventListener('input', debounce(loadAdminShops, 400));
+        }
+        if (shopStatusFilter) {
+            shopStatusFilter.addEventListener('change', loadAdminShops);
+        }
+
+        shopTableBody.addEventListener('click', async (e) => {
             const btn = e.target.closest('.btn-shop-action');
             if (!btn) return;
 
             const action = btn.getAttribute('data-action');
+            const shopId = btn.getAttribute('data-shopid');
             const row = btn.closest('tr');
-            const statusCell = row.querySelector('.shop-status-cell');
             const shopName = row.querySelector('.shop-name-cell').textContent;
 
-            if (action === 'ACTIVE') {
-                statusCell.innerHTML = `<span class="badge-status active">Hoạt Động</span>`;
-                alert(`Đã kích hoạt Gian Hàng: ${shopName}`);
-            } else if (action === 'INACTIVE') {
-                statusCell.innerHTML = `<span class="badge-status pending">Tạm Nghỉ</span>`;
-                alert(`Đã chuyển gian hàng sang Tạm Nghỉ: ${shopName}`);
-            } else if (action === 'BANNED') {
-                statusCell.innerHTML = `<span class="badge-status banned">Bị Cấm</span>`;
-                alert(`Đã cấm hoạt động gian hàng: ${shopName}`);
+            const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
+            if (!token) return;
+
+            let url = "";
+            let confirmMsg = "";
+
+            if (action === 'APPROVE') {
+                url = `https://localhost:3001/api/Admin/shops/approve/${shopId}`;
+                confirmMsg = `Bạn có chắc muốn DUYỆT mở gian hàng "${shopName}"?`;
+            } else if (action === 'REJECT') {
+                url = `https://localhost:3001/api/Admin/shops/reject/${shopId}`;
+                confirmMsg = `Bạn có chắc muốn TỪ CHỐI hồ sơ mở gian hàng "${shopName}"?`;
+            } else if (action === 'SUSPEND') {
+                url = `https://localhost:3001/api/Admin/shops/suspend/${shopId}`;
+                confirmMsg = `Bạn có chắc muốn chuyển gian hàng "${shopName}" sang TẠM NGHỈ?`;
+            } else if (action === 'BAN') {
+                url = `https://localhost:3001/api/Admin/shops/ban/${shopId}`;
+                confirmMsg = `CẢNH BÁO: Bạn có chắc muốn CẤM hoạt động gian hàng "${shopName}"?`;
+            } else if (action === 'UNBAN') {
+                url = `https://localhost:3001/api/Admin/shops/unban/${shopId}`;
+                confirmMsg = `Bạn có chắc muốn GỠ CẤM và kích hoạt lại gian hàng "${shopName}"?`;
+            }
+
+            if (confirmMsg && !confirm(confirmMsg)) return;
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    alert(result.message || "Thao tác thành công!");
+                    loadAdminShops();
+                } else {
+                    alert("Lỗi: " + (result.message || "Không thể thực hiện thao tác!"));
+                }
+            } catch (error) {
+                console.error("Lỗi khi xử lý thao tác với shop:", error);
+                alert("Lỗi kết nối máy chủ!");
             }
         });
     }

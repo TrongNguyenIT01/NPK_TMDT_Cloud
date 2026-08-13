@@ -6,6 +6,7 @@
     <title>NPKL - Trang Quản Trị Hệ Thống TMĐT</title>
     <script src="../DangNhap/checkUser.js"></script>
     <script src="../Admin/dashboard.js"></script>
+    <script src="../Admin/doanhmuc.js"></script>
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -452,32 +453,7 @@
                             </tr>
                         </thead>
                         <tbody id="catTableBody">
-                            <tr>
-                                <td><strong>CAT0001</strong></td>
-                                <td><strong>Sách & Tri Thức</strong></td>
-                                <td>Sách văn học, kỹ năng sống, kinh tế, tiểu thuyết, ngoại ngữ...</td>
-                                <td>1,420 SP</td>
-                                <td>01/01/2026</td>
-                                <td>
-                                    <button class="btn-tb primary">Sửa</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>CAT0002</strong></td>
-                                <td><strong>Văn Phòng Phẩm</strong></td>
-                                <td>Sổ tay, bút viết, bìa hồ sơ, dụng cụ học tập sinh viên</td>
-                                <td>1,200 SP</td>
-                                <td>01/01/2026</td>
-                                <td>
-                                    <button class="btn-tb primary">Sửa</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>CAT0003</strong></td>
-                                <td><strong>Combo Tiết Kiệm</strong></td>
-                                <td>Các bộ sản phẩm đóng gói sẵn giá ưu đãi</td>
-                                <td>800 SP</td>
-                                <td>01/01/2026</td>
+
                                 <td>
                                     <button class="btn-tb primary">Sửa</button>
                                 </td>
@@ -555,30 +531,33 @@
 
     <!-- MODAL THÊM DANH MỤC MỚI -->
     <div class="modal-overlay" id="catModal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3>Thêm Danh Mục Sản Phẩm Mới</h3>
-                <button class="btn-close-modal" id="closeCatModal">✕</button>
-            </div>
-            <form id="catForm">
-                <div class="modal-body">
-                    <div style="margin-bottom:14px;">
-                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">Tên Danh Mục</label>
-                        <input type="text" id="catNameInput" class="search-input-admin" style="width:100%;" placeholder="Nhập tên danh mục (VD: Thiết Bị Điện Tử)" required />
-                    </div>
-                    <div>
-                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">Mô Tả Chi Tiết</label>
-                        <textarea id="catDescInput" style="width:100%; height:80px; padding:10px; border-radius:8px; border:1.5px solid #CBD5E1; font-size:0.9rem;" placeholder="Mô tả ngành hàng..."></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn-tb primary">Lưu Danh Mục</button>
-                </div>
-            </form>
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>Thêm Danh Mục Sản Phẩm Mới</h3>
+            <button class="btn-close-modal" id="closeCatModal">✕</button>
         </div>
+        <form id="catForm">
+      
+            <input type="hidden" id="catIdInput" value="" />
+            
+            <div class="modal-body">
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">Tên Danh Mục</label>
+                    <input type="text" id="catNameInput" class="search-input-admin" style="width:100%;" placeholder="Nhập tên danh mục (VD: Thiết Bị Điện Tử)" required />
+                </div>
+                <div>
+                    <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">Mô Tả Chi Tiết</label>
+                    <textarea id="catDescInput" style="width:100%; height:80px; padding:10px; border-radius:8px; border:1.5px solid #CBD5E1; font-size:0.9rem;" placeholder="Mô tả ngành hàng..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn-tb primary">Lưu Danh Mục</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <script src="script.js"></scrip>
+    <script src="script.js"></script>
 
     <script>
         function handleLogout() {

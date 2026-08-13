@@ -321,5 +321,160 @@ namespace TMDT_FINAL_NPKL.Controllers
                 return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
             }
         }
+
+        [HttpGet("shops")]
+        public async Task<IActionResult> GetShops([FromQuery] string? status, [FromQuery] string? search)
+        {
+            try
+            {
+                var query = _context.Shops
+                    .Include(s => s.Seller)
+                    .AsQueryable();
+
+                if (!string.IsNullOrEmpty(status) && status.ToUpper() != "ALL")
+                {
+                    query = query.Where(s => s.Status == status.ToUpper());
+                }
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    var searchLower = search.ToLower().Trim();
+                    query = query.Where(s => s.ShopName.ToLower().Contains(searchLower) ||
+                                             s.ShopId.ToLower().Contains(searchLower) ||
+                                             s.SellerId.ToLower().Contains(searchLower) ||
+                                             s.Seller.FullName.ToLower().Contains(searchLower));
+                }
+
+                var shops = await query
+                    .OrderByDescending(s => s.CreatedAt)
+                    .Select(s => new
+                    {
+                        s.ShopId,
+                        s.ShopName,
+                        s.SellerId,
+                        SellerName = s.Seller.FullName,
+                        s.Description,
+                        s.CreatedAt,
+                        s.Status
+                    })
+                    .ToListAsync();
+
+                return Ok(new { Success = true, Data = shops });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
+        [HttpPost("shops/approve/{shopId}")]
+        public async Task<IActionResult> ApproveShop(string shopId)
+        {
+            try
+            {
+                var shop = await _context.Shops.FirstOrDefaultAsync(s => s.ShopId == shopId);
+                if (shop == null)
+                {
+                    return NotFound(new { Success = false, Message = "Không tìm thấy cửa hàng!" });
+                }
+
+                shop.Status = "ACTIVE";
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Success = true, Message = "Đã duyệt kích hoạt cửa hàng thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
+        [HttpPost("shops/reject/{shopId}")]
+        public async Task<IActionResult> RejectShop(string shopId)
+        {
+            try
+            {
+                var shop = await _context.Shops.FirstOrDefaultAsync(s => s.ShopId == shopId);
+                if (shop == null)
+                {
+                    return NotFound(new { Success = false, Message = "Không tìm thấy cửa hàng!" });
+                }
+
+                shop.Status = "REJECTED";
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Success = true, Message = "Đã từ chối đơn đăng ký cửa hàng!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
+        [HttpPost("shops/suspend/{shopId}")]
+        public async Task<IActionResult> SuspendShop(string shopId)
+        {
+            try
+            {
+                var shop = await _context.Shops.FirstOrDefaultAsync(s => s.ShopId == shopId);
+                if (shop == null)
+                {
+                    return NotFound(new { Success = false, Message = "Không tìm thấy cửa hàng!" });
+                }
+
+                shop.Status = "INACTIVE";
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Success = true, Message = "Đã chuyển cửa hàng sang trạng thái Tạm Nghỉ!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
+        [HttpPost("shops/ban/{shopId}")]
+        public async Task<IActionResult> BanShop(string shopId)
+        {
+            try
+            {
+                var shop = await _context.Shops.FirstOrDefaultAsync(s => s.ShopId == shopId);
+                if (shop == null)
+                {
+                    return NotFound(new { Success = false, Message = "Không tìm thấy cửa hàng!" });
+                }
+
+                shop.Status = "BANNED";
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Success = true, Message = "Đã cấm cửa hàng hoạt động!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
+        [HttpPost("shops/unban/{shopId}")]
+        public async Task<IActionResult> UnbanShop(string shopId)
+        {
+            try
+            {
+                var shop = await _context.Shops.FirstOrDefaultAsync(s => s.ShopId == shopId);
+                if (shop == null)
+                {
+                    return NotFound(new { Success = false, Message = "Không tìm thấy cửa hàng!" });
+                }
+
+                shop.Status = "ACTIVE";
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Success = true, Message = "Đã gỡ cấm cửa hàng thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
     }
 }
