@@ -94,5 +94,23 @@ namespace TMDT_FINAL_NPKL.Models
             // 6. Trả về kết quả: CAT + 5 ký tự Hash
             return $"{prefix}{shortHash}";
         }
+
+        public static string GenerateProductId(string categoryName, string productName, string shopName)
+        {
+            // 1. Tiền tố cố định cho Sản phẩm
+            string prefix = "SP";
+
+            // 2. Ghép chuỗi cần Hash: Tên danh mục + Tên sản phẩm + Tên shop
+            string rawData = $"{categoryName}{productName}{shopName}";
+
+            // 3. Băm (Hash) chuỗi bằng thuật toán SHA256 (tái sử dụng hàm GetHashString có sẵn)
+            string hashPart = GetHashString(rawData);
+
+            // 4. Cắt lấy 8 ký tự đầu tiên của chuỗi đã Hash, chuyển thành in hoa cho đẹp
+            string shortHash = hashPart.Substring(0, 8).ToUpper();
+
+            // 5. Trả về kết quả: SP + 8 ký tự Hash (Tổng cộng 10 ký tự)
+            return $"{prefix}{shortHash}";
+        }
     }
 }

@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NPKL Seller - Đăng Sản Phẩm Mới</title>
+    <script src="../Seller/doanhmuc.js"></script>
     <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
 
     <!-- SIDEBAR NAVIGATION -->
@@ -105,7 +108,8 @@
         <header class="seller-header">
             <div style="display:flex; align-items:center; gap:16px;">
                 <button class="btn-toggle-sidebar" id="toggleSidebar" title="Thu gọn / Mở rộng Menu">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
                         <line x1="3" y1="12" x2="21" y2="12"></line>
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -127,21 +131,23 @@
             <form id="newProductForm">
                 <!-- Section 1: Thông Tin Cơ Bản -->
                 <div class="profile-card" style="margin-bottom: 24px;">
-                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">1. Thông Tin Cơ Bản Sản Phẩm</h3>
-                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Tên sản phẩm, danh mục và mã phân loại sản phẩm</p>
+                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">1. Thông Tin Cơ
+                        Bản Sản Phẩm</h3>
+                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Tên sản phẩm, danh mục và mã phân
+                        loại sản phẩm</p>
 
                     <div class="form-grid-seller">
                         <div class="form-group-full">
                             <label class="form-label-seller">Tên Sản Phẩm <span style="color:#DC2626;">*</span></label>
-                            <input type="text" id="prodName" class="form-input-seller" placeholder="Ví dụ: Sách Nghệ Thuật Ứng Xử Đắc Nhân Tâm (Khổ Lớn)" required />
+                            <input type="text" id="prodName" class="form-input-seller"
+                                placeholder="Ví dụ: Sách Nghệ Thuật Ứng Xử Đắc Nhân Tâm (Khổ Lớn)" required />
                         </div>
 
                         <div>
-                            <label class="form-label-seller">Danh Mục Sản Phẩm <span style="color:#DC2626;">*</span></label>
+                            <label class="form-label-seller">Danh Mục Sản Phẩm <span
+                                    style="color:#DC2626;">*</span></label>
                             <select id="prodCategory" class="form-input-seller" style="font-weight:600;" required>
-                                <option value="Sách & Tri Thức">Sách & Tri Thức (Sách văn học, kỹ năng...)</option>
-                                <option value="Văn Phòng Phẩm">Văn Phòng Phẩm (Sổ tay, bút ký...)</option>
-                                <option value="Combo Tiết Kiệm">Combo Tiết Kiệm (Bộ quà tặng...)</option>
+                                <option value="">--Chọn Danh Mục--</option>
                             </select>
                         </div>
 
@@ -154,38 +160,52 @@
 
                 <!-- Section 2: Giá Bán & Tồn Kho -->
                 <div class="profile-card" style="margin-bottom: 24px;">
-                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">2. Giá Bán & Quản Lý Tồn Kho</h3>
-                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Thiết lập giá bán niêm yết và số lượng tồn kho sản phẩm</p>
+                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">2. Giá Bán & Quản
+                        Lý Tồn Kho</h3>
+                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Thiết lập giá bán niêm yết và số
+                        lượng tồn kho sản phẩm</p>
 
                     <div class="form-grid-seller">
                         <div>
-                            <label class="form-label-seller">Giá Bán Niêm Yết (VNĐ) <span style="color:#DC2626;">*</span></label>
-                            <input type="number" id="prodPrice" class="form-input-seller" placeholder="VD: 150000" required />
+                            <label class="form-label-seller">Giá Bán Niêm Yết (VNĐ) <span
+                                    style="color:#DC2626;">*</span></label>
+                            <input type="number" id="prodPrice" class="form-input-seller" placeholder="VD: 150000"
+                                required />
                         </div>
 
                         <div>
-                            <label class="form-label-seller">Số Lượng Tồn Kho Ban Đầu (stock_quantity) <span style="color:#DC2626;">*</span></label>
-                            <input type="number" id="prodStock" class="form-input-seller" placeholder="100" value="100" required />
+                            <label class="form-label-seller">Số Lượng Tồn Kho Ban Đầu (stock_quantity) <span
+                                    style="color:#DC2626;">*</span></label>
+                            <input type="number" id="prodStock" class="form-input-seller" placeholder="100" value="100"
+                                required />
                         </div>
                     </div>
                 </div>
 
                 <!-- Section 3: Ảnh Đại Diện Sản Phẩm -->
                 <div class="profile-card" style="margin-bottom: 24px;">
-                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">3. Ảnh Đại Diện Sản Phẩm</h3>
-                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Tải lên hoặc chọn tệp ảnh đại diện chính của sản phẩm (Định dạng JPG, PNG, WEBP)</p>
+                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">3. Ảnh Đại Diện
+                        Sản Phẩm</h3>
+                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Tải lên hoặc chọn tệp ảnh đại diện
+                        chính của sản phẩm (Định dạng JPG, PNG, WEBP)</p>
 
                     <div class="form-grid-seller">
                         <div class="form-group-full">
-                            <label class="form-label-seller">Chọn Tệp Ảnh Đại Diện Sản Phẩm <span style="color:#DC2626;">*</span></label>
-                            <input type="file" id="prodMainImgFile" accept="image/*" class="form-input-seller" style="padding: 10px; background: #FFFFFF; cursor: pointer;" required />
-                            
+                            <label class="form-label-seller">Chọn Tệp Ảnh Đại Diện Sản Phẩm <span
+                                    style="color:#DC2626;">*</span></label>
+                            <input type="file" id="prodMainImgFile" accept="image/*" class="form-input-seller"
+                                style="padding: 10px; background: #FFFFFF; cursor: pointer;" required />
+
                             <!-- Live Image Preview Box -->
-                            <div id="mainImgPreviewBox" style="margin-top: 14px; display: flex; align-items: center; gap: 14px; padding: 12px; background: #F8FAFC; border-radius: 12px; border: 1px dashed #CBD5E1;">
-                                <img id="mainImgPreview" src="../TrangChinh/images/dac_nhan_tam.jpg" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #E2E8F0; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" alt="Xem trước ảnh đại diện" />
+                            <div id="mainImgPreviewBox"
+                                style="margin-top: 14px; display: flex; align-items: center; gap: 14px; padding: 12px; background: #F8FAFC; border-radius: 12px; border: 1px dashed #CBD5E1;">
+                                <img id="mainImgPreview" src="../TrangChinh/images/dac_nhan_tam.jpg"
+                                    style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #E2E8F0; box-shadow: 0 2px 8px rgba(0,0,0,0.08);"
+                                    alt="Xem trước ảnh đại diện" />
                                 <div>
                                     <strong style="font-size: 0.88rem; color: #0B2238;">Xem Trước Ảnh Đại Diện</strong>
-                                    <p id="mainImgFileName" style="font-size: 0.8rem; color: #64748B; margin-top: 2px;">Chưa chọn tệp ảnh đại diện mới</p>
+                                    <p id="mainImgFileName" style="font-size: 0.8rem; color: #64748B; margin-top: 2px;">
+                                        Chưa chọn tệp ảnh đại diện mới</p>
                                 </div>
                             </div>
                         </div>
@@ -194,19 +214,28 @@
 
                 <!-- Section 4: Ảnh Chi Tiết Sản Phẩm (MỤC MỚI THÊM) -->
                 <div class="profile-card" style="margin-bottom: 24px;">
-                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">4. Ảnh Chi Tiết Sản Phẩm</h3>
-                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Tải lên các hình ảnh chi tiết góc cạnh, nội dung, bìa phụ sản phẩm (Chọn cùng lúc nhiều ảnh)</p>
+                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">4. Ảnh Chi Tiết
+                        Sản Phẩm</h3>
+                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Tải lên các hình ảnh chi tiết góc
+                        cạnh, nội dung, bìa phụ sản phẩm (Chọn cùng lúc nhiều ảnh)</p>
 
                     <div class="form-grid-seller">
                         <div class="form-group-full">
                             <label class="form-label-seller">Chọn Các Tệp Ảnh Chi Tiết (Nhiều Ảnh)</label>
-                            <input type="file" id="prodDetailImgsFile" accept="image/*" multiple class="form-input-seller" style="padding: 10px; background: #FFFFFF; cursor: pointer;" />
+                            <input type="file" id="prodDetailImgsFile" accept="image/*" multiple
+                                class="form-input-seller"
+                                style="padding: 10px; background: #FFFFFF; cursor: pointer;" />
 
                             <!-- Live Gallery Preview Box -->
-                            <div style="margin-top: 14px; padding: 14px; background: #F8FAFC; border-radius: 12px; border: 1px dashed #CBD5E1;">
-                                <strong style="font-size: 0.88rem; color: #0B2238; display: block; margin-bottom: 10px;">Bộ Ảnh Chi Tiết Sản Phẩm (<span id="detailImgsCount">0</span> ảnh)</strong>
+                            <div
+                                style="margin-top: 14px; padding: 14px; background: #F8FAFC; border-radius: 12px; border: 1px dashed #CBD5E1;">
+                                <strong
+                                    style="font-size: 0.88rem; color: #0B2238; display: block; margin-bottom: 10px;">Bộ
+                                    Ảnh Chi Tiết Sản Phẩm (<span id="detailImgsCount">0</span> ảnh)</strong>
                                 <div id="detailImgsPreviewGallery" style="display: flex; flex-wrap: wrap; gap: 10px;">
-                                    <span style="font-size: 0.82rem; color: #94A3B8; font-style: italic;">Chưa chọn tệp ảnh chi tiết nào. Bấm "Chọn Các Tệp Ảnh Chi Tiết" ở trên để xem trước bộ ảnh.</span>
+                                    <span style="font-size: 0.82rem; color: #94A3B8; font-style: italic;">Chưa chọn tệp
+                                        ảnh chi tiết nào. Bấm "Chọn Các Tệp Ảnh Chi Tiết" ở trên để xem trước bộ
+                                        ảnh.</span>
                                 </div>
                             </div>
                         </div>
@@ -215,17 +244,22 @@
 
                 <!-- Section 5: Mô Tả Chi Tiết Sản Phẩm -->
                 <div class="profile-card" style="margin-bottom: 24px;">
-                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">5. Mô Tả Chi Tiết Sản Phẩm</h3>
-                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Giới thiệu nội dung, thông số và ưu điểm của sản phẩm</p>
+                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">5. Mô Tả Chi Tiết
+                        Sản Phẩm</h3>
+                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Giới thiệu nội dung, thông số và ưu
+                        điểm của sản phẩm</p>
 
                     <div class="form-group-full">
-                        <textarea id="prodDescription" class="form-input-seller" style="height:120px;" placeholder="Nhập mô tả chi tiết sản phẩm..."></textarea>
+                        <textarea id="prodDescription" class="form-input-seller" style="height:120px;"
+                            placeholder="Nhập mô tả chi tiết sản phẩm..."></textarea>
                     </div>
                 </div>
 
                 <!-- Action Buttons -->
                 <div style="text-align: right; margin-bottom: 40px;">
-                    <a href="danh-sach-san-pham.html" class="btn-tb reject" style="padding:12px 24px; font-size:0.95rem; text-decoration:none; margin-right:12px;">Hủy Bỏ</a>
+                    <a href="danh-sach-san-pham.html" class="btn-tb reject"
+                        style="padding:12px 24px; font-size:0.95rem; text-decoration:none; margin-right:12px;">Hủy
+                        Bỏ</a>
                     <button type="submit" class="btn-tb primary" style="padding:12px 32px; font-size:0.95rem;">
                         <span>🚀 Đăng Sản Phẩm (Gửi Admin Duyệt)</span>
                     </button>
@@ -235,67 +269,7 @@
     </main>
 
     <script src="script.js"></script>
-    <script>
-        // Xử lý xem trước ảnh chọn từ máy tính
-        document.addEventListener('DOMContentLoaded', () => {
-            const mainImgFileInput = document.getElementById('prodMainImgFile');
-            const mainImgPreview = document.getElementById('mainImgPreview');
-            const mainImgFileName = document.getElementById('mainImgFileName');
-
-            const detailImgsFileInput = document.getElementById('prodDetailImgsFile');
-            const detailImgsPreviewGallery = document.getElementById('detailImgsPreviewGallery');
-            const detailImgsCount = document.getElementById('detailImgsCount');
-
-            // 1. Xử lý ảnh đại diện
-            if (mainImgFileInput) {
-                mainImgFileInput.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (evt) => {
-                            mainImgPreview.src = evt.target.result;
-                            if (mainImgFileName) {
-                                mainImgFileName.textContent = `Tệp đã chọn: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
-                                mainImgFileName.style.color = '#16A34A';
-                                mainImgFileName.style.fontWeight = '600';
-                            }
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-
-            // 2. Xử lý bộ ảnh chi tiết (Nhiều ảnh)
-            if (detailImgsFileInput) {
-                detailImgsFileInput.addEventListener('change', (e) => {
-                    const files = Array.from(e.target.files);
-                    detailImgsPreviewGallery.innerHTML = '';
-
-                    if (files.length === 0) {
-                        detailImgsCount.textContent = '0';
-                        detailImgsPreviewGallery.innerHTML = '<span style="font-size: 0.82rem; color: #94A3B8; font-style: italic;">Chưa chọn tệp ảnh chi tiết nào.</span>';
-                        return;
-                    }
-
-                    detailImgsCount.textContent = files.length;
-
-                    files.forEach((file, index) => {
-                        const reader = new FileReader();
-                        reader.onload = (evt) => {
-                            const imgThumb = document.createElement('div');
-                            imgThumb.style.position = 'relative';
-                            imgThumb.style.display = 'inline-block';
-                            imgThumb.innerHTML = `
-                                <img src="${evt.target.result}" style="width: 75px; height: 75px; object-fit: cover; border-radius: 8px; border: 2px solid #0B2238;" title="${file.name}" />
-                                <span style="position: absolute; bottom: 2px; right: 2px; background: rgba(11,34,56,0.8); color: #fff; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px;">${index + 1}</span>
-                            `;
-                            detailImgsPreviewGallery.appendChild(imgThumb);
-                        };
-                        reader.readAsDataURL(file);
-                    });
-                });
-            }
-        });
-    </script>
+    <script src="dang-san-pham.js"></script>
 </body>
+
 </html>

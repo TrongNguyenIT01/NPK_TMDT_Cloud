@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadCategories() {
     try {
-
         const apiUrl = 'https://localhost:3001/api/DoanhMuc/getDM'; 
         
         const response = await fetch(apiUrl);
@@ -15,15 +14,16 @@ async function loadCategories() {
         }
 
         const categories = await response.json();
-        const selectElement = document.getElementById('prodCatInput');
+        
+        // Cập nhật lại ID khớp với HTML hiện tại
+        const selectElement = document.getElementById('prodCategory');
 
         // Lặp qua mảng danh mục trả về từ API
         categories.forEach(category => {
             // Tạo một thẻ <option> mới
             const option = document.createElement('option');
             
-      
-
+            // Đặt giá trị value là ID để lưu vào database
             option.value = category.categoryId; 
             
             // Đặt text hiển thị là Tên danh mục

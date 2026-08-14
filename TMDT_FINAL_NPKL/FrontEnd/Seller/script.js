@@ -178,15 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const newProductForm = document.querySelector('#newProductForm');
-    if (newProductForm) {
-        newProductForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.querySelector('#prodName')?.value.trim() || 'Sản phẩm mới';
-            alert(`🎉 Đã gửi yêu cầu đăng sản phẩm "${name}" thành công!\nSản phẩm đang ở trạng thái CHỜ DUYỆT (PENDING) từ Admin.`);
-            window.location.href = 'danh-sach-san-pham.html';
-        });
-    }
+
 
     // Toggle Product Visibility (Đang Bán <-> Tạm Ẩn)
     if (productTableBody) {
