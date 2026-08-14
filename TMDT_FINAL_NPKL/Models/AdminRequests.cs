@@ -15,4 +15,10 @@ namespace TMDT_FINAL_NPKL.Models
         public string Status { get; set; } = null!;
         public string? AdminNote { get; set; }
     }
+
+    public class AdminDuyetSP
+    {
+        public string Status { get; set; } = null!; // "APPROVED", "REJECTED"
+        public string? Note { get; set; }
+    }
 }

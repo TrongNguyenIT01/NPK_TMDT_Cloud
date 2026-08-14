@@ -19,7 +19,8 @@ namespace TMDT_FINAL_NPKL.Controllers
         }
         [HttpGet("seller-list")]
         [Authorize(Roles = "SELLER")]
-        public async Task<IActionResult> GetSellerProducts([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        // status: "all" (mặc định) = tất cả, "visible" = đang hiển thị, "hidden" = đã ẩn
+        public async Task<IActionResult> GetSellerProducts([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string status = "all")
         {
             try
             {
@@ -39,18 +40,25 @@ namespace TMDT_FINAL_NPKL.Controllers
                 }
 
                 // Bước 3: Dùng ID người dùng ráp vào cột seller_id để tra ra thông tin Shop
-        
-                var shop = await _context.Shops.FirstOrDefaultAsync(s => s.SellerId == user.UserId);
+
+                var shop = await _context.Shops.FirstOrDefaultAsync(s => s.SellerId == user.UserId.ToString());
 
                 if (shop == null)
                 {
                     return BadRequest(new { Success = false, Message = "Bạn chưa đăng ký thông tin cửa hàng!" });
                 }
 
-                // Bước 4: Lấy danh sách sản phẩm khớp với shop_id và chưa bị xóa (is_deleted = false)
-                var query = _context.Products
-                    .Where(p => p.ShopId == shop.ShopId && p.IsDeleted == false)
-                    .OrderByDescending(p => p.CreatedAt); // Sản phẩm mới nhất xếp trước
+                // Bước 4: Lấy danh sách sản phẩm khớp với shop_id, lọc theo trạng thái ẩn/hiện (status)
+                var baseQuery = _context.Products.Where(p => p.ShopId == shop.ShopId);
+
+                baseQuery = status?.ToLower() switch
+                {
+                    "visible" => baseQuery.Where(p => p.IsDeleted == false),
+                    "hidden" => baseQuery.Where(p => p.IsDeleted == true),
+                    _ => baseQuery // "all" hoặc giá trị khác -> lấy hết, không phân biệt ẩn/hiện
+                };
+
+                var query = baseQuery.OrderByDescending(p => p.CreatedAt); // Sản phẩm mới nhất xếp trước
 
                 // 4.1: Đếm tổng số lượng sản phẩm để làm phân trang
                 int totalItems = await query.CountAsync();
@@ -69,6 +77,7 @@ namespace TMDT_FINAL_NPKL.Controllers
                         StockQuantity = p.StockQuantity,
                         Image = p.Image,
                         ApprovalStatus = p.ApprovalStatus, // "PENDING", "APPROVED", "REJECTED"...
+                        IsDeleted = p.IsDeleted, // true = đang ẩn, false = đang hiển thị
                         CreatedAt = p.CreatedAt
                     })
                     .ToListAsync();
@@ -127,6 +136,44 @@ namespace TMDT_FINAL_NPKL.Controllers
                 await _context.SaveChangesAsync();
 
                 return Ok(new { Success = true, Message = "Đã ẩn sản phẩm thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
+        [HttpPut("show-product/{productId}")]
+        [Authorize(Roles = "SELLER")]
+        public async Task<IActionResult> ShowProduct(string productId)
+        {
+            try
+            {
+                // 1. Lấy Username và kiểm tra Shop
+                string? username = User.FindFirst("Username")?.Value;
+                if (string.IsNullOrEmpty(username))
+                    return Unauthorized(new { Success = false, Message = "Không xác định được danh tính!" });
+
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+                if (user == null) return Unauthorized();
+
+                var shop = await _context.Shops.FirstOrDefaultAsync(s => s.SellerId == user.UserId.ToString());
+                if (shop == null) return BadRequest(new { Success = false, Message = "Chưa có cửa hàng!" });
+
+                // 2. Tìm sản phẩm (phải thuộc về shop này)
+                var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == productId && p.ShopId == shop.ShopId);
+
+                if (product == null)
+                {
+                    return NotFound(new { Success = false, Message = "Không tìm thấy sản phẩm hoặc bạn không có quyền sửa sản phẩm này!" });
+                }
+
+                // 3. Hiện lại sản phẩm bằng cách set is_deleted = false
+                product.IsDeleted = false;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Success = true, Message = "Đã hiện lại sản phẩm thành công!" });
             }
             catch (Exception ex)
             {

@@ -73,6 +73,13 @@ namespace TMDT_FINAL_NPKL.Models
             return "APL" + DateTime.Now.ToString("yyMMddHHmmssfff");
         }
 
+        public static string GenerateProductApprovalLogId()
+        {
+            // Sử dụng YYMMDDHHMMSSfff để tạo mã log duyệt sản phẩm (19 ký tự: LOG- + 15 ký tự thời gian)
+            // Đảm bảo không vượt quá độ dài tối đa VARCHAR(20) của cột CSDL
+            return "LOG-" + DateTime.Now.ToString("yyMMddHHmmssfff");
+        }
+
 
         public static string GenerateCategoryId(string categoryName, DateTime createdAt)
         {

@@ -151,7 +151,7 @@
                         <div class="metric-icon green">✅</div>
                         <span class="metric-trend up">↑ +28 hôm nay</span>
                     </div>
-                    <div class="metric-value">1,420</div>
+                    <div class="metric-value" id="approvedProductMetric">0</div>
                     <div class="metric-label">Sản phẩm đã duyệt lên sàn</div>
                 </div>
 
@@ -160,7 +160,7 @@
                         <div class="metric-icon orange">🚫</div>
                         <span class="metric-trend warn">Vi phạm mô tả</span>
                     </div>
-                    <div class="metric-value">3</div>
+                    <div class="metric-value" id="rejectedProductMetric">0</div>
                     <div class="metric-label">Sản phẩm bị từ chối duyệt</div>
                 </div>
 
@@ -169,7 +169,7 @@
                         <div class="metric-icon blue">🏷️</div>
                         <span class="metric-trend up">Toàn sàn</span>
                     </div>
-                    <div class="metric-value">3,420</div>
+                    <div class="metric-value" id="totalProductMetric">0</div>
                     <div class="metric-label">Tổng sản phẩm đang hoạt động</div>
                 </div>
             </div>
@@ -268,5 +268,6 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="duyetsanpham.js"></script>
 </body>
 </html>
