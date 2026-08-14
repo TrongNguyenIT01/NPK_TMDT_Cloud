@@ -663,6 +663,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.removeItem('npkl_wishlist');
                     localStorage.removeItem('npkl_cart_items');
                     localStorage.removeItem('npkl_cart_count');
+                    // Clear dữ liệu nhạy cảm của Seller (Fix bảo mật)
+                    localStorage.removeItem('myShopStatus');
+                    localStorage.removeItem('myShopId');
+                    localStorage.removeItem('myShopName');
+                    localStorage.removeItem('mySellerId');
+                    // Clear các dữ liệu nhạy cảm khác nếu có
+                    Object.keys(localStorage).forEach(key => {
+                        if (key.startsWith('myShop') || key.startsWith('seller') || key.startsWith('shop_')) {
+                            localStorage.removeItem(key);
+                        }
+                    });
 
                     showToast('Đã đăng xuất tài khoản thành công!');
                     setTimeout(() => {

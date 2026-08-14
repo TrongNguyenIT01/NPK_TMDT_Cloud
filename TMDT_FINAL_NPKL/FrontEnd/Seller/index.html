@@ -597,23 +597,5 @@
     </div>
 
     <script src="script.js"></script>
-        <script>
-        function handleLogout() {
-            // 1. Xóa toàn bộ Token và dữ liệu phiên làm việc
-            sessionStorage.clear();
-            localStorage.removeItem("jwtToken"); 
-            localStorage.removeItem("userRole");
-            localStorage.removeItem("userName");
-            localStorage.removeItem("fullName");
-            localStorage.removeItem("npkl_wishlist");
-            localStorage.removeItem("npkl_cart_items");
-            localStorage.removeItem("npkl_cart_count");
-
-            alert("Bạn đã đăng xuất khỏi Kênh Người Bán thành công!");
-
-            // 2. Chuyển hướng về trang chủ chưa đăng nhập
-            window.location.href = "../TrangChinh/index.html"; 
-        }
-    </script>
 </body>
 </html>

@@ -1,3 +1,29 @@
+// Global Logout Handler for Seller pages
+window.handleLogout = function handleLogout() {
+    sessionStorage.clear();
+    localStorage.removeItem("jwtToken"); 
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("fullName");
+    localStorage.removeItem("npkl_wishlist");
+    localStorage.removeItem("npkl_cart_items");
+    localStorage.removeItem("npkl_cart_count");
+    // Clear dữ liệu nhạy cảm của Seller (Fix bảo mật)
+    localStorage.removeItem("myShopStatus");
+    localStorage.removeItem("myShopId");
+    localStorage.removeItem("myShopName");
+    localStorage.removeItem("mySellerId");
+    // Clear các dữ liệu nhạy cảm khác nếu có
+    Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('myShop') || key.startsWith('seller') || key.startsWith('shop_')) {
+            localStorage.removeItem(key);
+        }
+    });
+
+    alert("Bạn đã đăng xuất khỏi trang Quản Trị Cửa Hàng thành công!");
+    window.location.href = "../TrangChinh/index.html"; 
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     // Navigation Guard: Kiểm tra quyền truy cập của Seller dựa trên trạng thái Shop
     async function checkShopAccessGuard() {

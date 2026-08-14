@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -26,6 +27,45 @@ namespace TMDT_FINAL_NPKL.Controllers
         {
             _context = context;
             _configuration = configuration;
+        }
+
+        [Authorize]
+        [HttpPost("change-password")]
+        public IActionResult ChangePassword([FromBody] Models.ChangePasswordRequest request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.OldPassword) ||
+                string.IsNullOrWhiteSpace(request.NewPassword) || string.IsNullOrWhiteSpace(request.ConfirmNewPassword))
+            {
+                return BadRequest(new { Success = false, Message = "Dữ liệu không hợp lệ." });
+            }
+
+            if (request.NewPassword != request.ConfirmNewPassword)
+            {
+                return BadRequest(new { Success = false, Message = "Mật khẩu mới và xác nhận mật khẩu không khớp." });
+            }
+
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                return Unauthorized(new { Success = false, Message = "Không xác thực được người dùng." });
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.UserId == userIdClaim);
+            if (user == null)
+            {
+                return NotFound(new { Success = false, Message = "Người dùng không tồn tại." });
+            }
+
+            var hashedOld = Models.HassPass.HashPassword(request.OldPassword);
+            if (user.PasswordHash != hashedOld)
+            {
+                return BadRequest(new { Success = false, Message = "Mật khẩu cũ không chính xác." });
+            }
+
+            user.PasswordHash = Models.HassPass.HashPassword(request.NewPassword);
+            _context.SaveChanges();
+
+            return Ok(new { Success = true, Message = "Đổi mật khẩu thành công." });
         }
 
         [HttpPost("login")]
