@@ -7,6 +7,8 @@
     <script src="../DangNhap/checkUser.js"></script>
     <script src="../Admin/dashboard.js"></script>
     <script src="../Admin/doanhmuc.js"></script>
+    <script src="../Admin/giam-sat-don-hang.js"></script>
+    <script src="../Admin/chi-tiet-don-hang.js"></script>
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -472,6 +474,16 @@
                             <h3>Toàn Bộ Đơn Hàng Hệ Thống</h3>
                             <p>Theo dõi quá trình giao dịch và xử lý đơn giữa Khách Hàng và Người Bán</p>
                         </div>
+                        <div class="table-filters" style="margin-left: auto;">
+                            <select id="orderStatusFilter" class="filter-select">
+                                <option value="ALL">Tất cả trạng thái</option>
+                                <option value="PENDING">Chờ Duyệt</option>
+                                <option value="CONFIRMED">Đã Duyệt</option>
+                                <option value="SHIPPING">Đang Vận Chuyển</option>
+                                <option value="DELIVERED">Đã Hoàn Thành</option>
+                                <option value="CANCELLED">Đã Hủy</option>
+                            </select>
+                        </div>
                     </div>
                     <table class="admin-table">
                         <thead>
@@ -483,26 +495,33 @@
                                 <th>Tổng Tiền</th>
                                 <th>Địa Chỉ Giao</th>
                                 <th>Trạng Thái Đơn</th>
+                                <th>Thao Tác</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
+                        <tbody id="orderTableBody">
+                            <tr data-status="SHIPPING">
                                 <td><strong>ORD0001</strong></td>
                                 <td>Hứa Gia Kiên</td>
                                 <td>SH0001 - NPKL Bookshop</td>
                                 <td>11/08/2026 14:20</td>
                                 <td><strong>450.000đ</strong></td>
                                 <td>TP. Hồ Chí Minh</td>
-                                <td><span class="badge-status shipping">Đang Giao</span></td>
+                                <td><span class="badge-status shipping">Đang Vận Chuyển</span></td>
+                                <td>
+                                    <button class="btn-tb primary btn-view-order" data-id="ORD0001" title="Xem chi tiết" style="padding: 4px 8px; font-size: 1.1rem; border-radius: 4px; background: #e2e8f0; border: 1px solid #cbd5e1; cursor: pointer; color: #334155;">👁️</button>
+                                </td>
                             </tr>
-                            <tr>
+                            <tr data-status="DELIVERED">
                                 <td><strong>ORD0002</strong></td>
                                 <td>Nguyễn Văn A</td>
                                 <td>SH0002 - VPP Sài Gòn</td>
                                 <td>10/08/2026 09:15</td>
                                 <td><strong>120.000đ</strong></td>
                                 <td>Hà Nội</td>
-                                <td><span class="badge-status delivered">Đã Giao</span></td>
+                                <td><span class="badge-status delivered">Đã Hoàn Thành</span></td>
+                                <td>
+                                    <button class="btn-tb primary btn-view-order" data-id="ORD0002" title="Xem chi tiết" style="padding: 4px 8px; font-size: 1.1rem; border-radius: 4px; background: #e2e8f0; border: 1px solid #cbd5e1; cursor: pointer; color: #334155;">👁️</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -556,6 +575,63 @@
         </form>
     </div>
 </div>
+
+    <!-- MODAL CHI TIẾT ĐƠN HÀNG -->
+    <div class="modal-overlay" id="orderDetailsModal" style="display: none;">
+        <div class="modal-card" style="max-width: 900px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h3>Chi Tiết Đơn Hàng <span id="order_id"></span></h3>
+                <button class="btn-close-modal" id="closeOrderDetailsModal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="order-header-info" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px;">
+                    <div>
+                        <p style="color: #64748B; margin: 5px 0 0 0;">Ngày đặt: <span id="order_date">...</span></p>
+                    </div>
+                    <div>
+                        <span class="badge-status" id="status" style="font-size: 1rem; padding: 6px 12px;">...</span>
+                    </div>
+                </div>
+
+                <div class="order-info-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="info-box" style="background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                        <h4 style="margin-top: 0; margin-bottom: 10px; color: #334155; font-size: 1.1rem;">Thông Tin Khách Hàng</h4>
+                        <p style="margin: 5px 0; color: #475569;"><strong>Mã KH:</strong> <span id="customer_id">...</span></p>
+                        <p style="margin: 5px 0; color: #475569;"><strong>Tên:</strong> <span id="customer_name">...</span></p>
+                        <p style="margin: 5px 0; color: #475569;"><strong>Điện thoại:</strong> <span id="customer_phone">...</span></p>
+                        <p style="margin: 5px 0; color: #475569;"><strong>Địa chỉ giao:</strong> <span id="shipping_address">...</span></p>
+                    </div>
+                    <div class="info-box" style="background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                        <h4 style="margin-top: 0; margin-bottom: 10px; color: #334155; font-size: 1.1rem;">Thông Tin Cửa Hàng</h4>
+                        <p style="margin: 5px 0; color: #475569;"><strong>Mã cửa hàng:</strong> <span id="shop_id">...</span></p>
+                        <p style="margin: 5px 0; color: #475569;"><strong>Tên cửa hàng:</strong> <span id="shop_name">...</span></p>
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom: 15px;">Sản Phẩm Đã Đặt</h3>
+                <table class="order-items-table admin-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; background: #f1f5f9; color: #475569;">Mã SP</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; background: #f1f5f9; color: #475569;">Tên Sản Phẩm</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; background: #f1f5f9; color: #475569;">Đơn Giá</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; background: #f1f5f9; color: #475569;">Số Lượng</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; background: #f1f5f9; color: #475569;">Thành Tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody id="order_details_list">
+                        <!-- Products will be loaded here -->
+                    </tbody>
+                </table>
+
+                <div class="order-summary" style="text-align: right; padding: 20px 0; border-top: 1px solid #e2e8f0;">
+                    <p style="font-size: 1.1rem; margin: 5px 0;">Tạm tính: <span id="subtotal">...</span></p>
+                    <p style="font-size: 1.1rem; margin: 5px 0;">Phí vận chuyển: <span id="shipping_fee">...</span></p>
+                    <p class="total-price" style="font-size: 1.3rem; font-weight: bold; color: #ef4444; margin: 5px 0;">Tổng thanh toán: <span id="total_amount">...</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
