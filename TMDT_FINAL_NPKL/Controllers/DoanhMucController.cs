@@ -106,7 +106,7 @@ namespace TMDT_FINAL_NPKL.Controllers
                 return StatusCode(500, $"Lỗi server: {ex.Message}");
             }
         }
-        [HttpGet]
+        [HttpGet("getDM")]
         public async Task<IActionResult> GetAllCategories()
         {
             try
