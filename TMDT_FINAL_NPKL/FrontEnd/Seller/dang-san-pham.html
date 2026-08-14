@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NPKL Seller - Đăng Sản Phẩm Mới</title>
     <script src="../Seller/doanhmuc.js"></script>
+    <script src="../DangNhap/checkUser.js"></script>
     <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -96,8 +97,8 @@
         <div class="sidebar-footer">
             <div class="seller-avatar">NB</div>
             <div class="seller-info">
-                <span class="seller-name">NPKL Official Bookshop</span>
-                <span class="seller-role">Mã Shop: SH0001</span>
+                <span class="seller-name" id="fullname"></span>
+                <span class="seller-role" id="role"></span>
             </div>
         </div>
     </aside>
@@ -152,8 +153,8 @@
                         </div>
 
                         <div>
-                            <label class="form-label-seller">Mã Sản Phẩm (Tùy chọn)</label>
-                            <input type="text" id="prodSKU" class="form-input-seller" placeholder="VD: SKU-SACH-001" />
+                            <label class="form-label-seller">Mã Sản Phẩm </label>
+                            <input type="text" id="prodSKU" class="form-input-seller" placeholder="Hệ Thống Tự Sinh - Không Cần Nhập" readonly />
                         </div>
                     </div>
                 </div>

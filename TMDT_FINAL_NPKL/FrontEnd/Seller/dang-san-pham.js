@@ -58,13 +58,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Xử lý submit form gọi API
+
+// 3. Xử lý submit form gọi API
     const newProductForm = document.getElementById('newProductForm');
     if (newProductForm) {
         newProductForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+            // 1. Chặn trình duyệt tự động reload trang (RẤT QUAN TRỌNG)
+            e.preventDefault(); 
 
-            // Lấy token từ localStorage
             const token = localStorage.getItem('jwtToken');
             if (!token) {
                 alert('Bạn cần đăng nhập bằng tài khoản Seller để thực hiện chức năng này.');
@@ -83,18 +84,19 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('Price', document.getElementById('prodPrice').value);
             formData.append('StockQuantity', document.getElementById('prodStock').value);
 
-            // Lấy file ảnh đại diện
-            const mainImageFile = document.getElementById('prodMainImgFile').files[0];
-            if (mainImageFile) formData.append('MainImage', mainImageFile);
+            // Ảnh đại diện
+            const mainImgFile = document.getElementById('prodMainImgFile').files[0];
+            if (mainImgFile) formData.append('MainImage', mainImgFile);
 
-            // Lấy các file ảnh chi tiết
-            const detailImagesFiles = document.getElementById('prodDetailImgsFile').files;
-            for (let i = 0; i < detailImagesFiles.length; i++) {
-                formData.append('DetailImages', detailImagesFiles[i]);
+            // Ảnh chi tiết
+            const detailImgsFiles = document.getElementById('prodDetailImgsFile').files;
+            for (let i = 0; i < detailImgsFiles.length; i++) {
+                formData.append('DetailImages', detailImgsFiles[i]);
             }
 
-            // Gọi API
             try {
+                console.log("Đang gửi yêu cầu tạo sản phẩm lên API...");
+
                 const response = await fetch('https://localhost:3001/api/SanPham/add-product', {
                     method: 'POST',
                     headers: {
@@ -103,28 +105,44 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: formData
                 });
 
+                // Chuyển kết quả sang JSON
                 const result = await response.json();
+                
+                // IN RA CONSOLE để xem chính xác C# trả về cái gì
+                console.log("Kết quả từ Server:", result);
 
-                if (response.ok && result.success) {
-                    alert('Đăng sản phẩm thành công! ' + result.message);
+                // Bắt cả 2 trường hợp thuộc tính viết HOA hoặc viết thường
+                const isSuccess = result.Success || result.success;
+                const message = result.Message || result.message || "Không có thông báo từ server";
+
+                if (response.ok && isSuccess) {
+                    // Hiển thị thông báo THÀNH CÔNG
+                    alert('✅ ' + message);
+                    
+                    // Reset form và giao diện
                     newProductForm.reset();
-                    // Reset preview
+                    
+                    const mainImgPreview = document.getElementById('mainImgPreview');
+                    const mainImgFileName = document.getElementById('mainImgFileName');
+                    const detailImgsPreviewGallery = document.getElementById('detailImgsPreviewGallery');
+                    const detailImgsCount = document.getElementById('detailImgsCount');
+
                     if (mainImgPreview) mainImgPreview.src = '../TrangChinh/images/dac_nhan_tam.jpg';
                     if (mainImgFileName) {
                         mainImgFileName.textContent = 'Chưa chọn tệp ảnh đại diện mới';
                         mainImgFileName.style.color = '#64748B';
-                        mainImgFileName.style.fontWeight = 'normal';
                     }
                     if (detailImgsPreviewGallery) {
                         detailImgsPreviewGallery.innerHTML = '<span style="font-size: 0.82rem; color: #94A3B8; font-style: italic;">Chưa chọn tệp ảnh chi tiết nào.</span>';
-                        detailImgsCount.textContent = '0';
+                        if (detailImgsCount) detailImgsCount.textContent = '0';
                     }
                 } else {
-                    alert('Lỗi: ' + (result.message || 'Không thể đăng sản phẩm.'));
+                    // Hiển thị thông báo LỖI TỪ API (ví dụ: tên SP trùng...)
+                    alert('❌ ' + message);
                 }
             } catch (error) {
                 console.error('Lỗi khi gọi API:', error);
-                alert('Không thể kết nối đến server.');
+                alert('Đã xảy ra lỗi trong quá trình gửi dữ liệu. Vui lòng nhấn F12 mở tab Console để kiểm tra.');
             }
         });
     }

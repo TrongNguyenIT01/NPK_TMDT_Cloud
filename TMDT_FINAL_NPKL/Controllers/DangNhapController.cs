@@ -153,7 +153,7 @@ namespace TMDT_FINAL_NPKL.Controllers
                 Message = "Đăng nhập thành công!",
                 RedirectUrl = redirectUrl,
                 Token = token,
-                Role = user.Role, // Sử dụng user.Role thay vì user.role
+                Role = user.Role, 
                 Username = user.Username,
                 FullName = user.FullName
             });
@@ -174,6 +174,7 @@ namespace TMDT_FINAL_NPKL.Controllers
             {
                 // Thay đổi thành user.Username, user.UserId, user.Role, user.FullName
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
+                new Claim("Username", user.Username),
                 new Claim("UserId", user.UserId),
                 new Claim(ClaimTypes.Role, user.Role),
                 new Claim(ClaimTypes.Name, user.FullName)
