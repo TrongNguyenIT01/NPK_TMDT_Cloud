@@ -170,22 +170,52 @@
                     </div>
                 </div>
 
-                <!-- Section 3: Hình Ảnh Sản Phẩm -->
+                <!-- Section 3: Ảnh Đại Diện Sản Phẩm -->
                 <div class="profile-card" style="margin-bottom: 24px;">
-                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">3. Hình Ảnh Sản Phẩm</h3>
-                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Tải lên ảnh đại diện sản phẩm rõ nét (Định dạng JPG, PNG)</p>
+                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">3. Ảnh Đại Diện Sản Phẩm</h3>
+                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Tải lên hoặc chọn tệp ảnh đại diện chính của sản phẩm (Định dạng JPG, PNG, WEBP)</p>
 
                     <div class="form-grid-seller">
                         <div class="form-group-full">
-                            <label class="form-label-seller">Đường Dẫn / Chọn Ảnh Đại Diện Sản Phẩm <span style="color:#DC2626;">*</span></label>
-                            <input type="text" id="prodImgUrl" class="form-input-seller" placeholder="VD: ../TrangChinh/images/dac_nhan_tam.jpg" value="../TrangChinh/images/dac_nhan_tam.jpg" required />
+                            <label class="form-label-seller">Chọn Tệp Ảnh Đại Diện Sản Phẩm <span style="color:#DC2626;">*</span></label>
+                            <input type="file" id="prodMainImgFile" accept="image/*" class="form-input-seller" style="padding: 10px; background: #FFFFFF; cursor: pointer;" required />
+                            
+                            <!-- Live Image Preview Box -->
+                            <div id="mainImgPreviewBox" style="margin-top: 14px; display: flex; align-items: center; gap: 14px; padding: 12px; background: #F8FAFC; border-radius: 12px; border: 1px dashed #CBD5E1;">
+                                <img id="mainImgPreview" src="../TrangChinh/images/dac_nhan_tam.jpg" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #E2E8F0; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" alt="Xem trước ảnh đại diện" />
+                                <div>
+                                    <strong style="font-size: 0.88rem; color: #0B2238;">Xem Trước Ảnh Đại Diện</strong>
+                                    <p id="mainImgFileName" style="font-size: 0.8rem; color: #64748B; margin-top: 2px;">Chưa chọn tệp ảnh đại diện mới</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Section 4: Mô Tả Chi Tiết -->
+                <!-- Section 4: Ảnh Chi Tiết Sản Phẩm (MỤC MỚI THÊM) -->
                 <div class="profile-card" style="margin-bottom: 24px;">
-                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">4. Mô Tả Chi Tiết Sản Phẩm</h3>
+                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">4. Ảnh Chi Tiết Sản Phẩm</h3>
+                    <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Tải lên các hình ảnh chi tiết góc cạnh, nội dung, bìa phụ sản phẩm (Chọn cùng lúc nhiều ảnh)</p>
+
+                    <div class="form-grid-seller">
+                        <div class="form-group-full">
+                            <label class="form-label-seller">Chọn Các Tệp Ảnh Chi Tiết (Nhiều Ảnh)</label>
+                            <input type="file" id="prodDetailImgsFile" accept="image/*" multiple class="form-input-seller" style="padding: 10px; background: #FFFFFF; cursor: pointer;" />
+
+                            <!-- Live Gallery Preview Box -->
+                            <div style="margin-top: 14px; padding: 14px; background: #F8FAFC; border-radius: 12px; border: 1px dashed #CBD5E1;">
+                                <strong style="font-size: 0.88rem; color: #0B2238; display: block; margin-bottom: 10px;">Bộ Ảnh Chi Tiết Sản Phẩm (<span id="detailImgsCount">0</span> ảnh)</strong>
+                                <div id="detailImgsPreviewGallery" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                                    <span style="font-size: 0.82rem; color: #94A3B8; font-style: italic;">Chưa chọn tệp ảnh chi tiết nào. Bấm "Chọn Các Tệp Ảnh Chi Tiết" ở trên để xem trước bộ ảnh.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Mô Tả Chi Tiết Sản Phẩm -->
+                <div class="profile-card" style="margin-bottom: 24px;">
+                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px; color:#0B2238;">5. Mô Tả Chi Tiết Sản Phẩm</h3>
                     <p style="font-size:0.86rem; color:#64748B; margin-bottom:20px;">Giới thiệu nội dung, thông số và ưu điểm của sản phẩm</p>
 
                     <div class="form-group-full">
@@ -205,5 +235,67 @@
     </main>
 
     <script src="script.js"></script>
+    <script>
+        // Xử lý xem trước ảnh chọn từ máy tính
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainImgFileInput = document.getElementById('prodMainImgFile');
+            const mainImgPreview = document.getElementById('mainImgPreview');
+            const mainImgFileName = document.getElementById('mainImgFileName');
+
+            const detailImgsFileInput = document.getElementById('prodDetailImgsFile');
+            const detailImgsPreviewGallery = document.getElementById('detailImgsPreviewGallery');
+            const detailImgsCount = document.getElementById('detailImgsCount');
+
+            // 1. Xử lý ảnh đại diện
+            if (mainImgFileInput) {
+                mainImgFileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (evt) => {
+                            mainImgPreview.src = evt.target.result;
+                            if (mainImgFileName) {
+                                mainImgFileName.textContent = `Tệp đã chọn: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+                                mainImgFileName.style.color = '#16A34A';
+                                mainImgFileName.style.fontWeight = '600';
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // 2. Xử lý bộ ảnh chi tiết (Nhiều ảnh)
+            if (detailImgsFileInput) {
+                detailImgsFileInput.addEventListener('change', (e) => {
+                    const files = Array.from(e.target.files);
+                    detailImgsPreviewGallery.innerHTML = '';
+
+                    if (files.length === 0) {
+                        detailImgsCount.textContent = '0';
+                        detailImgsPreviewGallery.innerHTML = '<span style="font-size: 0.82rem; color: #94A3B8; font-style: italic;">Chưa chọn tệp ảnh chi tiết nào.</span>';
+                        return;
+                    }
+
+                    detailImgsCount.textContent = files.length;
+
+                    files.forEach((file, index) => {
+                        const reader = new FileReader();
+                        reader.onload = (evt) => {
+                            const imgThumb = document.createElement('div');
+                            imgThumb.style.position = 'relative';
+                            imgThumb.style.display = 'inline-block';
+                            imgThumb.innerHTML = `
+                                <img src="${evt.target.result}" style="width: 75px; height: 75px; object-fit: cover; border-radius: 8px; border: 2px solid #0B2238;" title="${file.name}" />
+                                <span style="position: absolute; bottom: 2px; right: 2px; background: rgba(11,34,56,0.8); color: #fff; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px;">${index + 1}</span>
+                            `;
+                            detailImgsPreviewGallery.appendChild(imgThumb);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>
