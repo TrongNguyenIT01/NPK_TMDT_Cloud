@@ -15,6 +15,37 @@ document.addEventListener('DOMContentLoaded', () => {
     if (nameElem) nameElem.textContent = displayName;
     if (statusElem) statusElem.textContent = role === 'CUSTOMER' ? 'Khách Hàng' : (role || '');
 
+    // Quản lý Dropdown Account
+    const userProfileBtn = document.getElementById('userProfileBtn');
+    const userDropdownMenu = document.getElementById('userDropdownMenu');
+    if (userProfileBtn && userDropdownMenu) {
+        const dropdownName = document.getElementById('dropdownUserName');
+        const dropdownRole = document.getElementById('dropdownUserRole');
+        if (dropdownName) dropdownName.textContent = displayName;
+        if (dropdownRole) dropdownRole.textContent = role === 'CUSTOMER' ? 'Khách Hàng' : (role || '');
+
+        userProfileBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isVisible = userDropdownMenu.style.display === 'block';
+            userDropdownMenu.style.display = isVisible ? 'none' : 'block';
+        });
+        document.addEventListener('click', (e) => {
+            if (!userProfileBtn.contains(e.target) && !userDropdownMenu.contains(e.target)) {
+                userDropdownMenu.style.display = 'none';
+            }
+        });
+        const btnLogout = document.getElementById('btnLogout');
+        if (btnLogout) {
+            btnLogout.addEventListener('click', () => {
+                if (confirm('Bạn có chắc muốn đăng xuất?')) {
+                    sessionStorage.removeItem('jwtToken');
+                    localStorage.removeItem('jwtToken');
+                    window.location.href = '../DangNhap/index.html';
+                }
+            });
+        }
+    }
+
     const wishlistGrid = document.getElementById('wishlistGrid');
     const emptyState = document.getElementById('emptyState');
     const wishlistCountElem = document.getElementById('wishlistCount');
@@ -164,5 +195,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         container.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
+    }
+
+    // 4. Đồng bộ Top Bar & Search
+    const sellerLink = document.getElementById('sellerLink');
+    const sellerDivider = document.getElementById('sellerDivider');
+    const adminLink = document.getElementById('adminLink');
+    const adminDivider = document.getElementById('adminDivider');
+    if (role === 'CUSTOMER' || !role) {
+        if (sellerLink) sellerLink.style.display = 'none';
+        if (sellerDivider) sellerDivider.style.display = 'none';
+        if (adminLink) adminLink.style.display = 'none';
+        if (adminDivider) adminDivider.style.display = 'none';
+    }
+
+    const btnExecuteSearch = document.getElementById('btnExecuteSearch');
+    const globalSearchInput = document.getElementById('globalSearchInput');
+    if (btnExecuteSearch && globalSearchInput) {
+        btnExecuteSearch.addEventListener('click', () => {
+            const query = globalSearchInput.value.trim();
+            if (query) {
+                localStorage.setItem('npkl_pending_search', query);
+            }
+            window.location.href = '../TrangChinh/index.html';
+        });
+        globalSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') btnExecuteSearch.click();
+        });
     }
 });

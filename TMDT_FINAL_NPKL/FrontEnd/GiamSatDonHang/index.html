@@ -3,7 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NPKL - Sàn Thương Mại Điện Tử Hàng Đầu</title>
+    <title>Giám Sát Đơn Hàng - NPKL</title>
+    <link rel="stylesheet" href="../TrangChinh/styles.css" />
+    <link rel="stylesheet" href="../ThongTinNguoiDung/styles.css" />
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -71,7 +73,7 @@
     <header class="main-header">
         <div class="header-container">
             <!-- Logo -->
-            <a href="index.html" class="logo">NP<span>KL</span></a>
+            <a href="../TrangChinh/index.html" class="logo">NP<span>KL</span></a>
 
             <!-- Search Group -->
             <div class="search-box-wrapper">
@@ -89,11 +91,6 @@
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                 </button>
-
-                <!-- Auto-complete Live Search Panel Dropdown -->
-                <div class="search-dropdown-results" id="searchDropdownResults">
-                    <!-- Dynamic content injected by JavaScript -->
-                </div>
             </div>
 
             <!-- Header Actions -->
@@ -124,7 +121,7 @@
 
                 <!-- User Profile / Auth Links -->
                 <div class="user-profile-container" style="position: relative;">
-                    <a href="../DangNhap/index.html" class="user-profile" id="userProfileBtn" style="text-decoration: none;" title="Đăng nhập / Tài khoản">
+                    <a href="#" class="user-profile active-profile" id="userProfileBtn" style="text-decoration: none;" title="Đăng nhập / Tài khoản">
                         <div class="avatar-circle">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -132,12 +129,12 @@
                             </svg>
                         </div>
                         <div class="user-info">
-                            <span class="user-name" id="headerUserName">Đăng Nhập</span>
+                            <span class="user-name" id="headerUserName">Tên Người Dùng</span>
                             <span class="user-status" id="headerUserStatus"></span>
                         </div>
                     </a>
 
-                    <!-- User Dropdown Menu (Hiển thị khi người dùng đã đăng nhập) -->
+                    <!-- User Dropdown Menu -->
                     <div class="user-dropdown-menu" id="userDropdownMenu" style="display: none;">
                         <div class="user-dropdown-header">
                             <div class="dropdown-avatar">
@@ -159,7 +156,7 @@
                             </svg>
                             <span>Thông tin người dùng</span>
                         </a>
-                        <a href="../GiamSatDonHang/index.html" class="dropdown-item">
+                        <a href="index.html" class="dropdown-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -183,160 +180,105 @@
         </div>
     </header>
 
-    <!-- 3. NAVIGATION MENU WITH DROPDOWNS -->
-    <nav class="nav-menu">
-        <div class="nav-container">
-            <div class="nav-item">
-                <a href="index.html" class="nav-link active nav-category-trigger" data-category="ALL" data-name="TẤT CẢ">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                    </svg>
-                    Trang Chủ
-                </a>
+    <!-- MAIN CONTENT -->
+    <main class="account-main-container">
+        <!-- Phần 2: Giám sát đơn hàng -->
+        <section class="account-section" id="ordersSection">
+            <div class="section-header">
+                <div class="section-header-left">
+                    <h2>Giám Sát Đơn Hàng</h2>
+                    <p>Theo dõi trạng thái các đơn hàng bạn đã đặt</p>
+                </div>
+                <a href="../TrangChinh/index.html" class="btn-back-home">&larr; Quay lại trang chủ</a>
             </div>
-
-            <!-- SÁCH -->
-            <div class="nav-item">
-                <a href="#bestsellers" class="nav-link nav-category-trigger" data-category="SACH" data-name="SÁCH">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                    </svg>
-                    Sách ▾
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" data-category="SACH" data-name="TẤT CẢ SÁCH">
-                        <span>📖 Tất Cả Sách</span>
-                        <span class="item-badge">Hot</span>
-                    </a>
-                    <a class="dropdown-item" data-category="SACH" data-name="SÁCH VĂN HỌC">
-                        <span>📚 Sách Văn Học</span>
-                    </a>
-                    <a class="dropdown-item" data-category="SACH" data-name="SÁCH KỸ NĂNG & KINH TẾ">
-                        <span>💡 Sách Kỹ Năng & Kinh Tế</span>
-                    </a>
-                    <a class="dropdown-item" data-category="SACH" data-name="SÁCH NGOẠI NGỮ">
-                        <span>🌐 Sách Ngoại Ngữ</span>
-                    </a>
+            <div class="section-body">
+                <div class="table-responsive">
+                    <table class="order-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Đơn Hàng</th>
+                                <th>Cửa Hàng</th>
+                                <th>Ngày Đặt</th>
+                                <th>Tổng Tiền</th>
+                                <th>Địa Chỉ Giao</th>
+                                <th>Trạng Thái Đơn</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orderTableBody">
+                            <tr>
+                                <td><strong>ORD0001</strong></td>
+                                <td>SH0001 - NPKL Bookshop</td>
+                                <td>11/08/2026 14:20</td>
+                                <td><strong>450.000đ</strong></td>
+                                <td>TP. Hồ Chí Minh</td>
+                                <td><span class="badge-status shipping">Đang Vận Chuyển</span></td>
+                                <td>
+                                    <button class="btn-icon btn-view-order" data-id="ORD0001" title="Xem chi tiết">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>ORD0002</strong></td>
+                                <td>SH0002 - VPP Sài Gòn</td>
+                                <td>10/08/2026 09:15</td>
+                                <td><strong>120.000đ</strong></td>
+                                <td>Hà Nội</td>
+                                <td><span class="badge-status delivered">Đã Hoàn Thành</span></td>
+                                <td>
+                                    <button class="btn-icon btn-view-order" data-id="ORD0002" title="Xem chi tiết">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </section>
+    </main>
 
-            <div class="nav-item" id="navLoginItem">
-                <a href="../DangNhap/index.html" class="nav-link">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                        <polyline points="10 17 15 12 10 7"></polyline>
-                        <line x1="15" y1="12" x2="3" y2="12"></line>
-                    </svg>
-                    Đăng Nhập
-                </a>
+    <!-- Modal Chi Tiết Đơn Hàng -->
+    <div class="modal-overlay" id="orderDetailModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Chi Tiết Đơn Hàng <span id="modalOrderId" style="color: #3b82f6;"></span></h3>
+                <button class="btn-close-modal" id="closeModalBtn">&times;</button>
             </div>
-            <div class="nav-item" id="navRegisterItem">
-                <a href="../DangKy/index.html" class="nav-link">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="8.5" cy="7" r="4"></circle>
-                        <line x1="20" y1="8" x2="20" y2="14"></line>
-                        <line x1="17" y1="11" x2="23" y2="11"></line>
-                    </svg>
-                    Đăng Ký
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- 4. HERO BANNER SECTION -->
-    <section class="hero-section">
-        <div class="hero-banner">
-            <div class="hero-content">
-                <span class="hero-tag">KHÁM PHÁ CUỐN SÁCH TIẾP THEO</span>
-                <h1 class="hero-title">SÁCH YÊU THÍCH</h1>
-                <p class="hero-desc">Khám phá sách, văn phòng phẩm và các dụng cụ sáng tạo thiết yếu được thiết kế cho hành trình học tập của bạn.</p>
-                <a href="#bestsellers" class="btn-hero">
-                    MUA NGAY →
-                </a>
-            </div>
-            <div class="hero-image-wrapper">
-                <img src="images/hero_book_banner.jpg" alt="Milk and honey book" />
-            </div>
-        </div>
-    </section>
-
-    <!-- 5. CATEGORY HIGHLIGHT CARDS -->
-    <section class="category-section">
-        <div class="category-grid">
-            <!-- Card 1: Sách (Làm mẫu) -->
-            <div class="cat-card" data-category="SACH">
-                <div class="cat-icon-box green">
-                    📗
+            <div class="modal-body">
+                <div class="order-detail-group">
+                    <label>Ngày đặt hàng</label>
+                    <p id="modalOrderDate"></p>
                 </div>
-                <div class="cat-info">
-                    <h3 class="cat-title">SÁCH</h3>
-                    <p class="cat-desc">Khám phá câu chuyện và kiến thức.</p>
-                    <span class="cat-link">MUA NGAY →</span>
+                <div class="order-detail-group">
+                    <label>Cửa hàng</label>
+                    <p id="modalOrderShop"></p>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 6. MAIN PRODUCTS CONTAINER WITH VERTICAL CATEGORY SECTIONS -->
-    <section class="bestseller-section" id="bestsellers">
-        <div class="section-header-wrapper">
-            <h2 class="section-title" id="sectionTitle">DANH MỤC SẢN PHẨM NỔI BẬT</h2>
-
-            <!-- Interactive Filter Tabs Bar -->
-            <div class="filter-tabs-bar">
-                <button class="filter-btn active" data-filter="ALL" data-name="TẤT CẢ">
-                    ✨ Tất cả danh mục
-                </button>
-                <button class="filter-btn" data-filter="SACH" data-name="SÁCH & TRI THỨC">
-                    📗 Sách & Tri Thức
-                </button>
-            </div>
-        </div>
-
-        <!-- 📚 KHU VỰC 1: SÁCH & TRI THỨC -->
-        <div class="category-block-section" id="section-sach" data-category-block="SACH">
-            <div class="category-banner-header green-banner">
-                <div class="banner-title-group">
-                    <span class="category-emoji">📗</span>
-                    <div>
-                        <h3 class="category-block-title">SÁCH & TRI THỨC</h3>
-                        <p class="category-block-desc">Những cuốn sách hay nhất nuôi dưỡng tâm hồn và tri thức</p>
-                    </div>
+                <div class="order-detail-group">
+                    <label>Tổng tiền</label>
+                    <p id="modalOrderTotal" style="color: #ef4444; font-weight: 700;"></p>
                 </div>
-                <button class="btn-view-more" data-category="SACH" data-name="SÁCH & TRI THỨC">
-                    Xem tất cả Sách →
-                </button>
-            </div>
-
-            <div class="products-grid">
-                <!-- Product 1: Sách (Làm mẫu) -->
-                <div class="product-card" data-category="SACH">
-                    <div class="product-image-box">
-                        <span class="category-tag green-tag">Sách</span>
-                        <img src="images/dac_nhan_tam.jpg" alt="Đắc Nhân Tâm" />
-                        <button class="wishlist-btn" title="Yêu thích">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <h3 class="product-title">Đắc Nhân Tâm</h3>
-                    <p class="product-author">Dale Carnegie</p>
-                    <div class="rating-box">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews-count">(890)</span>
-                    </div>
-                    <div class="product-price">75.000đ</div>
-                    <button class="btn-add-cart">
-                        🛒 THÊM VÀO GIỎ
-                    </button>
+                <div class="order-detail-group">
+                    <label>Địa chỉ giao hàng</label>
+                    <p id="modalOrderAddress"></p>
+                </div>
+                <div class="order-detail-group">
+                    <label>Danh sách sản phẩm (Minh họa)</label>
+                    <ul style="padding-left: 20px; color: #1e293b;">
+                        <li>Sách Đắc Nhân Tâm x 1</li>
+                        <li>Bút bi Thiên Long x 5</li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
     <script src="script.js"></script>
 </body>

@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterBtns = document.querySelectorAll('.filter-btn');
     const categoryCards = document.querySelectorAll('.cat-card');
     const navCategoryLinks = document.querySelectorAll('.nav-category-trigger');
-    const dropdownItems = document.querySelectorAll('.dropdown-item');
+    const dropdownItems = document.querySelectorAll('.nav-menu .dropdown-item');
     const viewMoreBtns = document.querySelectorAll('.btn-view-more');
     const sectionTitle = document.querySelector('#sectionTitle');
     const productsSection = document.querySelector('#bestsellers');
@@ -560,6 +560,18 @@ document.addEventListener('DOMContentLoaded', () => {
             if (searchDropdown) searchDropdown.classList.remove('active');
         }
     });
+
+    // ---------------- Execute Pending Search from Other Pages ----------------
+    const pendingSearch = localStorage.getItem('npkl_pending_search');
+    if (pendingSearch) {
+        localStorage.removeItem('npkl_pending_search');
+        if (searchInput) {
+            searchInput.value = pendingSearch;
+            setTimeout(() => {
+                if (btnExecuteSearch) btnExecuteSearch.click();
+            }, 300); // Allow DOM to fully settle
+        }
+    }
 
     // Toast Notification Helper
     function showToast(message) {
