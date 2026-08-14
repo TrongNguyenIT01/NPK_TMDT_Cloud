@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     async function loadCategories() {
         try {
-            const response = await fetch(`${baseUrl}/api/DoanhMuc`);
+            const response = await fetch(`${baseUrl}/api/DoanhMuc/getDM`);
             if (!response.ok) throw new Error("Lỗi tải danh mục");
 
             const categories = await response.json();
