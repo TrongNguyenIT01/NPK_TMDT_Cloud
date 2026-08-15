@@ -110,8 +110,15 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('npkl_cart_count', totalItemsCount);
     }
 
+    const BASE_API_URL = 'https://localhost:3001';
+
     function fixImgSrc(src) {
         if (!src) return '../TrangChinh/images/dac_nhan_tam.jpg';
+        if (src.includes('https://') || src.includes('http://')) {
+            const httpIdx = src.indexOf('http');
+            return src.substring(httpIdx);
+        }
+        if (src.startsWith('/images/')) return `${BASE_API_URL}${src}`;
         if (src.startsWith('../TrangChinh/')) return src;
         if (src.startsWith('images/')) return '../TrangChinh/' + src;
         if (src.startsWith('./images/')) return '../TrangChinh/' + src.substring(2);
@@ -135,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cartItemsList) {
             cartItemsList.innerHTML = cartItems.map(item => `
                 <div class="cart-item-row" id="${item.id}">
-                    <img src="${fixImgSrc(item.img)}" alt="${item.title}" class="cart-item-img" />
+                    <img src="${fixImgSrc(item.img)}" alt="${item.title}" class="cart-item-img" onerror="this.src='../TrangChinh/images/dac_nhan_tam.jpg'" />
                     <div class="cart-item-details">
                         <span class="item-cat-badge">${item.categoryTag}</span>
                         <h4 class="item-title">${item.title}</h4>

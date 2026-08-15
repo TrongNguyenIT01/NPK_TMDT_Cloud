@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // =========================================================================
-    // POP-UP MODAL CHI TIẾT SẢN PHẨM & THÔNG TIN SHOP / NGUỜI BÁN & ẢNH CON
-    // =========================================================================
+    const BASE_API_URL = 'https://localhost:3001';
     const productDetailModal = document.getElementById('productDetailModal');
     const closeDetailModalBtn = document.getElementById('closeDetailModalBtn');
     let currentModalProductData = null;
@@ -26,11 +24,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function formatImgUrl(src) {
-        if (!src) return 'images/default.png';
+        if (!src) return 'images/dac_nhan_tam.jpg';
         if (src.startsWith('http://') || src.startsWith('https://')) return src;
-        if (src.startsWith('/images/')) return `https://localhost:3001${src}`;
+        if (src.startsWith('/images/')) return `${BASE_API_URL}${src}`;
         if (src.startsWith('images/')) return src;
         return `images/${src}`;
+    }
+
+    function formatPrice(price) {
+        if (!price && price !== 0) return '0đ';
+        return new Intl.NumberFormat('vi-VN').format(price) + 'đ';
     }
 
     function getStoredCart() {
@@ -74,6 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2500);
     }
 
+    // =========================================================================
+    // HÀM MỞ POP-UP MODAL VÀ ĐỔ DỮ LIỆU SẢN PHẨM THẬT
+    // =========================================================================
     function openProductDetailModal(productId, fallbackCardData) {
         if (!productDetailModal) return;
 
@@ -90,38 +96,73 @@ document.addEventListener('DOMContentLoaded', () => {
         const sellerEmailEl = document.getElementById('modalSellerEmail');
         const subImagesListEl = document.getElementById('modalSubImagesList');
 
+        // Tìm kiếm sản phẩm trong cache dữ liệu API
+        const allProducts = window.allProductsData || [];
+        const realProduct = allProducts.find(p => p.productId === productId);
+
+        let productDetail = null;
+
+        if (realProduct) {
+            // Tổng hợp danh sách ảnh: Ảnh đại diện + các ảnh chi tiết
+            const imageSet = new Set();
+            if (realProduct.image) imageSet.add(realProduct.image);
+            if (Array.isArray(realProduct.images)) {
+                realProduct.images.forEach(img => { if (img) imageSet.add(img); });
+            }
+
+            const imagesList = Array.from(imageSet);
+            if (imagesList.length === 0) imagesList.push('images/dac_nhan_tam.jpg');
+
+            productDetail = {
+                productId: realProduct.productId,
+                title: realProduct.productName || 'Sản Phẩm NPKL',
+                priceText: formatPrice(realProduct.price),
+                priceNum: realProduct.price || 0,
+                description: realProduct.description || `Sản phẩm "${realProduct.productName}" được phân phối chính hãng trên hệ thống sàn TMĐT NPKL.\n\nThông số & Ưu điểm:\n• Đảm bảo 100% hàng chính hãng, nguồn gốc xuất xứ rõ ràng.\n• Bảo hành chính hãng, 1 đổi 1 nếu có lỗi từ nhà sản xuất.\n• Đóng gói cẩn thận chống sốc, giao hàng hỏa tốc 24/7 toàn quốc.`,
+                images: imagesList,
+                categoryTag: realProduct.categoryName || 'Sản Phẩm',
+                shopName: realProduct.shop?.shopName || 'Cửa Hàng NPKL Official Store',
+                sellerName: realProduct.shop?.sellerName || 'Chủ Gian Hàng',
+                sellerPhone: realProduct.shop?.sellerPhone || 'Chưa cập nhật',
+                sellerEmail: realProduct.shop?.sellerEmail || 'seller.support@npkl.vn',
+                stockQty: `Tồn kho: Còn ${realProduct.stockQuantity != null ? realProduct.stockQuantity : 100} sản phẩm`
+            };
+        } else {
+            // Fallback khi click dữ liệu mẫu
+            productDetail = {
+                productId: productId || 'DEMO',
+                title: fallbackCardData?.title || 'Sản Phẩm NPKL',
+                priceText: fallbackCardData?.price || '75.000đ',
+                priceNum: parseInt((fallbackCardData?.price || '0').replace(/[^\d]/g, '')) || 50000,
+                description: `Sản phẩm "${fallbackCardData?.title || 'NPKL'}" chất lượng cao được phân phối chính hãng trên hệ thống sàn TMĐT NPKL.`,
+                images: [
+                    fallbackCardData?.img || 'images/dac_nhan_tam.jpg',
+                    'images/hero_book_banner.jpg'
+                ],
+                categoryTag: fallbackCardData?.categoryTag || 'Sản Phẩm Nổi Bật',
+                shopName: 'Cửa Hàng NPKL Official Store',
+                sellerName: 'Nguyễn Văn Chủ Shop',
+                sellerPhone: '0987.654.321',
+                sellerEmail: 'seller.support@npkl.vn',
+                stockQty: 'Tồn kho: Còn 150 sản phẩm'
+            };
+        }
+
+        currentModalProductData = {
+            productId: productDetail.productId,
+            title: productDetail.title,
+            priceText: productDetail.priceText,
+            priceNum: productDetail.priceNum,
+            categoryTag: productDetail.categoryTag,
+            img: formatImgUrl(productDetail.images[0])
+        };
+
         // Bật hiển thị Pop-up Modal
         productDetailModal.classList.add('active');
 
-        // Dữ liệu mẫu chi tiết sản phẩm thuần Front-End
-        let productDetail = {
-            title: fallbackCardData?.title || 'Sản Phẩm NPKL',
-            price: fallbackCardData?.price || '75.000đ',
-            description: `Sản phẩm "${fallbackCardData?.title || 'NPKL'}" chất lượng cao được phân phối chính hãng trên hệ thống sàn TMĐT NPKL.\n\nThông số & Ưu điểm:\n• Đảm bảo 100% hàng chính hãng, nguồn gốc xuất xứ rõ ràng.\n• Bảo hành chính hãng 12 tháng, 1 đổi 1 trong 7 ngày nếu có lỗi từ nhà sản xuất.\n• Đóng gói cẩn thận chống sốc, giao hàng hỏa tốc 24/7 toàn quốc.`,
-            images: [
-                fallbackCardData?.img || 'images/dac_nhan_tam.jpg',
-                'images/hero_book_banner.jpg',
-                'images/default.png'
-            ],
-            categoryTag: fallbackCardData?.categoryTag || 'Sản Phẩm Nổi Bật',
-            shopName: 'Cửa Hàng NPKL Official Store',
-            sellerName: 'Nguyễn Văn Chủ Shop',
-            sellerPhone: '0987.654.321',
-            sellerEmail: 'seller.support@npkl.vn',
-            stockQty: 'Tồn kho: Còn 150 sản phẩm'
-        };
-
-        currentModalProductData = {
-            title: fallbackCardData?.title || 'Sản phẩm',
-            priceText: fallbackCardData?.price || '0đ',
-            priceNum: parseInt((fallbackCardData?.price || '0').replace(/[^\d]/g, '')) || 50000,
-            categoryTag: fallbackCardData?.categoryTag || 'Sản Phẩm',
-            img: formatImgUrl(fallbackCardData?.img)
-        };
-
         // Render thông tin lên Pop-up Modal UI
         if (titleEl) titleEl.textContent = productDetail.title;
-        if (priceEl) priceEl.textContent = productDetail.price;
+        if (priceEl) priceEl.textContent = productDetail.priceText;
         if (categoryTagEl) categoryTagEl.textContent = productDetail.categoryTag;
         if (descEl) descEl.textContent = productDetail.description;
         if (stockBadgeEl) stockBadgeEl.textContent = productDetail.stockQty;
@@ -138,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (subImagesListEl) {
                 subImagesListEl.innerHTML = productDetail.images.map((imgSrc, idx) => `
-                    <img src="${formatImgUrl(imgSrc)}" class="modal-sub-thumb ${idx === 0 ? 'active' : ''}" alt="Ảnh con ${idx + 1}" data-img="${formatImgUrl(imgSrc)}" />
+                    <img src="${formatImgUrl(imgSrc)}" class="modal-sub-thumb ${idx === 0 ? 'active' : ''}" alt="Ảnh con ${idx + 1}" data-img="${formatImgUrl(imgSrc)}" onerror="this.src='images/dac_nhan_tam.jpg'" />
                 `).join('');
 
                 subImagesListEl.querySelectorAll('.modal-sub-thumb').forEach(thumb => {
@@ -169,13 +210,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!currentModalProductData) return;
 
             let cart = getStoredCart();
-            const existingItem = cart.find(item => item.title === currentModalProductData.title);
+            const existingItem = cart.find(item => (currentModalProductData.productId && item.productId === currentModalProductData.productId) || item.title === currentModalProductData.title);
 
             if (existingItem) {
-                existingItem.qty += 1;
+                existingItem.qty = (existingItem.qty || 1) + 1;
             } else {
                 cart.push({
                     id: 'cart-' + Date.now(),
+                    productId: currentModalProductData.productId,
                     title: currentModalProductData.title,
                     price: currentModalProductData.priceNum,
                     qty: 1,
@@ -189,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const cartBadge = document.querySelector('#cartBadge');
             if (cartBadge) {
                 let totalCartQty = 0;
-                cart.forEach(item => totalCartQty += item.qty);
+                cart.forEach(item => totalCartQty += (item.qty || 1));
                 cartBadge.textContent = totalCartQty;
             }
 
@@ -212,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!currentModalProductData) return;
 
             let wishlist = getStoredWishlist();
-            const existingIndex = wishlist.findIndex(item => item.title === currentModalProductData.title);
+            const existingIndex = wishlist.findIndex(item => (currentModalProductData.productId && item.productId === currentModalProductData.productId) || item.title === currentModalProductData.title);
 
             if (existingIndex >= 0) {
                 wishlist.splice(existingIndex, 1);
@@ -220,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 wishlist.push({
                     id: 'wish-' + Date.now(),
+                    productId: currentModalProductData.productId,
                     title: currentModalProductData.title,
                     price: currentModalProductData.priceText,
                     categoryTag: currentModalProductData.categoryTag,
@@ -232,6 +275,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const wishlistBadge = document.querySelector('#wishlistBadge');
             if (wishlistBadge) wishlistBadge.textContent = wishlist.length;
+
+            // Đồng bộ lại icon tim trên các card sản phẩm
+            document.querySelectorAll(`.product-card[data-id="${currentModalProductData.productId}"] .wishlist-btn`).forEach(btn => {
+                const svg = btn.querySelector('svg');
+                if (existingIndex >= 0) {
+                    btn.classList.remove('active');
+                    if (svg) svg.setAttribute('fill', 'none');
+                } else {
+                    btn.classList.add('active');
+                    if (svg) svg.setAttribute('fill', '#EF4444');
+                }
+            });
         });
     }
 
@@ -261,3 +316,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.openProductDetailModal = openProductDetailModal;
 });
+

@@ -1,4 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const BASE_API_URL = 'https://localhost:3001';
+    const API_CATEGORIES = `${BASE_API_URL}/api/DoanhMuc/getDM`;
+    const API_PRODUCTS = `${BASE_API_URL}/api/SanPham/public-products`;
+
+    // Global state
+    let allCategories = [];
+    let allProducts = [];
+
+    // Helper format giá tiền & ảnh
+    function formatPrice(price) {
+        if (!price && price !== 0) return '0đ';
+        return new Intl.NumberFormat('vi-VN').format(price) + 'đ';
+    }
+
+    function formatImgUrl(src) {
+        if (!src) return 'images/dac_nhan_tam.jpg';
+        if (src.startsWith('http://') || src.startsWith('https://')) return src;
+        if (src.startsWith('/images/')) return `${BASE_API_URL}${src}`;
+        if (src.startsWith('images/')) return src;
+        return `images/${src}`;
+    }
+
     // ---------------- Real-time localStorage Sync Helper ----------------
     function getStoredWishlist() {
         const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
@@ -27,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cart = getStoredCart();
 
         let totalCartQty = 0;
-        cart.forEach(item => totalCartQty += item.qty);
+        cart.forEach(item => totalCartQty += (item.qty || 1));
 
         if (wishlistBadge) wishlistBadge.textContent = wishlist.length;
         if (cartBadge) cartBadge.textContent = totalCartQty;
@@ -41,12 +63,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function paintActiveWishlistButtons() {
         const wishlist = getStoredWishlist();
         document.querySelectorAll('.product-card').forEach(card => {
+            const prodId = card.getAttribute('data-id');
             const title = card.querySelector('.product-title')?.textContent.trim();
             const btn = card.querySelector('.wishlist-btn');
             const svgIcon = btn ? btn.querySelector('svg') : null;
 
-            if (btn && title) {
-                const isLiked = wishlist.some(item => item.title === title);
+            if (btn) {
+                const isLiked = wishlist.some(item => (prodId && item.productId === prodId) || (title && item.title === title));
                 if (isLiked) {
                     btn.classList.add('active');
                     if (svgIcon) svgIcon.setAttribute('fill', '#EF4444');
@@ -101,16 +124,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = wishBtn.closest('.product-card');
             if (!card) return;
 
+            const prodId = card.getAttribute('data-id');
             const svgIcon = wishBtn.querySelector('svg');
             const title = card.querySelector('.product-title')?.textContent.trim() || 'Sản phẩm';
             const author = card.querySelector('.product-author')?.textContent.trim() || '';
             const price = card.querySelector('.product-price')?.textContent.trim() || '0đ';
             const categoryTag = card.querySelector('.category-tag')?.textContent.trim() || 'Sản phẩm';
             const rawImg = card.querySelector('img')?.getAttribute('src') || '';
-            const img = rawImg.startsWith('../TrangChinh/') ? rawImg : ('../TrangChinh/' + rawImg.replace(/^\.\//, ''));
+            let img = rawImg;
+            if (rawImg.includes('https://') || rawImg.includes('http://')) {
+                img = rawImg.substring(rawImg.indexOf('http'));
+            } else if (rawImg.startsWith('/images/')) {
+                img = `${BASE_API_URL}${rawImg}`;
+            }
 
             let wishlist = getStoredWishlist();
-            const existingIndex = wishlist.findIndex(item => item.title === title);
+            const existingIndex = wishlist.findIndex(item => (prodId && item.productId === prodId) || item.title === title);
 
             if (wishBtn.classList.contains('active') || existingIndex >= 0) {
                 wishBtn.classList.remove('active');
@@ -122,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (svgIcon) svgIcon.setAttribute('fill', '#EF4444');
                 wishlist.push({
                     id: 'wish-' + Date.now(),
+                    productId: prodId,
                     title,
                     author,
                     price,
@@ -152,22 +182,29 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = addCartBtn.closest('.product-card');
             if (!card) return;
 
+            const prodId = card.getAttribute('data-id');
             const title = card.querySelector('.product-title')?.textContent.trim() || 'Sản phẩm';
             const author = card.querySelector('.product-author')?.textContent.trim() || '';
             const priceText = card.querySelector('.product-price')?.textContent.trim() || '0đ';
             const priceNum = parseInt(priceText.replace(/[^\d]/g, '')) || 50000;
             const categoryTag = card.querySelector('.category-tag')?.textContent.trim() || 'Sản phẩm';
             const rawImg = card.querySelector('img')?.getAttribute('src') || '';
-            const img = rawImg.startsWith('../TrangChinh/') ? rawImg : ('../TrangChinh/' + rawImg.replace(/^\.\//, ''));
+            let img = rawImg;
+            if (rawImg.includes('https://') || rawImg.includes('http://')) {
+                img = rawImg.substring(rawImg.indexOf('http'));
+            } else if (rawImg.startsWith('/images/')) {
+                img = `${BASE_API_URL}${rawImg}`;
+            }
 
             let cart = getStoredCart();
-            const existingItem = cart.find(item => item.title === title);
+            const existingItem = cart.find(item => (prodId && item.productId === prodId) || item.title === title);
 
             if (existingItem) {
-                existingItem.qty += 1;
+                existingItem.qty = (existingItem.qty || 1) + 1;
             } else {
                 cart.push({
                     id: 'cart-' + Date.now(),
+                    productId: prodId,
                     title,
                     author,
                     price: priceNum,
@@ -185,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Category Block Sections Filtering & Smooth Scroll Logic
     const categoryBlockSections = document.querySelectorAll('.category-block-section');
-    const productCards = document.querySelectorAll('.product-card');
     const filterBtns = document.querySelectorAll('.filter-btn');
     const categoryCards = document.querySelectorAll('.cat-card');
     const navCategoryLinks = document.querySelectorAll('.nav-category-trigger');
@@ -196,7 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function filterCategory(categoryKey, displayName) {
         // Toggle Category Block Sections (Vertical Layout)
-        categoryBlockSections.forEach(section => {
+        const currentSections = document.querySelectorAll('.category-block-section');
+        currentSections.forEach(section => {
             const blockCat = section.getAttribute('data-category-block');
             if (categoryKey === 'ALL' || blockCat === categoryKey) {
                 section.style.display = 'block';
@@ -207,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Update Filter Tabs active state
-        filterBtns.forEach(btn => {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
             if (btn.getAttribute('data-filter') === categoryKey) {
                 btn.classList.add('active');
             } else {
@@ -216,13 +253,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Update Category Cards active state
-        categoryCards.forEach(card => {
+        document.querySelectorAll('.cat-card').forEach(card => {
             if (card.getAttribute('data-category') === categoryKey) {
                 card.classList.add('active-cat');
             } else {
                 card.classList.remove('active-cat');
             }
         });
+
+        // Đồng bộ Select Dropdown trên Header
+        const searchCategorySelect = document.getElementById('globalCategorySelect');
+        if (searchCategorySelect) {
+            searchCategorySelect.value = categoryKey;
+        }
 
         // Update Header Section Title
         if (sectionTitle) {
@@ -235,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Scroll smoothly to target section or products section
         if (categoryKey !== 'ALL') {
-            const targetSection = document.querySelector(`#section-${categoryKey.toLowerCase()}`);
+            const targetSection = document.querySelector(`#section-${categoryKey.toLowerCase()}`) || document.querySelector(`#section-${categoryKey}`);
             if (targetSection) {
                 targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } else if (productsSection) {
@@ -245,6 +288,8 @@ document.addEventListener('DOMContentLoaded', () => {
             productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
+
+    window.filterCategory = filterCategory;
 
     // Bind Filter Tabs
     filterBtns.forEach(btn => {
@@ -318,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getProductsData() {
         const products = [];
         document.querySelectorAll('.product-card').forEach((card, index) => {
+            const prodId = card.getAttribute('data-id') || '';
             const title = card.querySelector('.product-title')?.textContent.trim() || '';
             const author = card.querySelector('.product-author')?.textContent.trim() || '';
             const price = card.querySelector('.product-price')?.textContent.trim() || '';
@@ -332,6 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             products.push({
                 elementId: card.id,
+                productId: prodId,
                 title,
                 author,
                 price,
@@ -380,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!searchDropdown || !searchInput) return;
 
         const cleanQuery = query.toLowerCase().trim();
-        const selectedCat = searchCategorySelect ? searchCategorySelect.value.toUpperCase() : 'ALL';
+        const selectedCat = searchCategorySelect ? searchCategorySelect.value : 'ALL';
 
         if (btnClearSearch) {
             btnClearSearch.style.display = cleanQuery.length > 0 ? 'block' : 'none';
@@ -388,18 +435,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!cleanQuery) {
             renderHotSearches();
+            filterProductsOnPage('', selectedCat);
             return;
         }
 
-        const allProducts = getProductsData();
-        const matches = allProducts.filter(p => {
+        const allDOMProducts = getProductsData();
+        const matches = allDOMProducts.filter(p => {
             const matchQuery = p.title.toLowerCase().includes(cleanQuery) ||
                               p.author.toLowerCase().includes(cleanQuery) ||
                               p.categoryTag.toLowerCase().includes(cleanQuery);
-            const matchCat = (selectedCat === 'ALL' || selectedCat === 'ALL') || 
-                             (selectedCat === 'SACH' && p.category === 'SACH') ||
-                             (selectedCat === 'VPP' && p.category === 'VPP') ||
-                             (selectedCat === 'COMBO' && p.category === 'COMBO');
+            const matchCat = (selectedCat === 'ALL') || 
+                             (p.category === selectedCat) ||
+                             (p.category.toUpperCase() === selectedCat.toUpperCase());
             return matchQuery && matchCat;
         });
 
@@ -417,8 +464,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         Kết quả gợi ý (${matches.length}):
                     </div>
                     ${matches.map(p => `
-                        <div class="search-result-item" data-target-id="${p.elementId}">
-                            <img src="${p.img}" alt="${p.title}" class="search-item-img" />
+                        <div class="search-result-item" data-target-id="${p.elementId}" data-product-id="${p.productId}">
+                            <img src="${p.img}" alt="${p.title}" class="search-item-img" onerror="this.src='images/dac_nhan_tam.jpg'" />
                             <div class="search-item-info">
                                 <div class="search-item-title">${p.title}</div>
                                 <div class="search-item-meta">
@@ -439,7 +486,8 @@ document.addEventListener('DOMContentLoaded', () => {
             item.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const targetId = item.getAttribute('data-target-id');
-                const targetCard = document.getElementById(targetId);
+                const prodId = item.getAttribute('data-product-id');
+                const targetCard = document.getElementById(targetId) || document.querySelector(`.product-card[data-id="${prodId}"]`);
                 
                 searchDropdown.classList.remove('active');
 
@@ -457,6 +505,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     targetCard.classList.add('highlight-target');
                     
                     showToast(`Đã tìm thấy: "${targetCard.querySelector('.product-title')?.textContent}"`);
+                } else if (prodId && window.openProductDetailModal) {
+                    window.openProductDetailModal(prodId);
                 }
             });
         });
@@ -467,11 +517,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Filter products visible on the page
     function filterProductsOnPage(query, selectedCat) {
-        categoryBlockSections.forEach(section => {
+        const sections = document.querySelectorAll('.category-block-section');
+        sections.forEach(section => {
             let sectionHasMatch = false;
             const blockCat = section.getAttribute('data-category-block');
             
-            const matchSectionCat = (selectedCat === 'ALL' || selectedCat === 'ALL') || (selectedCat.toUpperCase() === blockCat);
+            const matchSectionCat = (selectedCat === 'ALL') || (selectedCat === blockCat) || (selectedCat.toUpperCase() === blockCat.toUpperCase());
+
+            if (!matchSectionCat) {
+                section.style.display = 'none';
+                return;
+            }
 
             section.querySelectorAll('.product-card').forEach(card => {
                 const title = card.querySelector('.product-title')?.textContent.toLowerCase() || '';
@@ -480,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const matchQuery = !query || title.includes(query) || author.includes(query) || catTag.includes(query);
 
-                if (matchQuery && matchSectionCat) {
+                if (matchQuery) {
                     card.style.display = 'flex';
                     sectionHasMatch = true;
                 } else {
@@ -506,36 +562,60 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.addEventListener('input', (e) => {
             triggerLiveSearch(e.target.value);
         });
+
+        // Event 3: Enter key
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (btnExecuteSearch) btnExecuteSearch.click();
+            }
+        });
     }
 
-    // Event 3: Clear button click
+    // Event 4: Clear button click
     if (btnClearSearch) {
         btnClearSearch.addEventListener('click', (e) => {
             e.stopPropagation();
             if (searchInput) searchInput.value = '';
             btnClearSearch.style.display = 'none';
             if (searchDropdown) searchDropdown.classList.remove('active');
-            filterCategory('ALL', 'TẤT CẢ');
+            const selectedCat = searchCategorySelect ? searchCategorySelect.value : 'ALL';
+            filterCategory(selectedCat, 'TẤT CẢ');
         });
     }
 
-    // Event 4: Category Select Dropdown change
+    // Event 5: Category Select Dropdown change
     if (searchCategorySelect) {
         searchCategorySelect.addEventListener('change', () => {
             const query = searchInput ? searchInput.value : '';
-            triggerLiveSearch(query);
+            const selectedVal = searchCategorySelect.value;
+            const selectedName = searchCategorySelect.options[searchCategorySelect.selectedIndex].text;
+
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.getAttribute('data-filter') === selectedVal) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            if (query.trim()) {
+                triggerLiveSearch(query);
+            } else {
+                filterCategory(selectedVal, selectedName);
+            }
         });
     }
 
-    // Event 5: Search Button Click (MAGNIFYING GLASS CLICK)
+    // Event 6: Search Button Click (MAGNIFYING GLASS CLICK)
     // Perform search & SMOOTH SCROLL DOWN TO SHOPPING SECTION (#bestsellers)
     if (btnExecuteSearch) {
         btnExecuteSearch.addEventListener('click', (e) => {
             e.preventDefault();
             const query = searchInput ? searchInput.value.trim() : '';
-            const selectedCat = searchCategorySelect ? searchCategorySelect.value.toUpperCase() : 'ALL';
+            const selectedCat = searchCategorySelect ? searchCategorySelect.value : 'ALL';
 
-            // Close live dropdown dropdown
+            // Close live dropdown
             if (searchDropdown) searchDropdown.classList.remove('active');
 
             // Apply filter
@@ -554,7 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Event 6: Close dropdown when clicking outside search wrapper
+    // Event 7: Close dropdown when clicking outside search wrapper
     document.addEventListener('click', (e) => {
         if (searchWrapper && !searchWrapper.contains(e.target)) {
             if (searchDropdown) searchDropdown.classList.remove('active');
@@ -709,7 +789,218 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Khởi chạy đồng bộ trạng thái đăng nhập
-    initUserAuthState();
-});
+    // =========================================================================
+    // 5. GỌI API DANH MỤC VÀ SẢN PHẨM & NẠP VÀO GIAO DIỆN
+    // =========================================================================
+    const categoryThemes = [
+        { color: 'green', banner: 'green-banner', tag: 'green-tag', emoji: '📗' },
+        { color: 'orange', banner: 'orange-banner', tag: 'orange-tag', emoji: '📙' },
+        { color: 'purple', banner: 'purple-banner', tag: 'purple-tag', emoji: '📚' },
+        { color: 'blue', banner: 'green-banner', tag: 'green-tag', emoji: '💡' },
+        { color: 'rose', banner: 'orange-banner', tag: 'orange-tag', emoji: '✨' }
+    ];
 
+    function getCategoryTheme(index) {
+        return categoryThemes[index % categoryThemes.length];
+    }
+
+    async function loadCategories() {
+        const selectElement = document.getElementById('globalCategorySelect');
+        const filterTabsBar = document.getElementById('filterTabsBar');
+        const categoryHighlightGrid = document.getElementById('categoryHighlightGrid');
+
+        try {
+            const response = await fetch(API_CATEGORIES);
+            if (!response.ok) return;
+
+            const data = await response.json();
+            if (Array.isArray(data) && data.length > 0) {
+                allCategories = data;
+
+                // 1. Nạp vào dropdown select trên header
+                if (selectElement) {
+                    selectElement.innerHTML = `<option value="ALL">Tất cả danh mục</option>`;
+                    allCategories.forEach(cat => {
+                        const opt = document.createElement('option');
+                        opt.value = cat.categoryId;
+                        opt.textContent = cat.categoryName;
+                        selectElement.appendChild(opt);
+                    });
+                }
+
+                // 2. Nạp vào Filter Tabs Bar
+                if (filterTabsBar) {
+                    filterTabsBar.innerHTML = `
+                        <button class="filter-btn active" data-filter="ALL" data-name="TẤT CẢ">
+                            ✨ Tất cả danh mục
+                        </button>
+                    `;
+
+                    allCategories.forEach((cat, idx) => {
+                        const theme = getCategoryTheme(idx);
+                        const btn = document.createElement('button');
+                        btn.className = 'filter-btn';
+                        btn.setAttribute('data-filter', cat.categoryId);
+                        btn.setAttribute('data-name', cat.categoryName.toUpperCase());
+                        btn.innerHTML = `${theme.emoji} ${cat.categoryName}`;
+                        filterTabsBar.appendChild(btn);
+                    });
+
+                    // Gắn lại sự kiện cho các nút tab mới nạp
+                    filterTabsBar.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const cat = btn.getAttribute('data-filter');
+                            const name = btn.getAttribute('data-name');
+                            filterCategory(cat, name);
+                        });
+                    });
+                }
+
+                // 3. Nạp vào 3 Card danh mục nổi bật
+                if (categoryHighlightGrid) {
+                    categoryHighlightGrid.innerHTML = allCategories.slice(0, 3).map((cat, idx) => {
+                        const theme = getCategoryTheme(idx);
+                        return `
+                            <div class="cat-card" data-category="${cat.categoryId}">
+                                <div class="cat-icon-box ${theme.color}">
+                                    ${theme.emoji}
+                                </div>
+                                <div class="cat-info">
+                                    <h3 class="cat-title">${cat.categoryName.toUpperCase()}</h3>
+                                    <p class="cat-desc">${cat.description || 'Khám phá sản phẩm chất lượng cao.'}</p>
+                                    <span class="cat-link">MUA NGAY →</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    categoryHighlightGrid.querySelectorAll('.cat-card').forEach(card => {
+                        card.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const cat = card.getAttribute('data-category');
+                            const title = card.querySelector('.cat-title')?.textContent || cat;
+                            filterCategory(cat, title);
+                        });
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Lỗi khi nạp danh mục:', error);
+        }
+    }
+
+    async function loadProducts() {
+        const blocksContainer = document.getElementById('categoryBlocksContainer');
+        if (!blocksContainer) return;
+
+        try {
+            const response = await fetch(API_PRODUCTS);
+            if (!response.ok) return;
+
+            const result = await response.json();
+            const productsList = result.data || result.Data || [];
+
+            if (Array.isArray(productsList) && productsList.length > 0) {
+                allProducts = productsList;
+                window.allProductsData = productsList;
+
+                // Nhóm sản phẩm theo categoryId
+                const productsByCategory = {};
+                productsList.forEach(p => {
+                    const catId = p.categoryId || 'OTHER';
+                    if (!productsByCategory[catId]) {
+                        productsByCategory[catId] = {
+                            categoryId: catId,
+                            categoryName: p.categoryName || 'Sản Phẩm Khác',
+                            items: []
+                        };
+                    }
+                    productsByCategory[catId].items.push(p);
+                });
+
+                const categoryKeys = Object.keys(productsByCategory);
+                let blocksHtml = '';
+
+                categoryKeys.forEach((catKey, index) => {
+                    const group = productsByCategory[catKey];
+                    const theme = getCategoryTheme(index);
+                    const catInfo = allCategories.find(c => c.categoryId === catKey);
+                    const catDesc = catInfo?.description || `Các sản phẩm nổi bật thuộc danh mục ${group.categoryName}`;
+
+                    const productsCardsHtml = group.items.map((prod, pIdx) => {
+                        const imgUrl = formatImgUrl(prod.image);
+                        const priceFormatted = formatPrice(prod.price);
+                        const sellerName = prod.shop?.shopName || 'Gian Hàng NPKL';
+                        const prodElementId = `product-item-${prod.productId || `${catKey}-${pIdx}`}`;
+
+                        return `
+                            <div class="product-card" id="${prodElementId}" data-id="${prod.productId}" data-category="${catKey}">
+                                <div class="product-image-box">
+                                    <span class="category-tag ${theme.tag}">${group.categoryName}</span>
+                                    <img src="${imgUrl}" alt="${prod.productName}" onerror="this.src='images/dac_nhan_tam.jpg'" />
+                                    <button class="wishlist-btn" title="Yêu thích">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <h3 class="product-title" title="${prod.productName}">${prod.productName}</h3>
+                                <p class="product-author">${sellerName}</p>
+                                <div class="rating-box">
+                                    <span class="stars">★★★★★</span>
+                                    <span class="reviews-count">(5.0)</span>
+                                </div>
+                                <div class="product-price">${priceFormatted}</div>
+                                <button class="btn-add-cart">
+                                    🛒 THÊM VÀO GIỎ
+                                </button>
+                            </div>
+                        `;
+                    }).join('');
+
+                    blocksHtml += `
+                        <div class="category-block-section" id="section-${catKey}" data-category-block="${catKey}">
+                            <div class="category-banner-header ${theme.banner}">
+                                <div class="banner-title-group">
+                                    <span class="category-emoji">${theme.emoji}</span>
+                                    <div>
+                                        <h3 class="category-block-title">${group.categoryName.toUpperCase()}</h3>
+                                        <p class="category-block-desc">${catDesc}</p>
+                                    </div>
+                                </div>
+                                <button class="btn-view-more" data-category="${catKey}" data-name="${group.categoryName.toUpperCase()}">
+                                    Xem tất cả ${group.categoryName} →
+                                </button>
+                            </div>
+
+                            <div class="products-grid">
+                                ${productsCardsHtml}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                blocksContainer.innerHTML = blocksHtml;
+
+                // Gắn sự kiện cho các nút "Xem tất cả"
+                blocksContainer.querySelectorAll('.btn-view-more').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const cat = btn.getAttribute('data-category');
+                        const name = btn.getAttribute('data-name');
+                        filterCategory(cat, name);
+                    });
+                });
+
+                paintActiveWishlistButtons();
+            }
+        } catch (error) {
+            console.error('Lỗi khi nạp sản phẩm:', error);
+        }
+    }
+
+    // ---------------- Khởi Chạy Ban Đầu ----------------
+    initUserAuthState();
+    loadCategories().then(() => {
+        loadProducts();
+    });
+});

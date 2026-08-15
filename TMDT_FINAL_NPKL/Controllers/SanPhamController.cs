@@ -172,5 +172,127 @@ namespace TMDT_FINAL_NPKL.Controllers
                 return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
             }
         }
+
+        // ==========================================
+        // API PUBLIC CHO TRANG CHỦ / KHÁCH HÀNG
+        // ==========================================
+        [HttpGet("public-products")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPublicProducts([FromQuery] string? categoryId = null, [FromQuery] string? keyword = null)
+        {
+            try
+            {
+                var query = _context.Products
+                    .Include(p => p.Category)
+                    .Include(p => p.Shop)
+                        .ThenInclude(s => s.Seller)
+                    .Include(p => p.ProductImages)
+                    .Where(p => p.ApprovalStatus == "APPROVED" && p.IsDeleted == false)
+                    .AsQueryable();
+
+                // Lọc theo danh mục nếu có
+                if (!string.IsNullOrWhiteSpace(categoryId) && categoryId.ToUpper() != "ALL")
+                {
+                    query = query.Where(p => p.CategoryId == categoryId);
+                }
+
+                // Lọc theo từ khóa tìm kiếm nếu có
+                if (!string.IsNullOrWhiteSpace(keyword))
+                {
+                    string kw = keyword.Trim().ToLower();
+                    query = query.Where(p => p.ProductName.ToLower().Contains(kw) 
+                                          || (p.Description != null && p.Description.ToLower().Contains(kw))
+                                          || p.Category.CategoryName.ToLower().Contains(kw));
+                }
+
+                var products = await query
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Select(p => new
+                    {
+                        ProductId = p.ProductId,
+                        ProductName = p.ProductName,
+                        CategoryId = p.CategoryId,
+                        CategoryName = p.Category != null ? p.Category.CategoryName : "",
+                        Price = p.Price,
+                        StockQuantity = p.StockQuantity,
+                        Image = p.Image,
+                        Description = p.Description,
+                        CreatedAt = p.CreatedAt,
+                        Shop = p.Shop != null ? new
+                        {
+                            ShopId = p.Shop.ShopId,
+                            ShopName = p.Shop.ShopName,
+                            SellerName = p.Shop.Seller != null ? p.Shop.Seller.FullName : "",
+                            SellerPhone = p.Shop.Seller != null ? p.Shop.Seller.Phone : "",
+                            SellerEmail = p.Shop.Seller != null ? p.Shop.Seller.Email : "",
+                            SellerAddress = p.Shop.Seller != null ? p.Shop.Seller.Address : ""
+                        } : null,
+                        Images = p.ProductImages.Select(img => img.ImageUrl).ToList()
+                    })
+                    .ToListAsync();
+
+                return Ok(new
+                {
+                    Success = true,
+                    Message = "Lấy danh sách sản phẩm thành công.",
+                    Data = products
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
+        [HttpGet("public-detail/{productId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPublicProductDetail(string productId)
+        {
+            try
+            {
+                var product = await _context.Products
+                    .Include(p => p.Category)
+                    .Include(p => p.Shop)
+                        .ThenInclude(s => s.Seller)
+                    .Include(p => p.ProductImages)
+                    .FirstOrDefaultAsync(p => p.ProductId == productId && p.ApprovalStatus == "APPROVED" && p.IsDeleted == false);
+
+                if (product == null)
+                {
+                    return NotFound(new { Success = false, Message = "Không tìm thấy sản phẩm hoặc sản phẩm chưa được duyệt!" });
+                }
+
+                return Ok(new
+                {
+                    Success = true,
+                    Data = new
+                    {
+                        ProductId = product.ProductId,
+                        ProductName = product.ProductName,
+                        CategoryId = product.CategoryId,
+                        CategoryName = product.Category?.CategoryName ?? "",
+                        Price = product.Price,
+                        StockQuantity = product.StockQuantity,
+                        Image = product.Image,
+                        Description = product.Description,
+                        CreatedAt = product.CreatedAt,
+                        Shop = product.Shop != null ? new
+                        {
+                            ShopId = product.Shop.ShopId,
+                            ShopName = product.Shop.ShopName,
+                            SellerName = product.Shop.Seller?.FullName ?? "",
+                            SellerPhone = product.Shop.Seller?.Phone ?? "",
+                            SellerEmail = product.Shop.Seller?.Email ?? "",
+                            SellerAddress = product.Shop.Seller?.Address ?? ""
+                        } : null,
+                        Images = product.ProductImages.Select(img => img.ImageUrl).ToList()
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
     }
 }

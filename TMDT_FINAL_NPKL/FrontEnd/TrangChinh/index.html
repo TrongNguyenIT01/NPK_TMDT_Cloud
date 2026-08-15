@@ -265,15 +265,13 @@
 
     <!-- 5. CATEGORY HIGHLIGHT CARDS -->
     <section class="category-section">
-        <div class="category-grid">
-            <!-- Card 1: Sách (Làm mẫu) -->
-            <div class="cat-card" data-category="SACH">
-                <div class="cat-icon-box green">
-                    📗
-                </div>
+        <div class="category-grid" id="categoryHighlightGrid">
+            <!-- Dynamic Category Cards injected by JavaScript -->
+            <div class="cat-card" data-category="ALL">
+                <div class="cat-icon-box green">📗</div>
                 <div class="cat-info">
-                    <h3 class="cat-title">SÁCH</h3>
-                    <p class="cat-desc">Khám phá câu chuyện và kiến thức.</p>
+                    <h3 class="cat-title">TẤT CẢ DANH MỤC</h3>
+                    <p class="cat-desc">Khám phá hàng ngàn sản phẩm đa dạng.</p>
                     <span class="cat-link">MUA NGAY →</span>
                 </div>
             </div>
@@ -286,53 +284,19 @@
             <h2 class="section-title" id="sectionTitle">DANH MỤC SẢN PHẨM NỔI BẬT</h2>
 
             <!-- Interactive Filter Tabs Bar -->
-            <div class="filter-tabs-bar">
+            <div class="filter-tabs-bar" id="filterTabsBar">
                 <button class="filter-btn active" data-filter="ALL" data-name="TẤT CẢ">
                     ✨ Tất cả danh mục
-                </button>
-                <button class="filter-btn" data-filter="SACH" data-name="SÁCH & TRI THỨC">
-                    📗 Sách & Tri Thức
                 </button>
             </div>
         </div>
 
-        <!-- 📚 KHU VỰC 1: SÁCH & TRI THỨC -->
-        <div class="category-block-section" id="section-sach" data-category-block="SACH">
-            <div class="category-banner-header green-banner">
-                <div class="banner-title-group">
-                    <span class="category-emoji">📗</span>
-                    <div>
-                        <h3 class="category-block-title">SÁCH & TRI THỨC</h3>
-                        <p class="category-block-desc">Những cuốn sách hay nhất nuôi dưỡng tâm hồn và tri thức</p>
-                    </div>
-                </div>
-                <button class="btn-view-more" data-category="SACH" data-name="SÁCH & TRI THỨC">
-                    Xem tất cả Sách →
-                </button>
-            </div>
-
-            <div class="products-grid">
-                <!-- Product 1: Sách (Làm mẫu) -->
-                <div class="product-card" data-category="SACH">
-                    <div class="product-image-box">
-                        <span class="category-tag green-tag">Sách</span>
-                        <img src="images/dac_nhan_tam.jpg" alt="Đắc Nhân Tâm" />
-                        <button class="wishlist-btn" title="Yêu thích">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <h3 class="product-title">Đắc Nhân Tâm</h3>
-                    <p class="product-author">Dale Carnegie</p>
-                    <div class="rating-box">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews-count">(890)</span>
-                    </div>
-                    <div class="product-price">75.000đ</div>
-                    <button class="btn-add-cart">
-                        🛒 THÊM VÀO GIỎ
-                    </button>
+        <!-- Dynamic Category Block Sections Injected by JavaScript -->
+        <div id="categoryBlocksContainer">
+            <!-- Skeleton / Initial state -->
+            <div class="category-block-section" id="section-loading">
+                <div style="text-align: center; padding: 40px; color: #64748B; font-weight: 600;">
+                    ⏳ Đang tải danh mục và sản phẩm từ hệ thống NPKL...
                 </div>
             </div>
         </div>

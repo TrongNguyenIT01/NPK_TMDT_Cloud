@@ -84,6 +84,7 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseStaticFiles();
 app.MapStaticAssets();
 
 app.MapControllerRoute(
