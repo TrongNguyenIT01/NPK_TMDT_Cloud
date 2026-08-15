@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -174,6 +174,65 @@ namespace TMDT_FINAL_NPKL.Controllers
                 await _context.SaveChangesAsync();
 
                 return Ok(new { Success = true, Message = "Đã hiện lại sản phẩm thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
+        [HttpGet("approval-log/{productId}")]
+        [Authorize(Roles = "SELLER")]
+        public async Task<IActionResult> GetApprovalLog(string productId)
+        {
+            try
+            {
+                // 1. Lấy Username và kiểm tra Shop
+                string? username = User.FindFirst("Username")?.Value;
+                if (string.IsNullOrEmpty(username))
+                    return Unauthorized(new { Success = false, Message = "Không xác định được danh tính!" });
+
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+                if (user == null) return Unauthorized();
+
+                var shop = await _context.Shops.FirstOrDefaultAsync(s => s.SellerId == user.UserId.ToString());
+                if (shop == null) return BadRequest(new { Success = false, Message = "Chưa có cửa hàng!" });
+
+                // 2. Tìm sản phẩm (phải thuộc về shop này)
+                var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == productId && p.ShopId == shop.ShopId);
+                if (product == null)
+                {
+                    return NotFound(new { Success = false, Message = "Không tìm thấy sản phẩm hoặc bạn không có quyền xem sản phẩm này!" });
+                }
+
+                // 3. Lấy log duyệt, Include thông tin Admin
+                var logs = await _context.ProductApprovalLogs
+                    .Include(l => l.Admin)
+                    .Where(l => l.ProductId == productId)
+                    .OrderByDescending(l => l.CreatedAt)
+                    .Select(l => new
+                    {
+                        l.LogId,
+                        l.Action,
+                        l.Note,
+                        l.CreatedAt,
+                        AdminId = l.AdminId,
+                        AdminName = l.Admin.FullName,
+                        AdminEmail = l.Admin.Email
+                    })
+                    .ToListAsync();
+
+                return Ok(new
+                {
+                    Success = true,
+                    Message = "Lấy thông tin kiểm duyệt thành công.",
+                    Data = new
+                    {
+                        ProductId = product.ProductId,
+                        ProductName = product.ProductName,
+                        Logs = logs
+                    }
+                });
             }
             catch (Exception ex)
             {
