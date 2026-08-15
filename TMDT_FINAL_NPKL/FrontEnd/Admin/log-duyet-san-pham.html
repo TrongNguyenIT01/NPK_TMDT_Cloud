@@ -3,9 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NPKL Admin - Phê Duyệt Khiếu Nại Mở Khóa Tài Khoản</title>
+    <title>NPKL Admin - Log Duyệt Sản Phẩm</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="../DangNhap/checkUser.js"></script>
+    <script src="script.js"></script>
 </head>
 <body>
 
@@ -26,8 +27,8 @@
             </li>
 
             <li class="menu-category">Quản Lý & Kiểm Duyệt</li>
-            <li class="menu-item has-dropdown open">
-                <a href="#" class="menu-link dropdown-toggle active">
+            <li class="menu-item has-dropdown">
+                <a href="#" class="menu-link dropdown-toggle">
                     <span>👥</span>
                     <span>Quản lý Người Dùng</span>
                     <span class="dropdown-arrow">▼</span>
@@ -46,15 +47,16 @@
                         </a>
                     </li>
                     <li>
-                        <a href="duyet-khieu-nai.html" class="submenu-link active">
+                        <a href="duyet-khieu-nai.html" class="submenu-link">
                             <span>⚖️</span>
                             <span>Duyệt khiếu nại</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            <li class="menu-item has-dropdown">
-                <a href="#" class="menu-link dropdown-toggle">
+
+            <li class="menu-item has-dropdown open">
+                <a href="#" class="menu-link dropdown-toggle active">
                     <span>🏪</span>
                     <span>Quản lý Cửa Hàng</span>
                     <span class="dropdown-arrow">▼</span>
@@ -73,13 +75,14 @@
                         </a>
                     </li>
                     <li>
-                        <a href="log-duyet-san-pham.html" class="submenu-link">
+                        <a href="log-duyet-san-pham.html" class="submenu-link active">
                             <span>📜</span>
                             <span>Xem LOG Duyệt Sản Phẩm</span>
                         </a>
                     </li>
                 </ul>
             </li>
+
             <li class="menu-item">
                 <a href="index.html" class="menu-link">
                     <span>🏷️</span>
@@ -109,7 +112,6 @@
             <div class="admin-info">
                 <span class="admin-name" id="fullname"></span>
                 <span class="admin-role" id="role"></span>
-
             </div>
         </div>
     </aside>
@@ -127,7 +129,7 @@
                     </svg>
                 </button>
                 <div class="header-title-box">
-                    <h1 id="pageHeaderTitle">Kiểm Duyệt Khiếu Nại Tài Khoản</h1>
+                    <h1 id="pageHeaderTitle">Lịch Sử LOG Duyệt Sản Phẩm</h1>
                 </div>
             </div>
             <div class="header-right">
@@ -139,47 +141,96 @@
         </header>
 
         <div class="admin-content">
+            <!-- METRIC CARDS -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <div class="metric-icon blue">📋</div>
+                        <span class="metric-trend info">Tổng nhật ký</span>
+                    </div>
+                    <div class="metric-value">1</div>
+                    <div class="metric-label">Tổng lượt duyệt sản phẩm</div>
+                </div>
 
-            <!-- BẢNG KHIẾU NẠI CHỜ DUYỆT -->
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <div class="metric-icon green">✅</div>
+                        <span class="metric-trend up">Thành công</span>
+                    </div>
+                    <div class="metric-value">1</div>
+                    <div class="metric-label">Sản phẩm được chấp nhận</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <div class="metric-icon purple">❌</div>
+                        <span class="metric-trend warn">Từ chối</span>
+                    </div>
+                    <div class="metric-value">0</div>
+                    <div class="metric-label">Sản phẩm bị từ chối</div>
+                </div>
+            </div>
+
+            <!-- TABLE CARD CONTAINER -->
             <div class="table-card">
                 <div class="table-header">
                     <div class="table-title-box">
-                        <h3>Danh Sách Đơn Khiếu Nại Từ Tài Khoản Bị Khóa</h3>
-                        <p>Xem xét giải trình của người dùng để mở khóa tài khoản hoặc tiếp tục từ chối xử lý</p>
+                        <h3>Danh Sách LOG Duyệt Sản Phẩm</h3>
+                        <p>Lịch sử chi tiết các thao tác duyệt / từ chối sản phẩm của Quản trị viên</p>
                     </div>
                     <div class="table-filters">
-                        <input type="text" id="appealSearchInput" class="search-input-admin" placeholder="Tìm tiêu đề, tài khoản..." />
-                        <select id="appealStatusFilter" class="filter-select">
-                            <option value="ALL">Tất cả trạng thái</option>
-                            <option value="PENDING" selected>Chờ Giải Quyết</option>
-                            <option value="APPROVED">Đã Chấp Nhận</option>
-                            <option value="REJECTED">Đã Từ Chối</option>
+                        <input type="text" class="search-input-admin wide" placeholder="Tìm kiếm mã log, tên sản phẩm, tên admin..." />
+                        <select class="filter-select">
+                            <option value="all">Tất cả hành động</option>
+                            <option value="APPROVED">Đã duyệt (Chấp nhận)</option>
+                            <option value="REJECTED">Từ chối</option>
                         </select>
                     </div>
                 </div>
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Mã Khiếu Nại</th>
-                            <th>Mã Hồ Sơ Khóa</th>
-                            <th>Tài Khoản</th>
-                            <th>Lý Do Khóa Ban Đầu</th>
-                            <th>Tiêu Đề</th>
-                            <th>Nội Dung Chi Tiết</th>
-                            <th>Ngày Gửi</th>
-                            <th>Trạng Thái</th>
-                            <th>Thao Tác Xử Lý</th>
-                        </tr>
-                    </thead>
-                    <tbody id="appealTableBody">
-                        <!-- Javascript load dữ liệu động vào đây -->
-                    </tbody>
-                </table>
+
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Log</th>
+                                <th>Sản Phẩm</th>
+                                <th>Tên Admin Duyệt</th>
+                                <th>Hành Động</th>
+                                <th>Ghi Chú / Lý Do</th>
+                                <th>Thời Gian Duyệt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong style="font-weight: 700; color: var(--primary-navy);">LOG-000001</strong></td>
+                                <td>
+                                    <div style="font-weight: 700; color: var(--text-dark);">Áo Nam Polo Cao Cấp</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">Mã SP: PRD-10293</div>
+                                </td>
+                                <td>
+                                    <div style="font-weight: 700; color: var(--text-dark);">👤 Nguyễn Văn Admin</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">(admin01 - ADM-001)</div>
+                                </td>
+                                <td><span class="badge-status approved">✅ Đã duyệt</span></td>
+                                <td><div style="max-width: 280px; font-size: 0.88rem; color: var(--text-dark); font-weight: 500;">Sản phẩm đầy đủ thông tin và hợp lệ</div></td>
+                                <td><span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">🕒 15/08/2026 14:30:00</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- PAGINATION FOOTER -->
+                <div class="table-pagination">
+                    <span class="pagination-info">Hiển thị 1 trong tổng số 1 kết quả</span>
+                    <div class="pagination-btns">
+                        <button class="pagination-btn disabled" disabled>&laquo; Trước</button>
+                        <button class="pagination-btn active">1</button>
+                        <button class="pagination-btn disabled" disabled>Sau &raquo;</button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 
-    <script src="script.js"></script>
-    <script src="duyetkhieunai.js"></script>
 </body>
 </html>

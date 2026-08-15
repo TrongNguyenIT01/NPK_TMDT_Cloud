@@ -728,3 +728,75 @@ body.sidebar-collapsed .submenu-link {
     justify-content: flex-end;
     gap: 12px;
 }
+
+/* ---------------- Table Pagination & Custom Toolbar ---------------- */
+.table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-top: 1px solid var(--border-light);
+    background: #FFFFFF;
+}
+
+.pagination-info {
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.pagination-btns {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pagination-btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border-light);
+    background: #FFFFFF;
+    color: var(--text-dark);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination-btn:hover:not(:disabled):not(.disabled) {
+    background: var(--primary-navy);
+    color: #FFFFFF;
+    border-color: var(--primary-navy);
+}
+
+.pagination-btn.active {
+    background: var(--brand-orange);
+    color: #FFFFFF;
+    border-color: var(--brand-orange);
+    box-shadow: 0 3px 10px rgba(224, 90, 43, 0.35);
+}
+
+.pagination-btn.disabled, .pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #F8FAFC;
+    color: var(--text-muted);
+}
+
+.search-input-admin.wide {
+    min-width: 320px;
+}
+
+.badge-status.approved {
+    background: #DCFCE7;
+    color: #15803D;
+}
+
+.badge-status.rejected {
+    background: #FEE2E2;
+    color: #B91C1C;
+}
+
