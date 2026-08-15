@@ -140,5 +140,40 @@ namespace TMDT_FINAL_NPKL.Controllers
                 return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
             }
         }
+        [HttpGet("logs")]
+        public async Task<IActionResult> GetProductApprovalLogs()
+        {
+            try
+            {
+                var logs = await _context.ProductApprovalLogs
+                    .Include(l => l.Admin)
+                    .Include(l => l.Product)
+                        .ThenInclude(p => p.Shop)
+                    .OrderByDescending(l => l.CreatedAt)
+                    .Select(l => new
+                    {
+                        l.LogId,
+                        l.ProductId,
+                        ProductName = l.Product != null ? l.Product.ProductName : "N/A",
+                        ShopName = (l.Product != null && l.Product.Shop != null) ? l.Product.Shop.ShopName : "N/A",
+                        AdminName = l.Admin != null ? l.Admin.FullName : "Unknown",
+                        l.Action,
+                        l.Note,
+                        l.CreatedAt
+                    })
+                    .ToListAsync();
+
+                return Ok(new
+                {
+                    Success = true,
+                    Message = "Lấy danh sách log thành công.",
+                    Data = logs
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
     }
 }

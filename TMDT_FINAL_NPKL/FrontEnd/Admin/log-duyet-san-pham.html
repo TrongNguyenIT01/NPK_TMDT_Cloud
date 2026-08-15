@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="../DangNhap/checkUser.js"></script>
     <script src="script.js"></script>
+    <script src="logduyetsanpham.js"></script>
 </head>
 <body>
 
@@ -179,7 +180,7 @@
                         <p>Lịch sử chi tiết các thao tác duyệt / từ chối sản phẩm của Quản trị viên</p>
                     </div>
                     <div class="table-filters">
-                        <input type="text" class="search-input-admin wide" placeholder="Tìm kiếm mã log, tên sản phẩm, tên admin..." />
+                        <input type="text" class="search-input-admin wide" placeholder="Tìm kiếm mã log, tên sản phẩm, tên admin, tên shop..." />
                         <select class="filter-select">
                             <option value="all">Tất cả hành động</option>
                             <option value="APPROVED">Đã duyệt (Chấp nhận)</option>
@@ -201,20 +202,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><strong style="font-weight: 700; color: var(--primary-navy);">LOG-000001</strong></td>
-                                <td>
-                                    <div style="font-weight: 700; color: var(--text-dark);">Áo Nam Polo Cao Cấp</div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);">Mã SP: PRD-10293</div>
-                                </td>
-                                <td>
-                                    <div style="font-weight: 700; color: var(--text-dark);">👤 Nguyễn Văn Admin</div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);">(admin01 - ADM-001)</div>
-                                </td>
-                                <td><span class="badge-status approved">✅ Đã duyệt</span></td>
-                                <td><div style="max-width: 280px; font-size: 0.88rem; color: var(--text-dark); font-weight: 500;">Sản phẩm đầy đủ thông tin và hợp lệ</div></td>
-                                <td><span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">🕒 15/08/2026 14:30:00</span></td>
-                            </tr>
+                            <!-- Dữ liệu sẽ được render vào đây bởi logduyetsanpham.js -->
                         </tbody>
                     </table>
                 </div>
