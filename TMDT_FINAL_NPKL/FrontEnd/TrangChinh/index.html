@@ -338,6 +338,82 @@
         </div>
     </section>
 
+    <!-- POP-UP MODAL CHI TIẾT SẢN PHẨM -->
+    <div class="product-modal-overlay" id="productDetailModal">
+        <div class="product-modal-card">
+            <button class="btn-close-modal" id="closeDetailModalBtn" title="Đóng">&times;</button>
+            <div class="product-modal-grid">
+                <!-- Cột trái: Bộ sưu tập ảnh sản phẩm -->
+                <div class="modal-gallery-column">
+                    <div class="modal-main-img-box">
+                        <img id="modalMainImage" src="" alt="Ảnh sản phẩm" />
+                    </div>
+                    <div class="modal-sub-images-list" id="modalSubImagesList">
+                        <!-- Danh sách các ảnh con (Thumbnails) -->
+                    </div>
+                </div>
+
+                <!-- Cột phải: Chi tiết & Thông tin người bán -->
+                <div class="modal-info-column">
+                    <span class="category-tag green-tag" id="modalCategoryTag">Sản Phẩm</span>
+                    <h2 class="modal-product-title" id="modalProductTitle">Tên sản phẩm</h2>
+                    
+                    <div class="modal-price-stock-row">
+                        <div class="modal-product-price" id="modalProductPrice">0đ</div>
+                        <div class="modal-stock-badge" id="modalStockBadge">Tồn kho: Sẵn hàng</div>
+                    </div>
+
+                    <!-- Khung Mô Tả Sản Phẩm -->
+                    <div class="modal-section-box">
+                        <h4 class="modal-section-heading">📝 Mô Tả Sản Phẩm:</h4>
+                        <p class="modal-description-text" id="modalProductDescription">
+                            Mô tả chi tiết sản phẩm...
+                        </p>
+                    </div>
+
+                    <!-- Khung Thông Tin Shop & Chủ Cửa Hàng -->
+                    <div class="modal-seller-card">
+                        <div class="seller-card-header">
+                            <div class="seller-shop-icon">🏪</div>
+                            <div>
+                                <div class="seller-shop-title" id="modalShopName">Cửa Hàng NPKL</div>
+                                <div class="seller-role-badge">✓ Gian hàng chính hãng đã xác thực</div>
+                            </div>
+                        </div>
+                        <div class="seller-info-details">
+                            <div class="seller-info-item">
+                                <span class="info-icon">👤</span>
+                                <span>Chủ shop:</span>
+                                <strong id="modalSellerName">N/A</strong>
+                            </div>
+                            <div class="seller-info-item">
+                                <span class="info-icon">📞</span>
+                                <span>SĐT:</span>
+                                <strong id="modalSellerPhone">N/A</strong>
+                            </div>
+                            <div class="seller-info-item" style="grid-column: span 2;">
+                                <span class="info-icon">✉️</span>
+                                <span>Email liên hệ:</span>
+                                <strong id="modalSellerEmail">N/A</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nút Thao Tác -->
+                    <div class="modal-action-buttons">
+                        <button class="btn-modal-add-cart" id="modalBtnAddCart">
+                            🛒 THÊM VÀO GIỎ HÀNG
+                        </button>
+                        <button class="btn-modal-wishlist" id="modalBtnWishlist">
+                            ❤️ YÊU THÍCH
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    <script src="chi-tiet-san-pham.js"></script>
 </body>
 </html>
