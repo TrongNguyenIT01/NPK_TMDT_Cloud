@@ -166,6 +166,47 @@
         </div>
     </main>
 
+    <!-- Modal Chi Tiết Kiểm Duyệt -->
+    <div class="modal-overlay" id="approvalLogModal">
+        <div class="modal-card" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Chi Tiết Kiểm Duyệt</h3>
+                <button class="btn-close-modal" onclick="closeApprovalModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 16px;">
+                    <strong style="color: var(--text-dark); display: block;" id="logProductName">Tên sản phẩm</strong>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);" id="logProductId">Mã SP</span>
+                </div>
+                
+                <div class="log-info-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                    <div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Trạng thái</span>
+                        <div id="logStatusBadge" style="margin-top: 4px;"></div>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Thời gian xử lý</span>
+                        <strong style="font-size: 0.9rem;" id="logDate"></strong>
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Người duyệt (Admin)</span>
+                        <strong style="font-size: 0.9rem;" id="logAdminName"></strong>
+                        <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: 8px;" id="logAdminEmail"></span>
+                    </div>
+                </div>
+
+                <div class="reason-box" id="logReasonBox" style="display: none;">
+                    <strong style="color: #B91C1C; display: block; margin-bottom: 4px;">Lý do từ chối:</strong>
+                    <p style="color: #7F1D1D; font-size: 0.95rem; line-height: 1.5;" id="logNote"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-tb reject" onclick="closeApprovalModal()" style="background-color: #F1F5F9; color: #475569; border: 1px solid #CBD5E1;">Đóng</button>
+                <a href="dang-san-pham.html" class="btn-tb primary" style="text-decoration:none;">Chỉnh sửa SP</a>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
