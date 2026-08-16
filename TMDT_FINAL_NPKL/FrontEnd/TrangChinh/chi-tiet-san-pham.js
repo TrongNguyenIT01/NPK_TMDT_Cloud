@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Xử lý nút Thêm Vào Giỏ Hàng trên Modal Pop-up
     const modalBtnAddCart = document.getElementById('modalBtnAddCart');
     if (modalBtnAddCart) {
-        modalBtnAddCart.addEventListener('click', () => {
+        modalBtnAddCart.addEventListener('click', async () => {
             const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
             if (!token) {
                 alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
@@ -209,6 +209,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!currentModalProductData) return;
 
+            const prodId = currentModalProductData.productId;
+
+            // [Thay đổi] Gọi API Backend để lưu vào CSDL thay vì chỉ lưu LocalStorage
+            if (prodId && prodId !== 'DEMO') {
+                try {
+                    const response = await fetch(`${BASE_API_URL}/api/GioHang/add`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            productId: prodId,
+                            quantity: 1
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        const cartBadge = document.querySelector('#cartBadge');
+                        if (cartBadge) cartBadge.textContent = data.totalItemsCount;
+                        localStorage.setItem('npkl_cart_count', data.totalItemsCount);
+                        if (data.items) {
+                            localStorage.setItem('npkl_cart_items', JSON.stringify(data.items));
+                        }
+
+                        showToastMsg(`Đã thêm "${currentModalProductData.title}" vào Giỏ Hàng! 🛒`);
+                        if (productDetailModal) productDetailModal.classList.remove('active');
+                        return;
+                    } else {
+                        showToastMsg(data.message || 'Không thể thêm vào giỏ hàng!');
+                        return;
+                    }
+                } catch (apiErr) {
+                    console.error('Lỗi khi gọi API giỏ hàng từ modal:', apiErr);
+                }
+            }
+
+            // Fallback lưu LocalStorage nếu API lỗi hoặc dữ liệu demo
             let cart = getStoredCart();
             const existingItem = cart.find(item => (currentModalProductData.productId && item.productId === currentModalProductData.productId) || item.title === currentModalProductData.title);
 
@@ -216,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 existingItem.qty = (existingItem.qty || 1) + 1;
             } else {
                 cart.push({
-                    id: 'cart-' + Date.now(),
+                    id: currentModalProductData.productId || ('cart-' + Date.now()),
                     productId: currentModalProductData.productId,
                     title: currentModalProductData.title,
                     price: currentModalProductData.priceNum,

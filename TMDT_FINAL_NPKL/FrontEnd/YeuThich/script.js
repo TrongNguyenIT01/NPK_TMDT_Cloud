@@ -60,13 +60,31 @@ document.addEventListener('DOMContentLoaded', () => {
     let wishlistItems = JSON.parse(localStorage.getItem('npkl_wishlist')) || [];
     let cartItems = JSON.parse(localStorage.getItem('npkl_cart_items')) || [];
 
-    function updateBadgeCounts() {
+    async function updateBadgeCounts() {
         let totalCartQty = 0;
         cartItems.forEach(item => totalCartQty += (item.qty || 1));
 
         if (wishlistBadge) wishlistBadge.textContent = wishlistItems.length;
         if (wishlistCountElem) wishlistCountElem.textContent = wishlistItems.length;
         if (cartBadge) cartBadge.textContent = totalCartQty;
+
+        const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+        if (token) {
+            try {
+                const res = await fetch(`${BASE_API_URL}/api/GioHang/count`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.success) {
+                        if (cartBadge) cartBadge.textContent = data.count;
+                        localStorage.setItem('npkl_cart_count', data.count);
+                    }
+                }
+            } catch (err) {
+                console.warn('Lỗi lấy số lượng giỏ hàng API:', err);
+            }
+        }
 
         localStorage.setItem('npkl_wishlist', JSON.stringify(wishlistItems));
         localStorage.setItem('npkl_cart_items', JSON.stringify(cartItems));
@@ -153,11 +171,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Bind Add to Cart Single Item
         document.querySelectorAll('.btn-add-to-cart').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 const id = btn.getAttribute('data-id');
                 const targetItem = wishlistItems.find(i => i.id === id);
                 if (!targetItem) return;
+
+                const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+                const prodId = targetItem.productId;
+
+                // [Thay đổi] Gọi API Backend nếu có Token và mã sản phẩm
+                if (token && prodId) {
+                    try {
+                        const response = await fetch(`${BASE_API_URL}/api/GioHang/add`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                productId: prodId,
+                                quantity: 1
+                            })
+                        });
+
+                        const data = await response.json();
+                        if (response.ok && data.success) {
+                            if (cartBadge) cartBadge.textContent = data.totalItemsCount;
+                            localStorage.setItem('npkl_cart_count', data.totalItemsCount);
+                            if (data.items) {
+                                localStorage.setItem('npkl_cart_items', JSON.stringify(data.items));
+                            }
+                            showToast(`Đã thêm "${targetItem.title}" vào Giỏ Hàng! 🛒`);
+                            return;
+                        } else {
+                            showToast(data.message || 'Không thể thêm vào giỏ hàng!');
+                            return;
+                        }
+                    } catch (apiErr) {
+                        console.error('Lỗi khi gọi API giỏ hàng:', apiErr);
+                    }
+                }
 
                 const priceNum = parseInt(String(targetItem.price).replace(/[^\d]/g, '')) || 50000;
                 const existingCartItem = cartItems.find(i => (targetItem.productId && i.productId === targetItem.productId) || i.title === targetItem.title);
@@ -166,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     existingCartItem.qty = (existingCartItem.qty || 1) + 1;
                 } else {
                     cartItems.push({
-                        id: 'cart-' + Date.now(),
+                        id: targetItem.productId || ('cart-' + Date.now()),
                         productId: targetItem.productId || '',
                         title: targetItem.title,
                         author: targetItem.author || 'Gian Hàng NPKL',
@@ -342,8 +396,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Modal Add To Cart Button
     if (modalBtnAddCart) {
-        modalBtnAddCart.addEventListener('click', () => {
+        modalBtnAddCart.addEventListener('click', async () => {
             if (!currentModalProductData) return;
+
+            const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+            const prodId = currentModalProductData.productId;
+
+            // [Thay đổi] Gọi API Backend nếu có Token và mã sản phẩm
+            if (token && prodId) {
+                try {
+                    const response = await fetch(`${BASE_API_URL}/api/GioHang/add`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            productId: prodId,
+                            quantity: 1
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        if (cartBadge) cartBadge.textContent = data.totalItemsCount;
+                        localStorage.setItem('npkl_cart_count', data.totalItemsCount);
+                        if (data.items) {
+                            localStorage.setItem('npkl_cart_items', JSON.stringify(data.items));
+                        }
+                        showToast(`Đã thêm "${currentModalProductData.title}" vào Giỏ Hàng! 🛒`);
+                        if (productDetailModal) productDetailModal.classList.remove('active');
+                        return;
+                    } else {
+                        showToast(data.message || 'Không thể thêm vào giỏ hàng!');
+                        return;
+                    }
+                } catch (apiErr) {
+                    console.error('Lỗi khi gọi API giỏ hàng:', apiErr);
+                }
+            }
 
             const existingCartItem = cartItems.find(i => (currentModalProductData.productId && i.productId === currentModalProductData.productId) || i.title === currentModalProductData.title);
 
@@ -351,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 existingCartItem.qty = (existingCartItem.qty || 1) + 1;
             } else {
                 cartItems.push({
-                    id: 'cart-' + Date.now(),
+                    id: currentModalProductData.productId || ('cart-' + Date.now()),
                     productId: currentModalProductData.productId || '',
                     title: currentModalProductData.title,
                     price: currentModalProductData.priceNum,
@@ -380,8 +471,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Bind Move All to Cart
     if (btnMoveAllToCart) {
-        btnMoveAllToCart.addEventListener('click', () => {
+        btnMoveAllToCart.addEventListener('click', async () => {
             if (wishlistItems.length > 0) {
+                const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+
+                if (token) {
+                    for (const targetItem of wishlistItems) {
+                        if (targetItem.productId) {
+                            try {
+                                await fetch(`${BASE_API_URL}/api/GioHang/add`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${token}`
+                                    },
+                                    body: JSON.stringify({
+                                        productId: targetItem.productId,
+                                        quantity: 1
+                                    })
+                                });
+                            } catch (e) {
+                                console.warn('Lỗi thêm sản phẩm hàng loạt:', e);
+                            }
+                        }
+                    }
+                }
+
                 wishlistItems.forEach(targetItem => {
                     const priceNum = parseInt(String(targetItem.price).replace(/[^\d]/g, '')) || 50000;
                     const existing = cartItems.find(i => (targetItem.productId && i.productId === targetItem.productId) || i.title === targetItem.title);
@@ -389,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         existing.qty = (existing.qty || 1) + 1;
                     } else {
                         cartItems.push({
-                            id: 'cart-' + Date.now() + Math.random(),
+                            id: targetItem.productId || ('cart-' + Date.now() + Math.random()),
                             productId: targetItem.productId || '',
                             title: targetItem.title,
                             author: targetItem.author || 'Gian Hàng NPKL',

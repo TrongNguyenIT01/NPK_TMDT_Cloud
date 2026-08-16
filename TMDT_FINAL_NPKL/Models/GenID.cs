@@ -119,5 +119,17 @@ namespace TMDT_FINAL_NPKL.Models
             // 5. Trả về kết quả: SP + 8 ký tự Hash (Tổng cộng 10 ký tự)
             return $"{prefix}{shortHash}";
         }
+
+        public static string GenerateCartId()
+        {
+            // Mã giỏ hàng: CRT- + 15 ký tự thời gian = 19 ký tự (<= 20 ký tự theo CSDL)
+            return "CRT-" + DateTime.Now.ToString("yyMMddHHmmssfff");
+        }
+
+        public static string GenerateCartItemId()
+        {
+            // Mã mục giỏ hàng: CIT- + 15 ký tự thời gian = 19 ký tự (<= 20 ký tự theo CSDL)
+            return "CIT-" + DateTime.Now.ToString("yyMMddHHmmssfff");
+        }
     }
 }

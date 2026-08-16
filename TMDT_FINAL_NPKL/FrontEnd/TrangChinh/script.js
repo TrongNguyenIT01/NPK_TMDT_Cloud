@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const wishlistBadge = document.querySelector('#wishlistBadge');
     const cartBadge = document.querySelector('#cartBadge');
 
-    function syncBadgesFromStorage() {
+    async function syncBadgesFromStorage() {
         const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
         if (!token) {
             if (wishlistBadge) wishlistBadge.textContent = '0';
@@ -46,12 +46,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const wishlist = getStoredWishlist();
-        const cart = getStoredCart();
+        if (wishlistBadge) wishlistBadge.textContent = wishlist.length;
 
+        // [Mới] Đồng bộ số lượng giỏ hàng từ Database qua API Backend
+        try {
+            const res = await fetch(`${BASE_API_URL}/api/GioHang/count`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (data && data.success) {
+                    if (cartBadge) cartBadge.textContent = data.count;
+                    localStorage.setItem('npkl_cart_count', data.count);
+                    return;
+                }
+            }
+        } catch (err) {
+            console.warn('Không thể lấy số lượng giỏ hàng từ server, dùng cache local:', err);
+        }
+
+        // Fallback từ LocalStorage nếu API chưa phản hồi
+        const cart = getStoredCart();
         let totalCartQty = 0;
         cart.forEach(item => totalCartQty += (item.qty || 1));
 
-        if (wishlistBadge) wishlistBadge.textContent = wishlist.length;
         if (cartBadge) cartBadge.textContent = totalCartQty;
 
         localStorage.setItem('npkl_wishlist', JSON.stringify(wishlist));
@@ -194,6 +212,65 @@ document.addEventListener('DOMContentLoaded', () => {
                 img = rawImg.substring(rawImg.indexOf('http'));
             } else if (rawImg.startsWith('/images/')) {
                 img = `${BASE_API_URL}${rawImg}`;
+            }
+
+            // [Thay đổi] Gọi API Backend lưu vào CSDL thay vì chỉ lưu LocalStorage
+            if (prodId) {
+                (async () => {
+                    try {
+                        const response = await fetch(`${BASE_API_URL}/api/GioHang/add`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                productId: prodId,
+                                quantity: 1
+                            })
+                        });
+
+                        const data = await response.json();
+                        if (response.ok && data.success) {
+                            if (cartBadge) cartBadge.textContent = data.totalItemsCount;
+                            localStorage.setItem('npkl_cart_count', data.totalItemsCount);
+                            if (data.items) {
+                                localStorage.setItem('npkl_cart_items', JSON.stringify(data.items));
+                            }
+                            showToast(`Đã thêm "${title}" vào Giỏ Hàng! 🛒`);
+                            return;
+                        } else {
+                            showToast(data.message || 'Không thể thêm vào giỏ hàng!');
+                            return;
+                        }
+                    } catch (apiErr) {
+                        console.error('Lỗi API khi thêm vào giỏ hàng:', apiErr);
+                    }
+
+                    // Fallback LocalStorage nếu API gặp sự cố
+                    let cart = getStoredCart();
+                    const existingItem = cart.find(item => (prodId && item.productId === prodId) || item.title === title);
+
+                    if (existingItem) {
+                        existingItem.qty = (existingItem.qty || 1) + 1;
+                    } else {
+                        cart.push({
+                            id: prodId || ('cart-' + Date.now()),
+                            productId: prodId,
+                            title,
+                            author,
+                            price: priceNum,
+                            qty: 1,
+                            categoryTag,
+                            img
+                        });
+                    }
+
+                    localStorage.setItem('npkl_cart_items', JSON.stringify(cart));
+                    syncBadgesFromStorage();
+                    showToast(`Đã thêm "${title}" vào Giỏ Hàng! 🛒`);
+                })();
+                return;
             }
 
             let cart = getStoredCart();

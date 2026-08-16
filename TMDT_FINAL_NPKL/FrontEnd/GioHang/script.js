@@ -62,13 +62,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Checkout
     const btnCheckout = document.getElementById('btnCheckout');
 
-    // Cart data from localStorage
+    const BASE_API_URL = 'https://localhost:3001';
+
+    // [Thay đổi] Chuyển cartItems từ chỉ đọc LocalStorage sang đồng bộ trực tiếp từ Database qua API Backend
+    // Dữ liệu từ LocalStorage vẫn được dùng làm fallback khởi tạo để tránh màn hình trắng khi đang tải API
     let cartItems = JSON.parse(localStorage.getItem('npkl_cart_items')) || [];
     const FREESHIP_THRESHOLD = 300000;
     const STANDARD_SHIPPING = 30000;
 
     function formatVND(amount) {
-        return amount.toLocaleString('vi-VN') + 'đ';
+        return (amount || 0).toLocaleString('vi-VN') + 'đ';
     }
 
     function calculateTotals() {
@@ -76,8 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let totalItemsCount = 0;
 
         cartItems.forEach(item => {
-            subtotal += item.price * item.qty;
-            totalItemsCount += item.qty;
+            const price = Number(item.price) || 0;
+            const qty = Number(item.qty) || 0;
+            subtotal += price * qty;
+            totalItemsCount += qty;
         });
 
         // Shipping fee calculation
@@ -105,12 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (totalElem) totalElem.textContent = formatVND(total);
         if (cartBadge) cartBadge.textContent = totalItemsCount;
 
-        // Save state
+        // Lưu bản sao vào LocalStorage để đồng bộ tạm thời giữa các trang
         localStorage.setItem('npkl_cart_items', JSON.stringify(cartItems));
         localStorage.setItem('npkl_cart_count', totalItemsCount);
     }
-
-    const BASE_API_URL = 'https://localhost:3001';
 
     function fixImgSrc(src) {
         if (!src) return '../TrangChinh/images/dac_nhan_tam.jpg';
@@ -123,6 +126,50 @@ document.addEventListener('DOMContentLoaded', () => {
         if (src.startsWith('images/')) return '../TrangChinh/' + src;
         if (src.startsWith('./images/')) return '../TrangChinh/' + src.substring(2);
         return '../TrangChinh/images/' + src;
+    }
+
+    // [Mới] Hàm lấy giỏ hàng từ Database qua Backend API
+    async function loadCartFromAPI() {
+        try {
+            const response = await fetch(`${BASE_API_URL}/api/GioHang`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 401) {
+                alert('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!');
+                window.location.href = '../DangNhap/index.html';
+                return;
+            }
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.items) {
+                    cartItems = data.items.map(item => ({
+                        id: item.productId,
+                        productId: item.productId,
+                        cartItemId: item.cartItemId,
+                        title: item.title,
+                        price: item.price,
+                        img: item.img,
+                        qty: item.qty,
+                        stockQuantity: item.stockQuantity,
+                        categoryTag: item.categoryTag,
+                        author: item.author
+                    }));
+                    renderCart();
+                }
+            } else {
+                console.warn('Không thể tải giỏ hàng từ máy chủ, dùng dữ liệu tạm.');
+                renderCart();
+            }
+        } catch (error) {
+            console.error('Lỗi khi gọi API giỏ hàng:', error);
+            renderCart();
+        }
     }
 
     function renderCart() {
@@ -141,21 +188,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (cartItemsList) {
             cartItemsList.innerHTML = cartItems.map(item => `
-                <div class="cart-item-row" id="${item.id}">
+                <div class="cart-item-row" id="${item.productId || item.id}">
                     <img src="${fixImgSrc(item.img)}" alt="${item.title}" class="cart-item-img" onerror="this.src='../TrangChinh/images/dac_nhan_tam.jpg'" />
                     <div class="cart-item-details">
-                        <span class="item-cat-badge">${item.categoryTag}</span>
+                        <span class="item-cat-badge">${item.categoryTag || 'Sản phẩm'}</span>
                         <h4 class="item-title">${item.title}</h4>
-                        <span class="item-author">${item.author}</span>
+                        <span class="item-author">${item.author || 'Cửa hàng'}</span>
                         <span class="item-price">${formatVND(item.price)}</span>
                     </div>
                     <div class="quantity-stepper">
-                        <button type="button" class="btn-qty btn-minus" data-id="${item.id}">-</button>
+                        <button type="button" class="btn-qty btn-minus" data-id="${item.productId || item.id}">-</button>
                         <input type="text" class="qty-input" value="${item.qty}" readonly />
-                        <button type="button" class="btn-qty btn-plus" data-id="${item.id}">+</button>
+                        <button type="button" class="btn-qty btn-plus" data-id="${item.productId || item.id}">+</button>
                     </div>
                     <div class="item-subtotal">${formatVND(item.price * item.qty)}</div>
-                    <button type="button" class="btn-delete-item" data-id="${item.id}" title="Xóa khỏi giỏ">
+                    <button type="button" class="btn-delete-item" data-id="${item.productId || item.id}" title="Xóa khỏi giỏ">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -165,57 +212,130 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('');
         }
 
-        // Bind Quantity Steppers
+        // Gán sự kiện tăng/giảm số lượng kết nối Backend API
         document.querySelectorAll('.btn-minus').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', async () => {
                 const id = btn.getAttribute('data-id');
-                const target = cartItems.find(i => i.id === id);
+                const target = cartItems.find(i => (i.productId || i.id) === id);
                 if (target) {
                     if (target.qty > 1) {
-                        target.qty -= 1;
-                        renderCart();
+                        await updateQuantityAPI(target.productId || id, target.qty - 1);
                     } else {
-                        deleteCartItem(id);
+                        await deleteCartItem(id);
                     }
                 }
             });
         });
 
         document.querySelectorAll('.btn-plus').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', async () => {
                 const id = btn.getAttribute('data-id');
-                const target = cartItems.find(i => i.id === id);
+                const target = cartItems.find(i => (i.productId || i.id) === id);
                 if (target) {
-                    target.qty += 1;
-                    renderCart();
+                    await updateQuantityAPI(target.productId || id, target.qty + 1);
                 }
             });
         });
 
-        // Bind Delete Single Item
+        // Gán sự kiện xóa sản phẩm kết nối Backend API
         document.querySelectorAll('.btn-delete-item').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', async () => {
                 const id = btn.getAttribute('data-id');
-                deleteCartItem(id);
+                await deleteCartItem(id);
             });
         });
 
         calculateTotals();
     }
 
-    function deleteCartItem(id) {
+    // [Mới] Hàm cập nhật số lượng gọi API Backend
+    async function updateQuantityAPI(productId, newQty) {
+        try {
+            const response = await fetch(`${BASE_API_URL}/api/GioHang/update-quantity`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    quantity: newQty
+                })
+            });
+
+            const data = await response.json();
+            if (response.ok && data.success) {
+                // Đồng bộ lại danh sách từ response Backend
+                cartItems = data.items.map(item => ({
+                    id: item.productId,
+                    productId: item.productId,
+                    cartItemId: item.cartItemId,
+                    title: item.title,
+                    price: item.price,
+                    img: item.img,
+                    qty: item.qty,
+                    stockQuantity: item.stockQuantity,
+                    categoryTag: item.categoryTag,
+                    author: item.author
+                }));
+                renderCart();
+            } else {
+                showToast(data.message || 'Không thể cập nhật số lượng!');
+            }
+        } catch (error) {
+            console.error('Lỗi khi cập nhật số lượng:', error);
+            showToast('Lỗi máy chủ khi cập nhật giỏ hàng!');
+        }
+    }
+
+    // [Thay đổi] Hàm xóa sản phẩm gọi API Backend và cập nhật giao diện
+    async function deleteCartItem(id) {
         const itemRow = document.getElementById(id);
         if (itemRow) {
             itemRow.style.opacity = '0';
-            setTimeout(() => {
-                cartItems = cartItems.filter(i => i.id !== id);
+        }
+
+        try {
+            const response = await fetch(`${BASE_API_URL}/api/GioHang/remove/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+            if (response.ok && data.success) {
+                cartItems = data.items.map(item => ({
+                    id: item.productId,
+                    productId: item.productId,
+                    cartItemId: item.cartItemId,
+                    title: item.title,
+                    price: item.price,
+                    img: item.img,
+                    qty: item.qty,
+                    stockQuantity: item.stockQuantity,
+                    categoryTag: item.categoryTag,
+                    author: item.author
+                }));
                 renderCart();
                 showToast('Đã xóa sản phẩm khỏi giỏ hàng');
-            }, 200);
+            } else {
+                // Fallback nếu API lỗi
+                cartItems = cartItems.filter(i => (i.productId || i.id) !== id);
+                renderCart();
+                showToast('Đã xóa sản phẩm khỏi giỏ hàng');
+            }
+        } catch (error) {
+            console.error('Lỗi khi xóa sản phẩm khỏi giỏ:', error);
+            cartItems = cartItems.filter(i => (i.productId || i.id) !== id);
+            renderCart();
+            showToast('Đã xóa sản phẩm khỏi giỏ hàng');
         }
     }
 
     // Checkout Action
+    // Lưu ý: Theo kế hoạch, chức năng thanh toán chi tiết chưa cần làm ở giai đoạn này
     if (btnCheckout) {
         btnCheckout.addEventListener('click', () => {
             if (cartItems.length === 0) return;
@@ -225,8 +345,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initial Render
-    renderCart();
+    // Tải dữ liệu giỏ hàng từ Database qua API Backend
+    loadCartFromAPI();
 
     // Toast Notification Helper
     function showToast(message) {
