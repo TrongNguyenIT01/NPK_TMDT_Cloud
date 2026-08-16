@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = 'http://localhost:5087/api/QuenMatKhau/dat-lai-mat-khau';
+    const API_URL = 'https://localhost:3001/api/QuenMatKhau/dat-lai-mat-khau';
     const form = document.getElementById('resetForm');
     const newPasswordInput = document.getElementById('newPassword');
     const confirmPasswordInput = document.getElementById('confirmPassword');
@@ -18,6 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const email = urlParams.get('email') || '';
     const otp = urlParams.get('otp') || '';
+
+    if (!email || !otp) {
+        alert('Thông tin xác thực không đầy đủ. Vui lòng thực hiện lại quy trình quên mật khẩu!');
+        window.location.href = 'quen-mat-khau.html';
+        return;
+    }
 
     let onConfirmCallback = null;
 
@@ -51,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <line x1="1" y1="1" x2="23" y2="23"></line>
                    </svg>`
                 : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
                     <circle cx="12" cy="12" r="3"></circle>
                    </svg>`;
         });
@@ -84,10 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    email,
-                    otp,
-                    newPassword,
-                    confirmPassword
+                    Email: email,
+                    Otp: otp,
+                    NewPassword: newPassword,
+                    ConfirmPassword: confirmPassword
                 })
             });
 
@@ -96,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 showPopupModal(
                     'Đổi Mật Khẩu Thành Công!',
-                    '🎉 Bạn đã đặt lại mật khẩu mới thành công! Hãy đăng nhập lại bằng mật khẩu mới vừa tạo.',
+                    result.message || result.Message || '🎉 Bạn đã đặt lại mật khẩu mới thành công! Hãy đăng nhập lại bằng mật khẩu mới vừa tạo.',
                     true,
                     'Đăng Nhập Ngay ➔',
                     () => {
@@ -104,18 +110,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 );
             } else {
-                showPopupModal('Thông Báo Lỗi', result.message || 'Mã OTP không chính xác hoặc đã hết hiệu lực (10 phút)!', false, 'Thử lại');
+                showPopupModal(
+                    'Thông Báo Lỗi',
+                    result.message || result.Message || 'Mã OTP không chính xác hoặc đã hết hiệu lực (10 phút)!',
+                    false,
+                    'Thử lại'
+                );
             }
         } catch (err) {
-            console.warn('API error, fallback demo mode:', err);
+            console.error('Lỗi kết nối API đặt lại mật khẩu:', err);
             showPopupModal(
-                'Đổi Mật Khẩu Thành Công!',
-                '🎉 Bạn đã đặt lại mật khẩu mới thành công! Hãy đăng nhập lại bằng mật khẩu mới vừa tạo.',
-                true,
-                'Đăng Nhập Ngay ➔',
-                () => {
-                    window.location.href = 'index.html';
-                }
+                'Lỗi Kết Nối',
+                'Không thể kết nối đến máy chủ Backend (https://localhost:3001). Vui lòng thử lại sau!',
+                false,
+                'Đóng'
             );
         } finally {
             btnSubmit.disabled = false;

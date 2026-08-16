@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = 'http://localhost:5087/api/QuenMatKhau/gui-otp';
+    const API_URL = 'https://localhost:3001/api/QuenMatKhau/gui-otp';
     const form = document.getElementById('step1EmailForm');
     const emailInput = document.getElementById('email');
     const btnSend = document.getElementById('btnSendOtp');
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
+                body: JSON.stringify({ Email: email })
             });
 
             const result = await response.json().catch(() => ({}));
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 showPopupModal(
                     'Đã Gửi Mã OTP!',
-                    result.message || `Mã xác nhận OTP đã được gửi thành công đến email: ${email}. Vui lòng kiểm tra hộp thư.`,
+                    result.message || result.Message || `Mã xác nhận OTP đã được gửi thành công đến email: ${email}. Vui lòng kiểm tra hộp thư.`,
                     true,
                     'Đồng Ý & Nhập Mã OTP ➔',
                     () => {
@@ -64,18 +64,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 );
             } else {
-                showPopupModal('Thông Báo Lỗi', result.message || 'Email này chưa được đăng ký trong hệ thống!', false, 'Thử lại');
+                showPopupModal(
+                    'Thông Báo Lỗi',
+                    result.message || result.Message || 'Email này chưa được đăng ký trong hệ thống!',
+                    false,
+                    'Thử lại'
+                );
             }
         } catch (err) {
-            console.warn('API error, fallback demo mode:', err);
+            console.error('Lỗi kết nối API gửi OTP:', err);
             showPopupModal(
-                'Đã Gửi Mã OTP!',
-                `Mã xác nhận OTP mẫu [123456] đã được phát hành cho email: ${email}. Vui lòng kiểm tra hộp thư.`,
-                true,
-                'Đồng Ý & Nhập Mã OTP ➔',
-                () => {
-                    window.location.href = `nhap-otp.html?email=${encodeURIComponent(email)}`;
-                }
+                'Lỗi Kết Nối',
+                'Không thể kết nối đến máy chủ Backend (https://localhost:3001). Vui lòng đảm bảo Backend đang chạy!',
+                false,
+                'Đóng'
             );
         } finally {
             btnSend.disabled = false;

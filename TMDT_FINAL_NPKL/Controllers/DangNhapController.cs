@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using NuGet.Protocol.Plugins;
@@ -10,11 +11,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using TMDT_FINAL_NPKL.Entities;
-
 using TMDT_FINAL_NPKL.Models;
-namespace TMDT_FINAL_NPKL.Controllers
 
+namespace TMDT_FINAL_NPKL.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -66,6 +67,121 @@ namespace TMDT_FINAL_NPKL.Controllers
             _context.SaveChanges();
 
             return Ok(new { Success = true, Message = "Đổi mật khẩu thành công." });
+        }
+
+        [Authorize]
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            try
+            {
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized(new { Success = false, Message = "Không xác thực được người dùng." });
+                }
+
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userIdClaim);
+                if (user == null)
+                {
+                    return NotFound(new { Success = false, Message = "Người dùng không tồn tại." });
+                }
+
+                return Ok(new
+                {
+                    Success = true,
+                    Data = new
+                    {
+                        user.UserId,
+                        user.Username,
+                        user.FullName,
+                        user.Email,
+                        user.Phone,
+                        user.Address,
+                        user.Role,
+                        user.Status
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpPut("update-profile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized(new { Success = false, Message = "Không xác thực được người dùng." });
+                }
+
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userIdClaim);
+                if (user == null)
+                {
+                    return NotFound(new { Success = false, Message = "Người dùng không tồn tại." });
+                }
+
+                // Kiểm tra trùng lặp email với tài khoản khác
+                string emailTrimmed = request.Email.Trim();
+                bool emailExists = await _context.Users.AnyAsync(u => u.Email.ToLower() == emailTrimmed.ToLower() && u.UserId != userIdClaim);
+                if (emailExists)
+                {
+                    return BadRequest(new { Success = false, Message = "Email này đã được sử dụng bởi một tài khoản khác!" });
+                }
+
+                // Kiểm tra trùng lặp SĐT với tài khoản khác nếu có nhập Phone
+                if (!string.IsNullOrWhiteSpace(request.Phone))
+                {
+                    string phoneTrimmed = request.Phone.Trim();
+                    bool phoneExists = await _context.Users.AnyAsync(u => u.Phone == phoneTrimmed && u.UserId != userIdClaim);
+                    if (phoneExists)
+                    {
+                        return BadRequest(new { Success = false, Message = "Số điện thoại này đã được đăng ký bởi một tài khoản khác!" });
+                    }
+                    user.Phone = phoneTrimmed;
+                }
+                else
+                {
+                    user.Phone = null;
+                }
+
+                user.FullName = request.FullName.Trim();
+                user.Email = emailTrimmed;
+                user.Address = string.IsNullOrWhiteSpace(request.Address) ? null : request.Address.Trim();
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Success = true,
+                    Message = "Cập nhật thông tin thành công!",
+                    Data = new
+                    {
+                        user.UserId,
+                        user.Username,
+                        user.FullName,
+                        user.Email,
+                        user.Phone,
+                        user.Address,
+                        user.Role
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
         }
 
         [HttpPost("login")]

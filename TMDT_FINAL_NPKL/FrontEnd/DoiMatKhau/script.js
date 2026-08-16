@@ -268,48 +268,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 btnSubmit.disabled = true;
             }
 
-            // =========================================================================
-            // [HƯỚNG DẪN DÀNH CHO BACK-END DEVELOPER NỐI API]
-            // Người làm Back-End sau này chỉ cần bỏ comment đoạn fetch dưới đây:
-            /*
             try {
-                const response = await fetch('https://localhost:3001/api/DoiMatKhau', {
+                const response = await fetch('https://localhost:3001/api/DangNhap/change-password', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({
-                        oldPassword: oldPass,
-                        newPassword: newPass,
-                        confirmPassword: confirmPass
+                        OldPassword: oldPass,
+                        NewPassword: newPass,
+                        ConfirmNewPassword: confirmPass
                     })
                 });
-                const result = await response.json();
-                if (result.success) {
-                    showAlert('Đổi mật khẩu thành công! Vui lòng đăng nhập lại.', true);
+
+                if (response.status === 401) {
+                    showAlert('Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại!', false);
+                    setTimeout(() => {
+                        sessionStorage.clear();
+                        localStorage.removeItem('jwtToken');
+                        window.location.href = '../DangNhap/index.html';
+                    }, 1500);
+                    return;
+                }
+
+                const result = await response.json().catch(() => ({}));
+
+                if (response.ok && (result.success || result.Success)) {
+                    showAlert(result.message || result.Message || '🎉 Đổi mật khẩu thành công! Mật khẩu mới của bạn đã được cập nhật.', true);
                     form.reset();
                     checkPasswordRules();
                 } else {
-                    showAlert(result.message || 'Đổi mật khẩu thất bại!', false);
+                    const errorMsg = result.message || result.Message || 'Đổi mật khẩu thất bại. Vui lòng kiểm tra lại thông tin!';
+                    showAlert(errorMsg, false);
+                    if (errorMsg.toLowerCase().includes('mật khẩu cũ')) {
+                        if (errorOldPassword) errorOldPassword.textContent = errorMsg;
+                        if (oldPasswordInput) oldPasswordInput.classList.add('input-error');
+                    }
                 }
             } catch (err) {
-                showAlert('Không thể kết nối đến máy chủ. Vui lòng thử lại sau!', false);
-            }
-            */
-            // =========================================================================
-
-            // Giả lập phản hồi thành công trên Front-End
-            setTimeout(() => {
-                showAlert('🎉 Đổi mật khẩu thành công! Mật khẩu mới của bạn đã được cập nhật.', true);
-                form.reset();
-                checkPasswordRules();
-
+                console.error('Lỗi kết nối API đổi mật khẩu:', err);
+                showAlert('Không thể kết nối đến máy chủ Backend (https://localhost:3001). Vui lòng thử lại sau!', false);
+            } finally {
                 if (btnSubmit) {
                     btnSubmit.innerHTML = originalBtnText;
                     btnSubmit.disabled = false;
                 }
-            }, 800);
+            }
         });
 
         // Nút Reset Form

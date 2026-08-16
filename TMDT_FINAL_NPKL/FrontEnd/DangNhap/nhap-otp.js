@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_RESEND_URL = 'http://localhost:5087/api/QuenMatKhau/gui-otp';
+    const API_RESEND_URL = 'https://localhost:3001/api/QuenMatKhau/gui-otp';
     const form = document.getElementById('otpForm');
     const otpInput = document.getElementById('otp');
     const displayEmail = document.getElementById('displayEmail');
@@ -20,6 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (email) {
         displayEmail.textContent = email;
+    } else {
+        alert('Không tìm thấy thông tin email. Vui lòng thực hiện lại từ bước 1!');
+        window.location.href = 'quen-mat-khau.html';
+        return;
     }
 
     function showPopupModal(title, msg, isSuccess = true, btnText = 'Đồng Ý', callback = null) {
@@ -68,22 +72,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!email) return;
 
         try {
+            btnResend.disabled = true;
             const res = await fetch(API_RESEND_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
+                body: JSON.stringify({ Email: email })
             });
 
             const data = await res.json().catch(() => ({}));
             if (res.ok) {
-                showPopupModal('Đã Gửi Lại Mã!', data.message || 'Mã OTP mới đã được gửi thành công đến email của bạn.', true, 'Đóng');
+                showPopupModal('Đã Gửi Lại Mã!', data.message || data.Message || 'Mã OTP mới đã được gửi thành công đến email của bạn.', true, 'Đóng');
                 startCountdown(60);
             } else {
-                showPopupModal('Thông Báo Lỗi', data.message || 'Lỗi gửi lại mã OTP!', false, 'Thử lại');
+                showPopupModal('Thông Báo Lỗi', data.message || data.Message || 'Lỗi gửi lại mã OTP!', false, 'Thử lại');
+                btnResend.disabled = false;
             }
         } catch (err) {
-            showPopupModal('Đã Gửi Lại Mã!', 'Đã gửi lại mã OTP mới cho email của bạn!', true, 'Đóng');
-            startCountdown(60);
+            console.error('Lỗi gửi lại OTP:', err);
+            showPopupModal('Lỗi Kết Nối', 'Không thể kết nối đến máy chủ Backend (https://localhost:3001)!', false, 'Đóng');
+            btnResend.disabled = false;
         }
     });
 
@@ -98,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         showPopupModal(
             'Xác Nhận Thành Công!',
-            'Mã OTP của bạn hợp lệ. Vui lòng bấm Tiếp Tục để thiết lập mật khẩu mới.',
+            'Mã OTP hợp lệ. Vui lòng bấm Tiếp Tục để thiết lập mật khẩu mới.',
             true,
             'Tiếp Tục Đặt Mật Khẩu Mới ➔',
             () => {
