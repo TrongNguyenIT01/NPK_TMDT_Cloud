@@ -29,4 +29,15 @@ namespace TMDT_FINAL_NPKL.Models
         // Ảnh chi tiết không bắt buộc phải có, nhưng nếu có thì là 1 list
         public List<IFormFile>? DetailImages { get; set; }
     }
+
+    public class UpdatePriceStockRequest
+    {
+        [Required(ErrorMessage = "Giá bán không được để trống")]
+        [Range(0, double.MaxValue, ErrorMessage = "Giá bán phải lớn hơn hoặc bằng 0")]
+        public decimal Price { get; set; }
+
+        [Required(ErrorMessage = "Số lượng tồn kho không được để trống")]
+        [Range(0, int.MaxValue, ErrorMessage = "Số lượng tồn kho phải lớn hơn hoặc bằng 0")]
+        public int StockQuantity { get; set; }
+    }
 }

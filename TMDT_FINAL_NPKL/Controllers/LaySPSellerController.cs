@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TMDT_FINAL_NPKL.Entities;
+using TMDT_FINAL_NPKL.Models;
 
 namespace TMDT_FINAL_NPKL.Controllers
 {
@@ -231,6 +232,143 @@ namespace TMDT_FINAL_NPKL.Controllers
                         ProductId = product.ProductId,
                         ProductName = product.ProductName,
                         Logs = logs
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
+        [HttpGet("approved-products")]
+        [Authorize(Roles = "SELLER")]
+        public async Task<IActionResult> GetApprovedProducts([FromQuery] string? keyword = null)
+        {
+            try
+            {
+                // Bước 1: Lấy định danh người dùng từ Token (hỗ trợ cả UserId và Username)
+                string? userId = User.FindFirst("UserId")?.Value;
+                string? username = User.FindFirst("Username")?.Value;
+
+                if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(username))
+                {
+                    return Unauthorized(new { Success = false, Message = "Không xác định được danh tính người dùng từ Token!" });
+                }
+
+                // Bước 2: Tìm shop tương ứng
+                var shop = await _context.Shops.FirstOrDefaultAsync(s => 
+                    (!string.IsNullOrEmpty(userId) && s.SellerId == userId) || 
+                    (!string.IsNullOrEmpty(username) && s.Seller.Username == username));
+
+                if (shop == null)
+                {
+                    return BadRequest(new { Success = false, Message = "Bạn chưa đăng ký thông tin cửa hàng!" });
+                }
+
+                // Bước 3: Lấy danh sách sản phẩm ĐÃ DUYỆT (APPROVED) và chưa bị xóa
+                var query = _context.Products
+                    .Include(p => p.Category)
+                    .Where(p => p.ShopId == shop.ShopId && p.ApprovalStatus == "APPROVED" && p.IsDeleted == false);
+
+                if (!string.IsNullOrWhiteSpace(keyword))
+                {
+                    string kw = keyword.Trim().ToLower();
+                    query = query.Where(p => p.ProductName.ToLower().Contains(kw) || p.ProductId.ToLower().Contains(kw));
+                }
+
+                var products = await query
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Select(p => new
+                    {
+                        ProductId = p.ProductId,
+                        ProductName = p.ProductName,
+                        CategoryId = p.CategoryId,
+                        CategoryName = p.Category != null ? p.Category.CategoryName : "",
+                        Price = p.Price,
+                        StockQuantity = p.StockQuantity,
+                        Image = p.Image,
+                        ApprovalStatus = p.ApprovalStatus,
+                        IsDeleted = p.IsDeleted,
+                        CreatedAt = p.CreatedAt
+                    })
+                    .ToListAsync();
+
+                return Ok(new
+                {
+                    Success = true,
+                    Message = "Lấy danh sách sản phẩm đã duyệt thành công.",
+                    Data = products
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
+        [HttpPut("update-price-stock/{productId}")]
+        [Authorize(Roles = "SELLER")]
+        public async Task<IActionResult> UpdatePriceAndStock(string productId, [FromBody] UpdatePriceStockRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    return BadRequest(new { Success = false, Message = "Dữ liệu cập nhật không hợp lệ!" });
+                }
+
+                if (request.Price < 0)
+                {
+                    return BadRequest(new { Success = false, Message = "Giá bán không được âm!" });
+                }
+
+                if (request.StockQuantity < 0)
+                {
+                    return BadRequest(new { Success = false, Message = "Số lượng tồn kho không được âm!" });
+                }
+
+                // Bước 1: Xác thực người dùng và shop
+                string? userId = User.FindFirst("UserId")?.Value;
+                string? username = User.FindFirst("Username")?.Value;
+
+                if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(username))
+                {
+                    return Unauthorized(new { Success = false, Message = "Không xác định được danh tính!" });
+                }
+
+                var shop = await _context.Shops.FirstOrDefaultAsync(s => 
+                    (!string.IsNullOrEmpty(userId) && s.SellerId == userId) || 
+                    (!string.IsNullOrEmpty(username) && s.Seller.Username == username));
+
+                if (shop == null)
+                {
+                    return BadRequest(new { Success = false, Message = "Chưa có cửa hàng!" });
+                }
+
+                // Bước 2: Tìm sản phẩm thuộc về shop này
+                var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == productId && p.ShopId == shop.ShopId);
+                if (product == null)
+                {
+                    return NotFound(new { Success = false, Message = "Không tìm thấy sản phẩm hoặc bạn không có quyền cập nhật sản phẩm này!" });
+                }
+
+                // Bước 3: Cập nhật giá và tồn kho
+                product.Price = request.Price;
+                product.StockQuantity = request.StockQuantity;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Success = true,
+                    Message = $"Đã cập nhật giá ({product.Price:N0}đ) và tồn kho ({product.StockQuantity}) cho sản phẩm [{product.ProductId}] thành công!",
+                    Data = new
+                    {
+                        ProductId = product.ProductId,
+                        ProductName = product.ProductName,
+                        Price = product.Price,
+                        StockQuantity = product.StockQuantity
                     }
                 });
             }
