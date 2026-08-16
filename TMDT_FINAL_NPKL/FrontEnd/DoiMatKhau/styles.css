@@ -1,0 +1,336 @@
+/* -------------------------------------------------------------------------
+   TRANG ĐỔI MẬT KHẨU - NPKL E-COMMERCE
+   ------------------------------------------------------------------------- */
+
+.account-main-container {
+    max-width: 1200px;
+    margin: 2rem auto 4rem;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.password-section-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    padding: 32px;
+    border: 1px solid #E2E8F0;
+}
+
+.section-header {
+    border-bottom: 1px solid #E2E8F0;
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-header-left h2 {
+    margin: 0 0 6px 0;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #0B2238;
+}
+
+.section-header-left p {
+    margin: 0;
+    color: #64748B;
+    font-size: 0.92rem;
+}
+
+.btn-back-home {
+    background-color: #F1F5F9;
+    color: #475569;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    border: 1px solid #E2E8F0;
+}
+
+.btn-back-home:hover {
+    background-color: #E2E8F0;
+    color: #0B2238;
+}
+
+/* ---------------- Layout Grid ---------------- */
+.password-layout-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 36px;
+    align-items: start;
+}
+
+@media (max-width: 860px) {
+    .password-layout-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
+/* ---------------- Form Styles ---------------- */
+.password-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #1E293B;
+}
+
+.required-star {
+    color: #EF4444;
+}
+
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-input-wrapper input {
+    width: 100%;
+    padding: 12px 46px 12px 16px;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: #1E293B;
+    background-color: #FFFFFF;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+/* Ẩn con mắt mặc định của trình duyệt (Edge / Chrome / IE) để chỉ hiện 1 con mắt custom */
+.password-input-wrapper input::-ms-reveal,
+.password-input-wrapper input::-ms-clear {
+    display: none !important;
+}
+
+.password-input-wrapper input::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    position: absolute;
+    right: 0;
+}
+
+.password-input-wrapper input:focus {
+    border-color: #E05A2B;
+    box-shadow: 0 0 0 3px rgba(224, 90, 43, 0.12);
+}
+
+.password-input-wrapper input.input-error {
+    border-color: #EF4444;
+    background-color: #FEF2F2;
+}
+
+.btn-toggle-eye {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #94A3B8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 6px;
+    transition: color 0.2s ease;
+}
+
+.btn-toggle-eye:hover {
+    color: #0B2238;
+}
+
+.field-error-msg {
+    font-size: 0.82rem;
+    color: #EF4444;
+    font-weight: 600;
+    min-height: 18px;
+}
+
+/* ---------------- Form Actions ---------------- */
+.form-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.btn-submit-password {
+    background: #E05A2B;
+    color: #FFFFFF;
+    border: none;
+    padding: 13px 28px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(224, 90, 43, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-submit-password:hover {
+    background: #C84B1F;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(224, 90, 43, 0.35);
+}
+
+.btn-submit-password:disabled {
+    background: #94A3B8;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-reset-form {
+    background: #F1F5F9;
+    color: #475569;
+    border: 1px solid #CBD5E1;
+    padding: 13px 20px;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-reset-form:hover {
+    background: #E2E8F0;
+    color: #0F172A;
+}
+
+/* ---------------- Alert Banner ---------------- */
+.alert-banner {
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: fadeIn 0.3s ease;
+}
+
+.alert-banner.success {
+    background-color: #ECFDF5;
+    color: #065F46;
+    border: 1.5px solid #A7F3D0;
+}
+
+.alert-banner.error {
+    background-color: #FEF2F2;
+    color: #991B1B;
+    border: 1.5px solid #FECACA;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------------- Security Tips Column ---------------- */
+.tips-card {
+    background: #F8FAFC;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 22px;
+}
+
+.tips-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.tips-card-header h3 {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: #0B2238;
+}
+
+.tips-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rule-item {
+    font-size: 0.86rem;
+    color: #64748B;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.rule-item.valid {
+    color: #10B981;
+    font-weight: 600;
+}
+
+.rule-item.valid .rule-icon::before {
+    content: "✅";
+}
+
+.rule-item.invalid {
+    color: #EF4444;
+}
+
+.security-recommendation-box {
+    background: #FFF7ED;
+    border: 1px solid #FED7AA;
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+
+.rec-title {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #C2410C;
+    margin-bottom: 4px;
+}
+
+.rec-desc {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #7C2D12;
+    line-height: 1.5;
+}
+
+/* Active Dropdown Item */
+.active-menu-item {
+    background-color: #FFF7ED !important;
+    color: #E05A2B !important;
+    font-weight: 700 !important;
+}
+
+.active-menu-item svg {
+    stroke: #E05A2B !important;
+}

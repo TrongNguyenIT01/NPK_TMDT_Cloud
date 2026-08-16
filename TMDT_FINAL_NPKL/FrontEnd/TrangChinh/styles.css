@@ -8,6 +8,12 @@
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+/* Ẩn con mắt mặc định của trình duyệt Edge / Chrome / IE để tránh bị 2 con mắt */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none !important;
+}
+
 :root {
     --primary-navy: #0B2238;
     --primary-navy-hover: #173859;

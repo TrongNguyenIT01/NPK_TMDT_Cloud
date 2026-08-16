@@ -3,8 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NPKL - Sàn Thương Mại Điện Tử Hàng Đầu</title>
+    <title>Đổi Mật Khẩu - NPKL E-Commerce</title>
+    <link rel="stylesheet" href="../TrangChinh/styles.css" />
     <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -29,7 +31,7 @@
                     <span>Hệ thống cửa hàng</span>
                 </a>
                 <span class="top-bar-divider">|</span>
-                <a href="#" class="top-bar-item">
+                <a href="../GiamSatDonHang/index.html" class="top-bar-item">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                         <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
@@ -46,7 +48,7 @@
                     <span>Hỗ trợ: 1900 636 081</span>
                 </a>
                 <span class="top-bar-divider" id="sellerDivider">|</span>
-                <a href="../Seller/index.html" class="top-bar-item" id="sellerLink" style="color: #6EE7B7; font-weight: 700;">
+                <a href="../Seller/kenh-nguoi-ban.html" class="top-bar-item" id="sellerLink" style="color: #6EE7B7; font-weight: 700;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -71,7 +73,7 @@
     <header class="main-header">
         <div class="header-container">
             <!-- Logo -->
-            <a href="index.html" class="logo">NP<span>KL</span></a>
+            <a href="../TrangChinh/index.html" class="logo">NP<span>KL</span></a>
 
             <!-- Search Group -->
             <div class="search-box-wrapper">
@@ -83,17 +85,12 @@
                     <option value="all">Tất cả danh mục</option>
                     <option value="sach">Sách & Tri thức</option>
                 </select>
-                <button class="search-btn" id="btnExecuteSearch" title="Tìm kiếm & Cuộn tới mua hàng">
+                <button class="search-btn" id="btnExecuteSearch" title="Tìm kiếm">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                 </button>
-
-                <!-- Auto-complete Live Search Panel Dropdown -->
-                <div class="search-dropdown-results" id="searchDropdownResults">
-                    <!-- Dynamic content injected by JavaScript -->
-                </div>
             </div>
 
             <!-- Header Actions -->
@@ -104,7 +101,7 @@
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                         </svg>
-                        <span class="badge" id="wishlistBadge">3</span>
+                        <span class="badge" id="wishlistBadge">0</span>
                     </div>
                     <span class="action-label">Yêu thích</span>
                 </a>
@@ -117,14 +114,14 @@
                             <circle cx="20" cy="21" r="1"></circle>
                             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                         </svg>
-                        <span class="badge" id="cartBadge">2</span>
+                        <span class="badge" id="cartBadge">0</span>
                     </div>
                     <span class="action-label">Giỏ hàng</span>
                 </a>
 
                 <!-- User Profile / Auth Links -->
                 <div class="user-profile-container" style="position: relative;">
-                    <a href="../DangNhap/index.html" class="user-profile" id="userProfileBtn" style="text-decoration: none;" title="Đăng nhập / Tài khoản">
+                    <a href="#" class="user-profile active-profile" id="userProfileBtn" style="text-decoration: none;" title="Tài khoản">
                         <div class="avatar-circle">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -132,12 +129,12 @@
                             </svg>
                         </div>
                         <div class="user-info">
-                            <span class="user-name" id="headerUserName">Đăng Nhập</span>
+                            <span class="user-name" id="headerUserName">Tài khoản</span>
                             <span class="user-status" id="headerUserStatus"></span>
                         </div>
                     </a>
 
-                    <!-- User Dropdown Menu (Hiển thị khi người dùng đã đăng nhập) -->
+                    <!-- User Dropdown Menu -->
                     <div class="user-dropdown-menu" id="userDropdownMenu" style="display: none;">
                         <div class="user-dropdown-header">
                             <div class="dropdown-avatar">
@@ -159,7 +156,7 @@
                             </svg>
                             <span>Thông tin người dùng</span>
                         </a>
-                        <a href="../DoiMatKhau/index.html" class="dropdown-item">
+                        <a href="index.html" class="dropdown-item active-menu-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -190,201 +187,154 @@
         </div>
     </header>
 
-    <!-- 3. NAVIGATION MENU WITH DROPDOWNS -->
-    <nav class="nav-menu">
-        <div class="nav-container">
-            <div class="nav-item">
-                <a href="index.html" class="nav-link active nav-category-trigger" data-category="ALL" data-name="TẤT CẢ">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                    </svg>
-                    Trang Chủ
-                </a>
-            </div>
-
-            <!-- SÁCH -->
-            <div class="nav-item">
-                <a href="#bestsellers" class="nav-link nav-category-trigger" data-category="SACH" data-name="SÁCH">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                    </svg>
-                    Sách ▾
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" data-category="SACH" data-name="TẤT CẢ SÁCH">
-                        <span>📖 Tất Cả Sách</span>
-                        <span class="item-badge">Hot</span>
-                    </a>
-                    <a class="dropdown-item" data-category="SACH" data-name="SÁCH VĂN HỌC">
-                        <span>📚 Sách Văn Học</span>
-                    </a>
-                    <a class="dropdown-item" data-category="SACH" data-name="SÁCH KỸ NĂNG & KINH TẾ">
-                        <span>💡 Sách Kỹ Năng & Kinh Tế</span>
-                    </a>
-                    <a class="dropdown-item" data-category="SACH" data-name="SÁCH NGOẠI NGỮ">
-                        <span>🌐 Sách Ngoại Ngữ</span>
-                    </a>
+    <!-- 3. MAIN CONTENT: CHANGE PASSWORD SECTION -->
+    <main class="account-main-container">
+        <section class="account-section password-section-card">
+            <!-- Header Section -->
+            <div class="section-header">
+                <div class="section-header-left">
+                    <h2>🔐 Đổi Mật Khẩu</h2>
+                    <p>Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu của bạn cho bất kỳ ai.</p>
                 </div>
+                <a href="../TrangChinh/index.html" class="btn-back-home">&larr; Quay lại trang chủ</a>
             </div>
 
-            <div class="nav-item" id="navLoginItem">
-                <a href="../DangNhap/index.html" class="nav-link">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                        <polyline points="10 17 15 12 10 7"></polyline>
-                        <line x1="15" y1="12" x2="3" y2="12"></line>
-                    </svg>
-                    Đăng Nhập
-                </a>
-            </div>
-            <div class="nav-item" id="navRegisterItem">
-                <a href="../DangKy/index.html" class="nav-link">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="8.5" cy="7" r="4"></circle>
-                        <line x1="20" y1="8" x2="20" y2="14"></line>
-                        <line x1="17" y1="11" x2="23" y2="11"></line>
-                    </svg>
-                    Đăng Ký
-                </a>
-            </div>
-        </div>
-    </nav>
+            <!-- Body Section Grid -->
+            <div class="password-layout-grid">
+                <!-- Left Side: Change Password Form -->
+                <div class="password-form-column">
+                    <!-- Notification Banner for Messages -->
+                    <div id="passwordAlertBox" class="alert-banner" style="display: none;"></div>
 
-    <!-- 4. HERO BANNER SECTION -->
-    <section class="hero-section">
-        <div class="hero-banner">
-            <div class="hero-content">
-                <span class="hero-tag">KHÁM PHÁ CUỐN SÁCH TIẾP THEO</span>
-                <h1 class="hero-title">SÁCH YÊU THÍCH</h1>
-                <p class="hero-desc">Khám phá sách, văn phòng phẩm và các dụng cụ sáng tạo thiết yếu được thiết kế cho hành trình học tập của bạn.</p>
-                <a href="#bestsellers" class="btn-hero">
-                    MUA NGAY →
-                </a>
-            </div>
-            <div class="hero-image-wrapper">
-                <img src="images/hero_book_banner.jpg" alt="Milk and honey book" />
-            </div>
-        </div>
-    </section>
-
-    <!-- 5. CATEGORY HIGHLIGHT CARDS -->
-    <section class="category-section">
-        <div class="category-grid" id="categoryHighlightGrid">
-            <!-- Dynamic Category Cards injected by JavaScript -->
-            <div class="cat-card" data-category="ALL">
-                <div class="cat-icon-box green">📗</div>
-                <div class="cat-info">
-                    <h3 class="cat-title">TẤT CẢ DANH MỤC</h3>
-                    <p class="cat-desc">Khám phá hàng ngàn sản phẩm đa dạng.</p>
-                    <span class="cat-link">MUA NGAY →</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 6. MAIN PRODUCTS CONTAINER WITH VERTICAL CATEGORY SECTIONS -->
-    <section class="bestseller-section" id="bestsellers">
-        <div class="section-header-wrapper">
-            <h2 class="section-title" id="sectionTitle">DANH MỤC SẢN PHẨM NỔI BẬT</h2>
-
-            <!-- Interactive Filter Tabs Bar -->
-            <div class="filter-tabs-bar" id="filterTabsBar">
-                <button class="filter-btn active" data-filter="ALL" data-name="TẤT CẢ">
-                    ✨ Tất cả danh mục
-                </button>
-            </div>
-        </div>
-
-        <!-- Dynamic Category Block Sections Injected by JavaScript -->
-        <div id="categoryBlocksContainer">
-            <!-- Skeleton / Initial state -->
-            <div class="category-block-section" id="section-loading">
-                <div style="text-align: center; padding: 40px; color: #64748B; font-weight: 600;">
-                    ⏳ Đang tải danh mục và sản phẩm từ hệ thống NPKL...
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- POP-UP MODAL CHI TIẾT SẢN PHẨM -->
-    <div class="product-modal-overlay" id="productDetailModal">
-        <div class="product-modal-card">
-            <button class="btn-close-modal" id="closeDetailModalBtn" title="Đóng">&times;</button>
-            <div class="product-modal-grid">
-                <!-- Cột trái: Bộ sưu tập ảnh sản phẩm -->
-                <div class="modal-gallery-column">
-                    <div class="modal-main-img-box">
-                        <img id="modalMainImage" src="" alt="Ảnh sản phẩm" />
-                    </div>
-                    <div class="modal-sub-images-list" id="modalSubImagesList">
-                        <!-- Danh sách các ảnh con (Thumbnails) -->
-                    </div>
-                </div>
-
-                <!-- Cột phải: Chi tiết & Thông tin người bán -->
-                <div class="modal-info-column">
-                    <span class="category-tag green-tag" id="modalCategoryTag">Sản Phẩm</span>
-                    <h2 class="modal-product-title" id="modalProductTitle">Tên sản phẩm</h2>
-                    
-                    <div class="modal-price-stock-row">
-                        <div class="modal-product-price" id="modalProductPrice">0đ</div>
-                        <div class="modal-stock-badge" id="modalStockBadge">Tồn kho: Sẵn hàng</div>
-                    </div>
-
-                    <!-- Khung Mô Tả Sản Phẩm -->
-                    <div class="modal-section-box">
-                        <h4 class="modal-section-heading">📝 Mô Tả Sản Phẩm:</h4>
-                        <p class="modal-description-text" id="modalProductDescription">
-                            Mô tả chi tiết sản phẩm...
-                        </p>
-                    </div>
-
-                    <!-- Khung Thông Tin Shop & Chủ Cửa Hàng -->
-                    <div class="modal-seller-card">
-                        <div class="seller-card-header">
-                            <div class="seller-shop-icon">🏪</div>
-                            <div>
-                                <div class="seller-shop-title" id="modalShopName">Cửa Hàng NPKL</div>
-                                <div class="seller-role-badge">✓ Gian hàng chính hãng đã xác thực</div>
+                    <form id="changePasswordForm" class="password-form" novalidate autocomplete="off">
+                        <!-- Mật khẩu hiện tại (Cũ) -->
+                        <div class="form-group">
+                            <label for="oldPassword">
+                                Mật khẩu hiện tại <span class="required-star">*</span>
+                            </label>
+                            <div class="password-input-wrapper">
+                                <input 
+                                    type="password" 
+                                    id="oldPassword" 
+                                    name="oldPassword" 
+                                    placeholder="Nhập mật khẩu hiện tại..." 
+                                    required 
+                                />
+                                <button type="button" class="btn-toggle-eye" id="toggleOldPassword" title="Ẩn/hiện mật khẩu" tabindex="-1">
+                                    <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
                             </div>
+                            <span class="field-error-msg" id="errorOldPassword"></span>
                         </div>
-                        <div class="seller-info-details">
-                            <div class="seller-info-item">
-                                <span class="info-icon">👤</span>
-                                <span>Chủ shop:</span>
-                                <strong id="modalSellerName">N/A</strong>
+
+                        <!-- Mật khẩu mới -->
+                        <div class="form-group">
+                            <label for="newPassword">
+                                Mật khẩu mới <span class="required-star">*</span>
+                            </label>
+                            <div class="password-input-wrapper">
+                                <input 
+                                    type="password" 
+                                    id="newPassword" 
+                                    name="newPassword" 
+                                    placeholder="Nhập mật khẩu mới (tối thiểu 8 ký tự)..." 
+                                    minlength="8" 
+                                    required 
+                                />
+                                <button type="button" class="btn-toggle-eye" id="toggleNewPassword" title="Ẩn/hiện mật khẩu" tabindex="-1">
+                                    <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
                             </div>
-                            <div class="seller-info-item">
-                                <span class="info-icon">📞</span>
-                                <span>SĐT:</span>
-                                <strong id="modalSellerPhone">N/A</strong>
+                            <span class="field-error-msg" id="errorNewPassword"></span>
+                        </div>
+
+                        <!-- Xác nhận mật khẩu mới -->
+                        <div class="form-group">
+                            <label for="confirmPassword">
+                                Xác nhận mật khẩu mới <span class="required-star">*</span>
+                            </label>
+                            <div class="password-input-wrapper">
+                                <input 
+                                    type="password" 
+                                    id="confirmPassword" 
+                                    name="confirmPassword" 
+                                    placeholder="Nhập lại mật khẩu mới..." 
+                                    required 
+                                />
+                                <button type="button" class="btn-toggle-eye" id="toggleConfirmPassword" title="Ẩn/hiện mật khẩu" tabindex="-1">
+                                    <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
                             </div>
-                            <div class="seller-info-item" style="grid-column: span 2;">
-                                <span class="info-icon">✉️</span>
-                                <span>Email liên hệ:</span>
-                                <strong id="modalSellerEmail">N/A</strong>
-                            </div>
+                            <span class="field-error-msg" id="errorConfirmPassword"></span>
+                        </div>
+
+                        <!-- Form Action Buttons -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-save btn-submit-password" id="btnSubmitPassword">
+                                💾 Xác Nhận Đổi Mật Khẩu
+                            </button>
+                            <button type="reset" class="btn-reset-form" id="btnResetForm">
+                                Làm Lại
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Right Side: Security Tips & Password Rules -->
+                <div class="password-tips-column">
+                    <div class="tips-card">
+                        <div class="tips-card-header">
+                            <span class="tips-icon">💡</span>
+                            <h3>Tiêu chuẩn mật khẩu an toàn:</h3>
+                        </div>
+                        <ul class="tips-list">
+                            <li id="ruleLength" class="rule-item">
+                                <span class="rule-icon">⚪</span>
+                                <span>Có ít nhất <strong>8 ký tự</strong> trở lên.</span>
+                            </li>
+                            <li id="ruleDiffOld" class="rule-item">
+                                <span class="rule-icon">⚪</span>
+                                <span>Khác với <strong>mật khẩu hiện tại</strong>.</span>
+                            </li>
+                            <li id="ruleMatch" class="rule-item">
+                                <span class="rule-icon">⚪</span>
+                                <span>Mật khẩu xác nhận phải <strong>khớp chính xác</strong>.</span>
+                            </li>
+                        </ul>
+
+                        <div class="security-recommendation-box">
+                            <div class="rec-title">🛡️ Lời khuyên bảo mật:</div>
+                            <p class="rec-desc">
+                                Không nên sử dụng các thông tin cá nhân dễ đoán như ngày sinh, số điện thoại hoặc mật khẩu đã dùng cho các dịch vụ khác.
+                            </p>
                         </div>
                     </div>
-
-                    <!-- Nút Thao Tác -->
-                    <div class="modal-action-buttons">
-                        <button class="btn-modal-add-cart" id="modalBtnAddCart">
-                            🛒 THÊM VÀO GIỎ HÀNG
-                        </button>
-                        <button class="btn-modal-wishlist" id="modalBtnWishlist">
-                            ❤️ YÊU THÍCH
-                        </button>
-                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <script src="script.js"></script>
-    <script src="chi-tiet-san-pham.js"></script>
 </body>
 </html>
