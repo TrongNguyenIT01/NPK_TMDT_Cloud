@@ -334,14 +334,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Checkout Action
-    // Lưu ý: Theo kế hoạch, chức năng thanh toán chi tiết chưa cần làm ở giai đoạn này
+    // Checkout Action: Chuyển hướng sang trang Thanh Toán & Đặt Hàng
     if (btnCheckout) {
         btnCheckout.addEventListener('click', () => {
-            if (cartItems.length === 0) return;
-            alert('🎉 Đặt hàng thành công! Đội ngũ NPKL sẽ liên hệ xác nhận đơn hàng của bạn ngay lập tức.');
-            cartItems = [];
-            renderCart();
+            if (!cartItems || cartItems.length === 0) {
+                alert('Giỏ hàng của bạn đang trống! Vui lòng chọn ít nhất 1 sản phẩm.');
+                return;
+            }
+
+            const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+            if (!token) {
+                alert('Vui lòng đăng nhập để tiến hành đặt hàng & thanh toán!');
+                window.location.href = '../DangNhap/index.html';
+                return;
+            }
+
+            // Chuyển hướng sang trang Thanh toán riêng biệt
+            window.location.href = '../ThanhToan/index.html';
         });
     }
 

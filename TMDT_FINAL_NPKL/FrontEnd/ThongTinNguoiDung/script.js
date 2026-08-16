@@ -85,9 +85,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     sessionStorage.setItem('fullName', currentFullName);
                     sessionStorage.setItem('userName', user.username || user.Username || '');
                     sessionStorage.setItem('email', user.email || user.Email || '');
+                    sessionStorage.setItem('phone', user.phone || user.Phone || '');
+                    sessionStorage.setItem('address', user.address || user.Address || '');
                     localStorage.setItem('fullName', currentFullName);
                     localStorage.setItem('userName', user.username || user.Username || '');
                     localStorage.setItem('email', user.email || user.Email || '');
+                    localStorage.setItem('phone', user.phone || user.Phone || '');
+                    localStorage.setItem('address', user.address || user.Address || '');
                 }
             } else {
                 showAlert(result.message || result.Message || 'Không thể tải thông tin hồ sơ!', false);
@@ -175,8 +179,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                         sessionStorage.setItem('fullName', newName);
                         sessionStorage.setItem('email', emailVal);
+                        sessionStorage.setItem('phone', phoneVal);
+                        sessionStorage.setItem('address', addressVal);
                         localStorage.setItem('fullName', newName);
                         localStorage.setItem('email', emailVal);
+                        localStorage.setItem('phone', phoneVal);
+                        localStorage.setItem('address', addressVal);
                     }
                 } else {
                     showAlert(result.message || result.Message || 'Cập nhật thông tin thất bại. Vui lòng thử lại!', false);
