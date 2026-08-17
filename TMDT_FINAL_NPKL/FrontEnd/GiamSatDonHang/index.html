@@ -214,35 +214,8 @@
                         </thead>
                         <tbody id="orderTableBody">
                             <tr>
-                                <td><strong>ORD0001</strong></td>
-                                <td>SH0001 - NPKL Bookshop</td>
-                                <td>11/08/2026 14:20</td>
-                                <td><strong>450.000đ</strong></td>
-                                <td>TP. Hồ Chí Minh</td>
-                                <td><span class="badge-status shipping">Đang Vận Chuyển</span></td>
-                                <td>
-                                    <button class="btn-icon btn-view-order" data-id="ORD0001" title="Xem chi tiết">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>ORD0002</strong></td>
-                                <td>SH0002 - VPP Sài Gòn</td>
-                                <td>10/08/2026 09:15</td>
-                                <td><strong>120.000đ</strong></td>
-                                <td>Hà Nội</td>
-                                <td><span class="badge-status delivered">Đã Hoàn Thành</span></td>
-                                <td>
-                                    <button class="btn-icon btn-view-order" data-id="ORD0002" title="Xem chi tiết">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </button>
+                                <td colspan="7" style="text-align: center; padding: 20px; color: #64748b;">
+                                    ⏳ Đang tải danh sách đơn hàng...
                                 </td>
                             </tr>
                         </tbody>
@@ -276,12 +249,8 @@
                     <label>Địa chỉ giao hàng</label>
                     <p id="modalOrderAddress"></p>
                 </div>
-                <div class="order-detail-group">
-                    <label>Danh sách sản phẩm (Minh họa)</label>
-                    <ul style="padding-left: 20px; color: #1e293b;">
-                        <li>Sách Đắc Nhân Tâm x 1</li>
-                        <li>Bút bi Thiên Long x 5</li>
-                    </ul>
+                <div class="order-detail-group modal-products-list">
+                    <!-- Danh sách sản phẩm được nạp động từ CSDL -->
                 </div>
             </div>
         </div>

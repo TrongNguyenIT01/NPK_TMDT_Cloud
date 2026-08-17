@@ -404,30 +404,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 btnPlaceOrder.disabled = true;
             }
 
-            // =========================================================================
-            // [HƯỚNG DẪN DÀNH CHO BACK-END DEVELOPER NỐI API ĐẶT HÀNG]
-            // Người làm Back-End mở comment đoạn code fetch dưới đây:
-            /*
             const orderPayload = {
-                customerId: sessionStorage.getItem('userId') || localStorage.getItem('userId'),
+                shippingAddress: addressVal,
                 recipientName: nameVal,
                 phone: phoneVal,
                 email: emailVal,
-                shippingAddress: addressVal,
-                note: noteVal,
                 paymentMethod: paymentMethodVal,
-                items: cartItems.map(item => ({
-                    productId: item.id,
-                    quantity: item.qty || 1,
-                    price: parsePrice(item.price)
-                })),
-                subtotal: subtotal,
-                shippingFee: shippingFee,
-                totalAmount: finalTotal
+                selectedProductIds: cartItems.map(item => item.productId || item.id).filter(id => !!id)
             };
 
             try {
-                const response = await fetch('https://localhost:3001/api/DonHang/dat-hang', {
+                const response = await fetch(`${BASE_API_URL}/api/DonHang/dat-hang`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -435,24 +422,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify(orderPayload)
                 });
-                const result = await response.json();
-                if (!result.success) {
-                    alert(result.message || 'Đặt hàng thất bại. Vui lòng thử lại!');
+
+                const result = await response.json().catch(() => ({}));
+
+                if (!response.ok || !result.success && !result.Success) {
+                    alert(result.message || result.Message || 'Đặt hàng thất bại. Vui lòng thử lại!');
                     if (btnPlaceOrder) {
                         btnPlaceOrder.innerHTML = '🚀 XÁC NHẬN ĐẶT HÀNG';
                         btnPlaceOrder.disabled = false;
                     }
                     return;
                 }
-            } catch (err) {
-                console.error('Lỗi kết nối API Đặt hàng:', err);
-            }
-            */
-            // =========================================================================
 
-            // Giả lập đặt hàng thành công trên Front-End
-            setTimeout(() => {
-                const generatedOrderId = 'NPKL-' + Math.floor(10000 + Math.random() * 90000);
+                // Lấy thông tin mã đơn hàng tạo từ kết quả API
+                const createdData = result.data || result.Data || [];
+                let displayOrderId = 'NPKL-ORDER';
+                if (Array.isArray(createdData) && createdData.length > 0) {
+                    displayOrderId = createdData.map(o => o.orderId || o.OrderId).join(', ');
+                }
 
                 // Điền thông tin vào Modal Thành Công
                 const receiptOrderId = document.getElementById('receiptOrderId');
@@ -460,7 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const receiptPayment = document.getElementById('receiptPayment');
                 const receiptTotal = document.getElementById('receiptTotal');
 
-                if (receiptOrderId) receiptOrderId.textContent = '#' + generatedOrderId;
+                if (receiptOrderId) receiptOrderId.textContent = '#' + displayOrderId;
                 if (receiptRecipient) receiptRecipient.textContent = `${nameVal} (${phoneVal})`;
                 if (receiptPayment) {
                     const paymentNames = {
@@ -473,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 if (receiptTotal) receiptTotal.textContent = formatVND(finalTotal);
 
-                // Xóa giỏ hàng sau khi đặt thành công
+                // Xóa giỏ hàng local sau khi đặt thành công
                 localStorage.removeItem('npkl_cart_items');
                 localStorage.setItem('npkl_cart_count', '0');
 
@@ -482,12 +469,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (orderSuccessModal) {
                     orderSuccessModal.style.display = 'flex';
                 }
-
+            } catch (err) {
+                console.error('Lỗi kết nối API Đặt hàng:', err);
+                alert('Có lỗi xảy ra khi kết nối tới máy chủ. Vui lòng thử lại!');
+            } finally {
                 if (btnPlaceOrder) {
                     btnPlaceOrder.innerHTML = '🚀 XÁC NHẬN ĐẶT HÀNG';
                     btnPlaceOrder.disabled = false;
                 }
-            }, 1000);
+            }
         });
     }
 });

@@ -131,5 +131,29 @@ namespace TMDT_FINAL_NPKL.Models
             // Mã mục giỏ hàng: CIT- + 15 ký tự thời gian = 19 ký tự (<= 20 ký tự theo CSDL)
             return "CIT-" + DateTime.Now.ToString("yyMMddHHmmssfff");
         }
+
+        public static string GenerateOrderId()
+        {
+            // ORD- (4) + yyMMddHH (8) + 7 hex (7) = 19 ký tự (<= 20 ký tự theo CSDL)
+            string timePart = DateTime.Now.ToString("yyMMddHH");
+            string randomPart = Guid.NewGuid().ToString("N").Substring(0, 7).ToUpper();
+            return $"ORD-{timePart}{randomPart}";
+        }
+
+        public static string GenerateOrderDetailId()
+        {
+            // ODT- (4) + yyMMddHH (8) + 7 hex (7) = 19 ký tự (<= 20 ký tự theo CSDL)
+            string timePart = DateTime.Now.ToString("yyMMddHH");
+            string randomPart = Guid.NewGuid().ToString("N").Substring(0, 7).ToUpper();
+            return $"ODT-{timePart}{randomPart}";
+        }
+
+        public static string GeneratePaymentId()
+        {
+            // PAY- (4) + yyMMddHH (8) + 7 hex (7) = 19 ký tự (<= 20 ký tự theo CSDL)
+            string timePart = DateTime.Now.ToString("yyMMddHH");
+            string randomPart = Guid.NewGuid().ToString("N").Substring(0, 7).ToUpper();
+            return $"PAY-{timePart}{randomPart}";
+        }
     }
 }

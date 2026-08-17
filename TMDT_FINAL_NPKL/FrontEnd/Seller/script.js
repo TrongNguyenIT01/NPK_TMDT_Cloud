@@ -207,46 +207,182 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Order Processing Logic
+    // 3. Order Processing Logic & Real API Integration
     const orderTableBody = document.querySelector('#orderTableBody');
+
+    function formatVND(number) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number).replace('₫', 'đ');
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        const d = new Date(dateStr);
+        return isNaN(d.getTime()) ? dateStr : d.toLocaleString('vi-VN');
+    }
+
+    async function loadSellerOrders() {
+        if (!orderTableBody) return;
+        const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
+        if (!token) return;
+
+        orderTableBody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align:center; padding:20px; color:#64748b;">
+                    ⏳ Đang tải danh sách đơn hàng của Shop...
+                </td>
+            </tr>
+        `;
+
+        try {
+            const response = await fetch("https://localhost:3001/api/DonHang/shop-orders", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                const orders = result.data || result.Data || [];
+                renderSellerOrdersTable(orders);
+            } else {
+                orderTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align:center; padding:20px; color:#ef4444;">
+                            ${result.message || 'Chưa thể lấy dữ liệu đơn hàng.'}
+                        </td>
+                    </tr>
+                `;
+            }
+        } catch (err) {
+            console.error("Lỗi tải đơn hàng Seller:", err);
+            orderTableBody.innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align:center; padding:20px; color:#ef4444;">
+                        Lỗi kết nối máy chủ!
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function renderSellerOrdersTable(orders) {
+        if (!orderTableBody) return;
+
+        if (!orders || orders.length === 0) {
+            orderTableBody.innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align:center; padding:30px; color:#64748b;">
+                        📦 Chưa có đơn hàng nào gửi đến gian hàng của bạn.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        orderTableBody.innerHTML = orders.map(order => {
+            const orderId = order.orderId || order.OrderId;
+            const customerName = order.customerName || order.CustomerName || order.customerId || 'Khách hàng';
+            const orderDate = formatDate(order.orderDate || order.OrderDate);
+            const totalAmount = formatVND(order.totalAmount || order.TotalAmount || 0);
+            const status = (order.status || order.Status || 'PENDING').toUpperCase();
+
+            let statusBadgeHtml = '';
+            let actionButtonsHtml = '';
+
+            if (status === 'PENDING') {
+                statusBadgeHtml = `<span class="badge-status pending">Chờ Duyệt (PENDING)</span>`;
+                actionButtonsHtml = `
+                    <button class="btn-tb approve btn-order-action" data-id="${orderId}" data-target-status="CONFIRMED">Duyệt Đơn</button>
+                    <button class="btn-tb reject btn-order-action" data-id="${orderId}" data-target-status="CANCELLED">Hủy Đơn</button>
+                `;
+            } else if (status === 'CONFIRMED') {
+                statusBadgeHtml = `<span class="badge-status active">Đã Xác Nhận</span>`;
+                actionButtonsHtml = `
+                    <button class="btn-tb primary btn-order-action" data-id="${orderId}" data-target-status="SHIPPING">Giao Vận Chuyển</button>
+                    <button class="btn-tb reject btn-order-action" data-id="${orderId}" data-target-status="CANCELLED">Hủy Đơn</button>
+                `;
+            } else if (status === 'SHIPPING') {
+                statusBadgeHtml = `<span class="badge-status shipping">Đang Giao Hàng</span>`;
+                actionButtonsHtml = `
+                    <button class="btn-tb approve btn-order-action" data-id="${orderId}" data-target-status="DELIVERED">Đã Giao Hàng</button>
+                `;
+            } else if (status === 'DELIVERED') {
+                statusBadgeHtml = `<span class="badge-status delivered">Giao Thành Công</span>`;
+                actionButtonsHtml = `<span style="font-size:0.82rem; color:#16A34A; font-weight:700;">✓ Hoàn tất</span>`;
+            } else if (status === 'CANCELLED') {
+                statusBadgeHtml = `<span class="badge-status blocked">Đã Hủy</span>`;
+                actionButtonsHtml = `<span style="font-size:0.82rem; color:#DC2626; font-weight:700;">✕ Đã hủy</span>`;
+            }
+
+            const itemsCount = (order.orderDetails || order.OrderDetails || []).length;
+            const itemsSummary = (order.orderDetails || order.OrderDetails || [])
+                .map(i => `${i.productName || i.ProductName} (x${i.quantity || i.Quantity})`)
+                .join(', ') || `${itemsCount} sản phẩm`;
+
+            return `
+                <tr>
+                    <td><strong>${orderId}</strong></td>
+                    <td>${orderDate}</td>
+                    <td><strong>${customerName}</strong></td>
+                    <td><span title="${itemsSummary}">${itemsSummary.length > 35 ? itemsSummary.substring(0, 35) + '...' : itemsSummary}</span></td>
+                    <td><strong style="color:#10b981;">${totalAmount}</strong></td>
+                    <td class="order-status-cell">${statusBadgeHtml}</td>
+                    <td>
+                        <div class="btn-action-group">
+                            ${actionButtonsHtml}
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
     if (orderTableBody) {
-        orderTableBody.addEventListener('click', (e) => {
+        orderTableBody.addEventListener('click', async (e) => {
             const btn = e.target.closest('.btn-order-action');
             if (!btn) return;
 
-            const action = btn.getAttribute('data-action');
-            const row = btn.closest('tr');
-            const statusCell = row.querySelector('.order-status-cell');
-            const orderId = row.querySelector('strong').textContent;
-            const actionGroup = btn.closest('.btn-action-group');
+            const orderId = btn.getAttribute('data-id');
+            const targetStatus = btn.getAttribute('data-target-status');
+            const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
 
-            if (action === 'CONFIRM') {
-                statusCell.innerHTML = `<span class="badge-status active">Đã Xác Nhận</span>`;
-                actionGroup.innerHTML = `
-                    <button class="btn-tb primary btn-order-action" data-action="SHIP">Giao Vận Chuyển</button>
-                    <button class="btn-tb primary" onclick="alert('Đang in hóa đơn bán hàng cho đơn ${orderId}...')">In Hóa Đơn</button>
-                `;
-                alert(`Đã xác nhận đơn hàng ${orderId}!`);
-            } else if (action === 'SHIP') {
-                statusCell.innerHTML = `<span class="badge-status shipping">Đang Giao Hàng</span>`;
-                actionGroup.innerHTML = `
-                    <button class="btn-tb approve btn-order-action" data-action="DELIVER">Đã Giao Hàng</button>
-                    <button class="btn-tb primary" onclick="alert('Đang in hóa đơn bán hàng cho đơn ${orderId}...')">In Hóa Đơn</button>
-                `;
-                alert(`Đã chuyển đơn hàng ${orderId} cho đơn vị vận chuyển!`);
-            } else if (action === 'DELIVER') {
-                statusCell.innerHTML = `<span class="badge-status delivered">Giao Thành Công</span>`;
-                actionGroup.innerHTML = `
-                    <span style="font-size:0.82rem; color:#16A34A; font-weight:700;">✓ Hoàn tất</span>
-                    <button class="btn-tb primary" onclick="alert('Đang in hóa đơn bán hàng cho đơn ${orderId}...')">In Hóa Đơn</button>
-                `;
-                alert(`Đơn hàng ${orderId} đã giao thành công cho khách hàng!`);
-            } else if (action === 'CANCEL') {
-                statusCell.innerHTML = `<span class="badge-status blocked">Đã Hủy</span>`;
-                actionGroup.innerHTML = `<span style="font-size:0.82rem; color:#DC2626; font-weight:700;">✕ Đã hủy đơn</span>`;
-                alert(`Đã hủy đơn hàng ${orderId}.`);
+            if (!orderId || !targetStatus || !token) return;
+
+            const statusNames = {
+                'CONFIRMED': 'Xác nhận đơn hàng',
+                'SHIPPING': 'Chuyển giao cho nhà vận chuyển',
+                'DELIVERED': 'Xác nhận đơn hàng đã giao thành công',
+                'CANCELLED': 'Hủy đơn hàng này'
+            };
+
+            if (confirm(`Bạn có chắc chắn muốn [${statusNames[targetStatus] || targetStatus}] cho đơn #${orderId}?`)) {
+                try {
+                    const response = await fetch(`https://localhost:3001/api/DonHang/${orderId}/status`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ status: targetStatus })
+                    });
+                    const result = await response.json();
+                    if (response.ok && result.success) {
+                        alert(result.message || 'Cập nhật trạng thái đơn hàng thành công!');
+                        loadSellerOrders();
+                    } else {
+                        alert('Cập nhật thất bại: ' + (result.message || 'Lỗi không xác định'));
+                    }
+                } catch (err) {
+                    console.error('Lỗi đổi trạng thái đơn Seller:', err);
+                    alert('Lỗi kết nối máy chủ!');
+                }
             }
         });
+    }
+
+    if (orderTableBody) {
+        loadSellerOrders();
     }
 
     // 4. Shop Profile Save Form & API Integration
