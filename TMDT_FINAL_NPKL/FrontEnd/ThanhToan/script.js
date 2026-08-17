@@ -59,6 +59,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputEmail = document.getElementById('recipientEmail');
     const inputAddress = document.getElementById('recipientAddress');
 
+    let userProfileAddress = sessionStorage.getItem('address') || localStorage.getItem('address') || '';
+    let isAddressLocked = false;
+
+    const btnToggleDefaultAddress = document.getElementById('btnToggleDefaultAddress');
+    const btnAddressText = document.getElementById('btnAddressText');
+    const btnAddressIcon = document.querySelector('.btn-address-icon');
+
+    function updateAddressToggleUI() {
+        if (!btnToggleDefaultAddress || !inputAddress) return;
+
+        if (isAddressLocked) {
+            inputAddress.readOnly = true;
+            btnToggleDefaultAddress.classList.add('active');
+            if (btnAddressText) btnAddressText.textContent = 'Đã khóa địa chỉ (Bấm để sửa)';
+            if (btnAddressIcon) btnAddressIcon.textContent = '🔒';
+            btnToggleDefaultAddress.title = 'Bấm để mở khóa và chỉnh sửa địa chỉ';
+        } else {
+            inputAddress.readOnly = false;
+            btnToggleDefaultAddress.classList.remove('active');
+            if (btnAddressText) btnAddressText.textContent = 'Dùng địa chỉ tài khoản';
+            if (btnAddressIcon) btnAddressIcon.textContent = '📍';
+            btnToggleDefaultAddress.title = 'Bấm để giữ nguyên địa chỉ từ tài khoản';
+        }
+    }
+
+    if (btnToggleDefaultAddress && inputAddress) {
+        btnToggleDefaultAddress.addEventListener('click', () => {
+            isAddressLocked = !isAddressLocked;
+
+            if (isAddressLocked) {
+                if (userProfileAddress) {
+                    inputAddress.value = userProfileAddress;
+                } else if (!inputAddress.value.trim()) {
+                    alert('Tài khoản của bạn chưa có địa chỉ lưu sẵn. Bạn có thể tự nhập địa chỉ bên dưới!');
+                    isAddressLocked = false;
+                    updateAddressToggleUI();
+                    inputAddress.focus();
+                    return;
+                }
+            } else {
+                inputAddress.focus();
+            }
+
+            updateAddressToggleUI();
+        });
+    }
+
     if (inputName && displayName && displayName !== 'Khách Hàng') inputName.value = displayName;
     if (inputPhone && phone) inputPhone.value = phone;
     if (inputEmail && email) inputEmail.value = email;
@@ -88,7 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (inputName && userFullName) inputName.value = userFullName;
                         if (inputPhone && userPhone) inputPhone.value = userPhone;
                         if (inputEmail && userEmail) inputEmail.value = userEmail;
-                        if (inputAddress && userAddress) inputAddress.value = userAddress;
+                        if (userAddress) {
+                            userProfileAddress = userAddress;
+                            if (inputAddress && (!inputAddress.value || isAddressLocked)) {
+                                inputAddress.value = userAddress;
+                            }
+                        }
 
                         // Đồng bộ lại vào Storage để dùng chung toàn site
                         if (userFullName) {
@@ -244,11 +296,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. XỬ LÝ CHỌN PHƯƠNG THỨC THANH TOÁN (RADIO BUTTONS)
     // =========================================================================
     const paymentOptions = document.querySelectorAll('.payment-option-item');
+    const payCodRadio = document.getElementById('payCod');
+    const payCodItem = document.querySelector('label[for="payCod"]');
+
     paymentOptions.forEach(option => {
-        option.addEventListener('click', () => {
+        option.addEventListener('click', (e) => {
+            const radio = option.querySelector('input[type="radio"]');
+            const val = radio ? radio.value : '';
+
+            // Nếu người dùng chọn bất kỳ phương thức nào ngoài COD
+            if (val !== 'COD') {
+                e.preventDefault();
+                alert('Tính năng đang trong giai đoạn phát triển');
+
+                // Luôn giữ phương thức Thanh toán khi nhận hàng (COD) được chọn
+                paymentOptions.forEach(opt => opt.classList.remove('selected'));
+                if (payCodItem) payCodItem.classList.add('selected');
+                if (payCodRadio) payCodRadio.checked = true;
+                return;
+            }
+
+            // Xử lý khi chọn COD
             paymentOptions.forEach(opt => opt.classList.remove('selected'));
             option.classList.add('selected');
-            const radio = option.querySelector('input[type="radio"]');
             if (radio) radio.checked = true;
         });
     });
@@ -282,7 +352,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const phoneVal = inputPhone ? inputPhone.value.trim() : '';
             const emailVal = inputEmail ? inputEmail.value.trim() : '';
             const addressVal = inputAddress ? inputAddress.value.trim() : '';
-            const noteVal = document.getElementById('orderNote')?.value.trim() || '';
 
             const selectedPaymentRadio = document.querySelector('input[name="paymentMethod"]:checked');
             const paymentMethodVal = selectedPaymentRadio ? selectedPaymentRadio.value : 'COD';

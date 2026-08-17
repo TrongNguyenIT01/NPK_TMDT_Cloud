@@ -199,31 +199,32 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="recipientName">Họ và tên người nhận <span class="required-star">*</span></label>
-                            <input type="text" id="recipientName" name="recipientName" placeholder="Ví dụ: Nguyễn Văn A" required />
+                            <input type="text" id="recipientName" name="recipientName" placeholder="Ví dụ: Nguyễn Văn A" readonly required />
                             <span class="field-error-msg" id="errorRecipientName"></span>
                         </div>
 
                         <div class="form-group">
                             <label for="recipientPhone">Số điện thoại liên hệ <span class="required-star">*</span></label>
-                            <input type="tel" id="recipientPhone" name="recipientPhone" placeholder="Ví dụ: 0912345678" required />
+                            <input type="tel" id="recipientPhone" name="recipientPhone" placeholder="Ví dụ: 0912345678" readonly required />
                             <span class="field-error-msg" id="errorRecipientPhone"></span>
                         </div>
 
                         <div class="form-group full-width">
                             <label for="recipientEmail">Email nhận hóa đơn & thông báo đơn hàng <span class="required-star">*</span></label>
-                            <input type="email" id="recipientEmail" name="recipientEmail" placeholder="Ví dụ: email@example.com" required />
+                            <input type="email" id="recipientEmail" name="recipientEmail" placeholder="Ví dụ: email@example.com" readonly required />
                             <span class="field-error-msg" id="errorRecipientEmail"></span>
                         </div>
 
                         <div class="form-group full-width">
-                            <label for="recipientAddress">Địa chỉ nhận hàng cụ thể <span class="required-star">*</span></label>
+                            <div class="label-with-action">
+                                <label for="recipientAddress">Địa chỉ nhận hàng cụ thể <span class="required-star">*</span></label>
+                                <button type="button" class="btn-toggle-default-address" id="btnToggleDefaultAddress" title="Bấm để giữ nguyên hoặc chỉnh sửa địa chỉ">
+                                    <span class="btn-address-icon">📍</span>
+                                    <span class="btn-address-text" id="btnAddressText">Dùng địa chỉ tài khoản</span>
+                                </button>
+                            </div>
                             <input type="text" id="recipientAddress" name="recipientAddress" placeholder="Số nhà, tên đường, Phường/Xã, Quận/Huyện, Tỉnh/TP..." required />
                             <span class="field-error-msg" id="errorRecipientAddress"></span>
-                        </div>
-
-                        <div class="form-group full-width">
-                            <label for="orderNote">Ghi chú đơn hàng (Tùy chọn)</label>
-                            <textarea id="orderNote" name="orderNote" rows="2" placeholder="Ví dụ: Giao giờ hành chính, gọi điện trước khi giao hàng..."></textarea>
                         </div>
                     </div>
                 </div>
@@ -251,33 +252,42 @@
                         </label>
 
                         <!-- Option 2: MoMo -->
-                        <label class="payment-option-item" for="payMomo">
+                        <label class="payment-option-item disabled-feature" for="payMomo">
                             <input type="radio" name="paymentMethod" id="payMomo" value="MOMO" />
                             <div class="payment-icon">📱</div>
                             <div class="payment-text">
-                                <span class="payment-name">Ví Điện Tử MoMo</span>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="payment-name">Ví Điện Tử MoMo</span>
+                                    <span class="dev-tag">Đang phát triển</span>
+                                </div>
                                 <span class="payment-desc">Quét mã QR tiện lợi qua ứng dụng Ví MoMo trên điện thoại</span>
                             </div>
                             <span class="payment-check-badge">✓</span>
                         </label>
 
                         <!-- Option 3: VNPAY / ATM -->
-                        <label class="payment-option-item" for="payVnpay">
+                        <label class="payment-option-item disabled-feature" for="payVnpay">
                             <input type="radio" name="paymentMethod" id="payVnpay" value="VNPAY" />
                             <div class="payment-icon">🏧</div>
                             <div class="payment-text">
-                                <span class="payment-name">Cổng Thanh Toán VNPAY / Thẻ ATM / Visa</span>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="payment-name">Cổng Thanh Toán VNPAY / Thẻ ATM / Visa</span>
+                                    <span class="dev-tag">Đang phát triển</span>
+                                </div>
                                 <span class="payment-desc">Hỗ trợ tất cả ngân hàng nội địa Việt Nam và thẻ quốc tế Visa, Mastercard</span>
                             </div>
                             <span class="payment-check-badge">✓</span>
                         </label>
 
                         <!-- Option 4: Chuyển khoản VietQR -->
-                        <label class="payment-option-item" for="payBank">
+                        <label class="payment-option-item disabled-feature" for="payBank">
                             <input type="radio" name="paymentMethod" id="payBank" value="BANK_TRANSFER" />
                             <div class="payment-icon">🏦</div>
                             <div class="payment-text">
-                                <span class="payment-name">Chuyển khoản Ngân Hàng (VietQR 24/7)</span>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="payment-name">Chuyển khoản Ngân Hàng (VietQR 24/7)</span>
+                                    <span class="dev-tag">Đang phát triển</span>
+                                </div>
                                 <span class="payment-desc">Chuyển khoản nhanh 24/7 qua mã VietQR tự động xác nhận</span>
                             </div>
                             <span class="payment-check-badge">✓</span>

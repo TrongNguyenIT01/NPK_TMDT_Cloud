@@ -179,6 +179,58 @@
     color: #1E293B;
 }
 
+.label-with-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 2px;
+}
+
+.label-with-action label {
+    margin-bottom: 0;
+}
+
+.btn-toggle-default-address {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: #E05A2B;
+    background: #FFF7ED;
+    border: 1px solid #FED7AA;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+    line-height: 1.4;
+}
+
+.btn-toggle-default-address:hover {
+    background: #FFEDD5;
+    border-color: #FDBA74;
+    color: #C2410C;
+}
+
+.btn-toggle-default-address.active {
+    background: #ECFDF5;
+    border-color: #A7F3D0;
+    color: #059669;
+}
+
+.btn-toggle-default-address.active:hover {
+    background: #D1FAE5;
+    border-color: #6EE7B7;
+    color: #047857;
+}
+
+.btn-address-icon {
+    font-size: 0.82rem;
+}
+
 .required-star {
     color: #EF4444;
 }
@@ -201,6 +253,19 @@
 .form-group textarea:focus {
     border-color: #E05A2B;
     box-shadow: 0 0 0 3px rgba(224, 90, 43, 0.12);
+}
+
+.form-group input[readonly] {
+    background-color: #F8FAFC !important;
+    border-color: #E2E8F0 !important;
+    color: #475569 !important;
+    cursor: not-allowed !important;
+    user-select: none;
+}
+
+.form-group input[readonly]:focus {
+    border-color: #CBD5E1 !important;
+    box-shadow: none !important;
 }
 
 .form-group input.input-error,
@@ -249,6 +314,28 @@
     border-color: #E05A2B;
     background: #FFF7ED;
     box-shadow: 0 4px 14px rgba(224, 90, 43, 0.08);
+}
+
+.payment-option-item.disabled-feature {
+    background: #F8FAFC;
+    border-color: #E2E8F0;
+}
+
+.payment-option-item.disabled-feature:hover {
+    border-color: #CBD5E1;
+    background: #F1F5F9;
+}
+
+.dev-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #D97706;
+    background: #FEF3C7;
+    border: 1px solid #FDE68A;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    display: inline-block;
+    letter-spacing: 0.2px;
 }
 
 .payment-icon {
