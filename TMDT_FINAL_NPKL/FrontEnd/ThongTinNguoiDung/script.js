@@ -230,6 +230,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 localStorage.removeItem('userRole');
                 localStorage.removeItem('userName');
                 localStorage.removeItem('fullName');
+                localStorage.removeItem('email');
+                localStorage.removeItem('phone');
+                localStorage.removeItem('address');
+                localStorage.removeItem('npkl_wishlist');
+                localStorage.removeItem('npkl_cart_items');
+                localStorage.removeItem('npkl_cart_count');
                 window.location.href = '../DangNhap/index.html';
             }
         });
