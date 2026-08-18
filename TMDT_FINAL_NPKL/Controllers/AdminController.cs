@@ -21,6 +21,37 @@ namespace TMDT_FINAL_NPKL.Controllers
             _context = context;
         }
 
+        [HttpGet("user-approval-metrics")]
+        public async Task<IActionResult> GetUserApprovalMetrics()
+        {
+            try
+            {
+                var now = DateTime.Now;
+                var pendingTotal = await _context.Users.CountAsync(u => u.Status == "PENDING");
+                var pendingSellers = await _context.Users.CountAsync(u => u.Role == "SELLER" && u.Status == "PENDING");
+                var pendingCustomers = await _context.Users.CountAsync(u => u.Role == "CUSTOMER" && u.Status == "PENDING");
+                var approvedThisMonth = await _context.Users.CountAsync(u => u.Status == "ACTIVE" && u.CreatedAt.Month == now.Month && u.CreatedAt.Year == now.Year);
+                var approvedToday = await _context.Users.CountAsync(u => u.Status == "ACTIVE" && u.CreatedAt.Date == now.Date);
+
+                return Ok(new
+                {
+                    Success = true,
+                    Data = new
+                    {
+                        PendingTotal = pendingTotal,
+                        PendingSellers = pendingSellers,
+                        PendingCustomers = pendingCustomers,
+                        ApprovedThisMonth = approvedThisMonth,
+                        ApprovedToday = approvedToday
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
         [HttpGet("users")]
         public async Task<IActionResult> GetUsers([FromQuery] string? status, [FromQuery] string? role, [FromQuery] string? search)
         {

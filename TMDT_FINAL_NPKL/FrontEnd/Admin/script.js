@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (userTableBody) {
+    if (userTableBody && !window.duyetTaiKhoanLoaded) {
         loadPendingUsers();
 
         userTableBody.addEventListener('click', async (e) => {

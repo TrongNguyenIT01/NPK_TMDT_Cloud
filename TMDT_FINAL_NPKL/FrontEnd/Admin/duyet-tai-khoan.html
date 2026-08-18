@@ -144,42 +144,42 @@
                 <div class="metric-card">
                     <div class="metric-top">
                         <div class="metric-icon orange">⏳</div>
-                        <span class="metric-trend warn">Cần xử lý</span>
+                        <span class="metric-trend warn" id="badgePendingTotal">Cần xử lý</span>
                     </div>
-                    <div class="metric-value">5</div>
+                    <div class="metric-value" id="metricPendingTotal">0</div>
                     <div class="metric-label">Tài khoản đăng ký chờ duyệt</div>
                 </div>
 
                 <div class="metric-card">
                     <div class="metric-top">
                         <div class="metric-icon blue">🏪</div>
-                        <span class="metric-trend warn">2 Gian hàng</span>
+                        <span class="metric-trend warn" id="badgePendingSellers">0 Gian hàng</span>
                     </div>
-                    <div class="metric-value">2</div>
+                    <div class="metric-value" id="metricPendingSellers">0</div>
                     <div class="metric-label">Người bán mới chờ xác minh</div>
                 </div>
 
                 <div class="metric-card">
                     <div class="metric-top">
                         <div class="metric-icon purple">👥</div>
-                        <span class="metric-trend up">Thành viên mới</span>
+                        <span class="metric-trend up" id="badgePendingCustomers">Thành viên mới</span>
                     </div>
-                    <div class="metric-value">3</div>
+                    <div class="metric-value" id="metricPendingCustomers">0</div>
                     <div class="metric-label">Khách hàng mới chờ duyệt</div>
                 </div>
 
                 <div class="metric-card">
                     <div class="metric-top">
                         <div class="metric-icon green">✅</div>
-                        <span class="metric-trend up">↑ +15 hôm nay</span>
+                        <span class="metric-trend up" id="badgeApprovedToday">↑ +0 hôm nay</span>
                     </div>
-                    <div class="metric-value">128</div>
+                    <div class="metric-value" id="metricApprovedMonth">0</div>
                     <div class="metric-label">Đã phê duyệt tháng này</div>
                 </div>
             </div>
 
             <!-- BẢNG TÀI KHOẢN CHỜ DUYỆT -->
-            <div class="table-card">
+            <div class="table-card" style="overflow-x: auto;">
                 <div class="table-header">
                     <div class="table-title-box">
                         <h3>Danh Sách Yêu Cầu Phê Duyệt Tài Khoản</h3>
@@ -197,10 +197,11 @@
                             <option value="PENDING" selected>Chờ Duyệt</option>
                             <option value="ACTIVE">Đã Duyệt</option>
                             <option value="REJECTED">Từ Chối</option>
+                            <option value="BLOCKED">Đã Khóa</option>
                         </select>
                     </div>
                 </div>
-                <table class="admin-table">
+                <table class="admin-table" style="min-width: 900px; width: 100%;">
                     <thead>
                         <tr>
                             <th>Mã Đăng Ký</th>
@@ -214,65 +215,8 @@
                         </tr>
                     </thead>
                     <tbody id="userTableBody">
-                        <tr data-role="SELLER" data-status="PENDING">
-                            <td><strong>SL0012</strong></td>
-                            <td class="user-name-cell">Nguyễn Văn Bán</td>
-                            <td>nguyenvanban</td>
-                            <td>seller12@gmail.com</td>
-                            <td>0912 345 678</td>
-                            <td><span class="badge-status shipping">Người Bán</span></td>
-                            <td class="status-cell"><span class="badge-status pending">Chờ Duyệt</span></td>
-                            <td>
-                                <div class="btn-action-group">
-                                    <button class="btn-tb approve btn-user-action" data-action="ACTIVE">✓ Duyệt Kích Hoạt</button>
-                                    <button class="btn-tb reject btn-user-action" data-action="REJECTED">✕ Từ Chối</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-role="CUSTOMER" data-status="PENDING">
-                            <td><strong>CUS0089</strong></td>
-                            <td class="user-name-cell">Hứa Gia Kiên</td>
-                            <td>huagiakien</td>
-                            <td>kiengia@gmail.com</td>
-                            <td>0909 888 999</td>
-                            <td><span class="badge-status shipping">Khách Hàng</span></td>
-                            <td class="status-cell"><span class="badge-status pending">Chờ Duyệt</span></td>
-                            <td>
-                                <div class="btn-action-group">
-                                    <button class="btn-tb approve btn-user-action" data-action="ACTIVE">✓ Duyệt Kích Hoạt</button>
-                                    <button class="btn-tb block btn-user-action" data-action="BLOCKED">Khóa</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-role="SELLER" data-status="PENDING">
-                            <td><strong>SL0015</strong></td>
-                            <td class="user-name-cell">Trần Thị Minh Shop</td>
-                            <td>minhshop_vpp</td>
-                            <td>minhshop@gmail.com</td>
-                            <td>0934 567 890</td>
-                            <td><span class="badge-status shipping">Người Bán</span></td>
-                            <td class="status-cell"><span class="badge-status pending">Chờ Duyệt</span></td>
-                            <td>
-                                <div class="btn-action-group">
-                                    <button class="btn-tb approve btn-user-action" data-action="ACTIVE">✓ Duyệt Kích Hoạt</button>
-                                    <button class="btn-tb reject btn-user-action" data-action="REJECTED">✕ Từ Chối</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-role="CUSTOMER" data-status="PENDING">
-                            <td><strong>CUS0095</strong></td>
-                            <td class="user-name-cell">Hoàng Trọng Nghĩa</td>
-                            <td>trongnghia95</td>
-                            <td>nghia.hoang@gmail.com</td>
-                            <td>0966 777 888</td>
-                            <td><span class="badge-status shipping">Khách Hàng</span></td>
-                            <td class="status-cell"><span class="badge-status pending">Chờ Duyệt</span></td>
-                            <td>
-                                <div class="btn-action-group">
-                                    <button class="btn-tb approve btn-user-action" data-action="ACTIVE">✓ Duyệt Kích Hoạt</button>
-                                    <button class="btn-tb reject btn-user-action" data-action="REJECTED">✕ Từ Chối</button>
-                                </div>
-                            </td>
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 20px; color: #64748B;">Đang tải danh sách tài khoản...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -280,6 +224,7 @@
         </div>
     </main>
 
+    <script src="duyettaikhoan.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
