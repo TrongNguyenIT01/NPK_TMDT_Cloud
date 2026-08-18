@@ -90,6 +90,8 @@ namespace TMDT_FINAL_NPKL.Controllers
                     Message = "Lấy danh sách sản phẩm thành công.",
                     Data = new
                     {
+                        ShopStatus = shop.Status,
+                        SellerStatus = user.Status,
                         Items = products,
                         Pagination = new
                         {
@@ -161,6 +163,11 @@ namespace TMDT_FINAL_NPKL.Controllers
                 var shop = await _context.Shops.FirstOrDefaultAsync(s => s.SellerId == user.UserId.ToString());
                 if (shop == null) return BadRequest(new { Success = false, Message = "Chưa có cửa hàng!" });
 
+                if (shop.Status != "ACTIVE")
+                {
+                    return BadRequest(new { Success = false, Message = "Gian hàng của bạn đang bị khóa hoặc tạm nghỉ, không thể kích hoạt mở bán lại sản phẩm!" });
+                }
+
                 // 2. Tìm sản phẩm (phải thuộc về shop này)
                 var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == productId && p.ShopId == shop.ShopId);
 
@@ -175,6 +182,72 @@ namespace TMDT_FINAL_NPKL.Controllers
                 await _context.SaveChangesAsync();
 
                 return Ok(new { Success = true, Message = "Đã hiện lại sản phẩm thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
+        [HttpPut("resubmit-approval/{productId}")]
+        [Authorize(Roles = "SELLER")]
+        public async Task<IActionResult> ResubmitApproval(string productId)
+        {
+            try
+            {
+                string? username = User.FindFirst("Username")?.Value;
+                string? userId = User.FindFirst("UserId")?.Value;
+
+                if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(userId))
+                    return Unauthorized(new { Success = false, Message = "Không xác định được danh tính!" });
+
+                var user = await _context.Users.FirstOrDefaultAsync(u => 
+                    (!string.IsNullOrEmpty(userId) && u.UserId == userId) || 
+                    (!string.IsNullOrEmpty(username) && u.Username == username));
+
+                if (user == null) return Unauthorized();
+
+                if (user.Status != "ACTIVE")
+                {
+                    return BadRequest(new { Success = false, Message = "Tài khoản của bạn đang bị khóa, không thể gửi yêu cầu duyệt sản phẩm!" });
+                }
+
+                var shop = await _context.Shops.FirstOrDefaultAsync(s => s.SellerId == user.UserId);
+                if (shop == null) return BadRequest(new { Success = false, Message = "Chưa có cửa hàng!" });
+
+                if (shop.Status != "ACTIVE")
+                {
+                    return BadRequest(new { Success = false, Message = "Gian hàng của bạn chưa được kích hoạt hoặc đang bị khóa, không thể gửi yêu cầu duyệt sản phẩm!" });
+                }
+
+                var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == productId && p.ShopId == shop.ShopId);
+                if (product == null)
+                {
+                    return NotFound(new { Success = false, Message = "Không tìm thấy sản phẩm hoặc bạn không có quyền thao tác trên sản phẩm này!" });
+                }
+
+                if (product.ApprovalStatus == "APPROVED")
+                {
+                    return BadRequest(new { Success = false, Message = "Sản phẩm này đã ở trạng thái ĐÃ DUYỆT (APPROVED)!" });
+                }
+
+                product.ApprovalStatus = "PENDING";
+
+                // Ghi log gửi duyệt lại
+                var log = new ProductApprovalLog
+                {
+                    LogId = GenID.GenerateProductApprovalLogId(),
+                    ProductId = productId,
+                    AdminId = user.UserId,
+                    Action = "PENDING",
+                    Note = "Người bán gửi yêu cầu kiểm duyệt lại sản phẩm sau khi mở khóa gian hàng.",
+                    CreatedAt = DateTime.Now
+                };
+
+                await _context.ProductApprovalLogs.AddAsync(log);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Success = true, Message = "Đã gửi lại yêu cầu duyệt sản phẩm thành công! Vui lòng chờ Admin phê duyệt." });
             }
             catch (Exception ex)
             {
@@ -344,6 +417,11 @@ namespace TMDT_FINAL_NPKL.Controllers
                 if (shop == null)
                 {
                     return BadRequest(new { Success = false, Message = "Chưa có cửa hàng!" });
+                }
+
+                if (shop.Status != "ACTIVE")
+                {
+                    return BadRequest(new { Success = false, Message = "Gian hàng của bạn đang bị khóa hoặc tạm nghỉ, không thể cập nhật giá và tồn kho!" });
                 }
 
                 // Bước 2: Tìm sản phẩm thuộc về shop này

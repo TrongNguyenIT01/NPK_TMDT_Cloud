@@ -148,11 +148,18 @@ namespace TMDT_FINAL_NPKL.Controllers
                     return Unauthorized(new { Success = false, Message = "Vui lòng đăng nhập để thêm vào giỏ hàng!" });
                 }
 
-                // Kiểm tra sản phẩm có tồn tại và đang hoạt động không
-                var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == request.ProductId && p.IsDeleted != true && p.ApprovalStatus == "APPROVED");
+                // Kiểm tra sản phẩm có tồn tại và đang hoạt động không (Bao gồm cả trạng thái Shop và Seller)
+                var product = await _context.Products
+                    .Include(p => p.Shop)
+                        .ThenInclude(s => s.Seller)
+                    .FirstOrDefaultAsync(p => p.ProductId == request.ProductId 
+                                           && p.IsDeleted != true 
+                                           && p.ApprovalStatus == "APPROVED"
+                                           && p.Shop != null && p.Shop.Status == "ACTIVE"
+                                           && p.Shop.Seller != null && p.Shop.Seller.Status == "ACTIVE");
                 if (product == null)
                 {
-                    return NotFound(new { Success = false, Message = "Sản phẩm không tồn tại hoặc đã ngừng kinh doanh!" });
+                    return BadRequest(new { Success = false, Message = "Sản phẩm không tồn tại hoặc gian hàng đang bị tạm khóa/ngừng kinh doanh!" });
                 }
 
                 var cart = await GetOrCreateCartAsync(userId);

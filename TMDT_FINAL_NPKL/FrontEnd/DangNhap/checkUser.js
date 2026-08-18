@@ -27,8 +27,7 @@ function checkAccessRight() {
     if (role.toUpperCase() === "ADMIN") {
         // Nếu là Admin, nhưng lại đang đi lạc vào thư mục Seller hoặc FrontEnd/User
         if (currentPath.includes("/seller/") || currentPath.includes("/frontend/user/")) {
-   
-            window.location.href = "/Admin/index.html";
+            window.location.href = "../Admin/index.html";
         }
     } 
     else if (role.toUpperCase() === "SELLER") {
@@ -39,10 +38,10 @@ function checkAccessRight() {
         }
     }
     else {
-        // Trờng hợp còn lại (Khách hàng/User thường)
+        // Trường hợp còn lại (Khách hàng/User thường)
         // Nếu mò vào Admin hoặc Seller thì đẩy ra trang chủ
         if (currentPath.includes("/admin/") || currentPath.includes("/seller/")) {
-            window.location.href = "/FrontEnd/index.html";
+            window.location.href = "../TrangChinh/index.html";
         }
     }
 }

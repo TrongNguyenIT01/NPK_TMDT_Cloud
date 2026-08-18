@@ -61,23 +61,26 @@ namespace TMDT_FINAL_NPKL.Models
 
         public static string GenerateBlockId()
         {
-            // Sử dụng YYMMDDHHMMSSfff để tạo mã hồ sơ xử lý (19 ký tự: BLK- + 15 ký tự thời gian)
-            // Đảm bảo không vượt quá độ dài tối đa VARCHAR(20) của cột CSDL
-            return "BLK-" + DateTime.Now.ToString("yyMMddHHmmssfff");
+            // BLK- (4) + yyMMddHH (8) + 7 hex (7) = 19 ký tự (<= 20 ký tự theo CSDL)
+            string timePart = DateTime.Now.ToString("yyMMddHH");
+            string randomPart = Guid.NewGuid().ToString("N").Substring(0, 7).ToUpper();
+            return $"BLK-{timePart}{randomPart}";
         }
 
         public static string GenerateAppealId()
         {
-            // Sử dụng YYMMDDHHMMSSfff để tạo mã khiếu nại (18 ký tự: APL + 15 ký tự thời gian)
-            // Đảm bảo không vượt quá độ dài tối đa VARCHAR(20) của cột CSDL
-            return "APL" + DateTime.Now.ToString("yyMMddHHmmssfff");
+            // APL- (4) + yyMMddHH (8) + 7 hex (7) = 19 ký tự (<= 20 ký tự theo CSDL)
+            string timePart = DateTime.Now.ToString("yyMMddHH");
+            string randomPart = Guid.NewGuid().ToString("N").Substring(0, 7).ToUpper();
+            return $"APL-{timePart}{randomPart}";
         }
 
         public static string GenerateProductApprovalLogId()
         {
-            // Sử dụng YYMMDDHHMMSSfff để tạo mã log duyệt sản phẩm (19 ký tự: LOG- + 15 ký tự thời gian)
-            // Đảm bảo không vượt quá độ dài tối đa VARCHAR(20) của cột CSDL
-            return "LOG-" + DateTime.Now.ToString("yyMMddHHmmssfff");
+            // LOG- (4) + yyMMddHH (8) + 7 hex (7) = 19 ký tự (<= 20 ký tự theo CSDL)
+            string timePart = DateTime.Now.ToString("yyMMddHH");
+            string randomPart = Guid.NewGuid().ToString("N").Substring(0, 7).ToUpper();
+            return $"LOG-{timePart}{randomPart}";
         }
 
 
@@ -122,14 +125,18 @@ namespace TMDT_FINAL_NPKL.Models
 
         public static string GenerateCartId()
         {
-            // Mã giỏ hàng: CRT- + 15 ký tự thời gian = 19 ký tự (<= 20 ký tự theo CSDL)
-            return "CRT-" + DateTime.Now.ToString("yyMMddHHmmssfff");
+            // CRT- (4) + yyMMddHH (8) + 7 hex (7) = 19 ký tự (<= 20 ký tự theo CSDL)
+            string timePart = DateTime.Now.ToString("yyMMddHH");
+            string randomPart = Guid.NewGuid().ToString("N").Substring(0, 7).ToUpper();
+            return $"CRT-{timePart}{randomPart}";
         }
 
         public static string GenerateCartItemId()
         {
-            // Mã mục giỏ hàng: CIT- + 15 ký tự thời gian = 19 ký tự (<= 20 ký tự theo CSDL)
-            return "CIT-" + DateTime.Now.ToString("yyMMddHHmmssfff");
+            // CIT- (4) + yyMMddHH (8) + 7 hex (7) = 19 ký tự (<= 20 ký tự theo CSDL)
+            string timePart = DateTime.Now.ToString("yyMMddHH");
+            string randomPart = Guid.NewGuid().ToString("N").Substring(0, 7).ToUpper();
+            return $"CIT-{timePart}{randomPart}";
         }
 
         public static string GenerateOrderId()

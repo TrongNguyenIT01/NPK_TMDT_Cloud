@@ -28,6 +28,7 @@ namespace TMDT_FINAL_NPKL.Controllers
             {
                 var query = _context.Products
                     .Include(p => p.Shop)
+                        .ThenInclude(s => s.Seller)
                     .Include(p => p.Category)
                     .Where(p => p.IsDeleted == false) // Không lấy sản phẩm mà shop đã xóa
                     .AsQueryable();
@@ -54,6 +55,8 @@ namespace TMDT_FINAL_NPKL.Controllers
                         CategoryName = p.Category.CategoryName,
                         p.ShopId,
                         ShopName = p.Shop.ShopName,
+                        ShopStatus = p.Shop != null ? p.Shop.Status : "UNKNOWN",
+                        SellerStatus = (p.Shop != null && p.Shop.Seller != null) ? p.Shop.Seller.Status : "UNKNOWN",
                         p.Price,
                         p.StockQuantity,
                         p.Image,
@@ -102,11 +105,23 @@ namespace TMDT_FINAL_NPKL.Controllers
                     return BadRequest(new { Success = false, Message = "Trạng thái không hợp lệ. Chỉ chấp nhận APPROVED, REJECTED hoặc PENDING." });
                 }
 
-                var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == productId);
+                var product = await _context.Products
+                    .Include(p => p.Shop)
+                        .ThenInclude(s => s.Seller)
+                    .FirstOrDefaultAsync(p => p.ProductId == productId);
 
                 if (product == null)
                 {
                     return NotFound(new { Success = false, Message = "Không tìm thấy sản phẩm!" });
+                }
+
+                // Không cho phép duyệt APPROVED nếu Shop hoặc Seller đang không ở trạng thái ACTIVE
+                if (statusInput == "APPROVED")
+                {
+                    if (product.Shop == null || product.Shop.Status != "ACTIVE" || (product.Shop.Seller != null && product.Shop.Seller.Status != "ACTIVE"))
+                    {
+                        return BadRequest(new { Success = false, Message = "Không thể phê duyệt sản phẩm của gian hàng đang bị cấm/tạm nghỉ hoặc tài khoản chủ shop đang bị khóa!" });
+                    }
                 }
 
                 // Lấy UserId của Admin từ JWT Claims

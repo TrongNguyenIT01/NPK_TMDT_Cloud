@@ -1072,9 +1072,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 paintActiveWishlistButtons();
+            } else {
+                allProducts = [];
+                window.allProductsData = [];
+                blocksContainer.innerHTML = `
+                    <div style="text-align: center; padding: 48px 16px; color: #64748B;">
+                        <div style="font-size: 2.5rem; margin-bottom: 8px;">📦</div>
+                        <p style="font-size: 1.05rem; font-weight: 600;">Hiện tại chưa có sản phẩm nào đang mở bán trên sàn.</p>
+                    </div>
+                `;
             }
         } catch (error) {
             console.error('Lỗi khi nạp sản phẩm:', error);
+            blocksContainer.innerHTML = `
+                <div style="text-align: center; padding: 48px 16px; color: #EF4444;">
+                    <p style="font-size: 0.95rem; font-weight: 600;">⚠️ Không thể kết nối tới máy chủ để tải sản phẩm.</p>
+                </div>
+            `;
         }
     }
 

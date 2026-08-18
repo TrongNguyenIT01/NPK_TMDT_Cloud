@@ -187,7 +187,9 @@ namespace TMDT_FINAL_NPKL.Controllers
                     .Include(p => p.Shop)
                         .ThenInclude(s => s.Seller)
                     .Include(p => p.ProductImages)
-                    .Where(p => p.ApprovalStatus == "APPROVED" && p.IsDeleted == false)
+                    .Where(p => p.ApprovalStatus == "APPROVED" && p.IsDeleted == false
+                             && p.Shop != null && p.Shop.Status == "ACTIVE" 
+                             && p.Shop.Seller != null && p.Shop.Seller.Status == "ACTIVE")
                     .AsQueryable();
 
                 // Lọc theo danh mục nếu có
@@ -255,11 +257,15 @@ namespace TMDT_FINAL_NPKL.Controllers
                     .Include(p => p.Shop)
                         .ThenInclude(s => s.Seller)
                     .Include(p => p.ProductImages)
-                    .FirstOrDefaultAsync(p => p.ProductId == productId && p.ApprovalStatus == "APPROVED" && p.IsDeleted == false);
+                    .FirstOrDefaultAsync(p => p.ProductId == productId 
+                                           && p.ApprovalStatus == "APPROVED" 
+                                           && p.IsDeleted == false
+                                           && p.Shop != null && p.Shop.Status == "ACTIVE"
+                                           && p.Shop.Seller != null && p.Shop.Seller.Status == "ACTIVE");
 
                 if (product == null)
                 {
-                    return NotFound(new { Success = false, Message = "Không tìm thấy sản phẩm hoặc sản phẩm chưa được duyệt!" });
+                    return NotFound(new { Success = false, Message = "Không tìm thấy sản phẩm hoặc gian hàng đang tạm ngừng hoạt động!" });
                 }
 
                 return Ok(new

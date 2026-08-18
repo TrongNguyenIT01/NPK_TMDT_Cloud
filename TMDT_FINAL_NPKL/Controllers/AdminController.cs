@@ -189,6 +189,19 @@ namespace TMDT_FINAL_NPKL.Controllers
                 };
 
                 await _context.UserBlocks.AddAsync(newBlock);
+
+                // Nếu user là SELLER -> Đồng bộ cấm Shop, từ chối sản phẩm và hủy các đơn hàng chưa hoàn tất
+                if (user.Role == "SELLER")
+                {
+                    var shop = await _context.Shops.FirstOrDefaultAsync(s => s.SellerId == userId);
+                    if (shop != null)
+                    {
+                        shop.Status = "BANNED";
+                        string adminId = User.FindFirst("UserId")?.Value ?? "ADMIN";
+                        await HandleShopDisableInternalAsync(shop.ShopId, $"Tài khoản chủ gian hàng [{user.Username}] bị khóa: {request.Reason}", adminId);
+                    }
+                }
+
                 await _context.SaveChangesAsync();
 
                 return Ok(new { Success = true, Message = "Đã khóa tài khoản thành công!", BlockId = newBlock.BlockId });
@@ -227,9 +240,28 @@ namespace TMDT_FINAL_NPKL.Controllers
                     activeBlock.Status = "RESOLVED";
                 }
 
+                // Nếu user là SELLER -> Tự động khôi phục Shop về ACTIVE và khôi phục sản phẩm về APPROVED
+                if (user.Role == "SELLER")
+                {
+                    var shop = await _context.Shops.FirstOrDefaultAsync(s => s.SellerId == userId);
+                    if (shop != null && shop.Status == "BANNED")
+                    {
+                        shop.Status = "ACTIVE";
+
+                        var shopProducts = await _context.Products.Where(p => p.ShopId == shop.ShopId).ToListAsync();
+                        foreach (var prod in shopProducts)
+                        {
+                            if (prod.ApprovalStatus == "REJECTED")
+                            {
+                                prod.ApprovalStatus = "APPROVED";
+                            }
+                        }
+                    }
+                }
+
                 await _context.SaveChangesAsync();
 
-                return Ok(new { Success = true, Message = "Đã mở khóa tài khoản thành công!" });
+                return Ok(new { Success = true, Message = "Đã mở khóa tài khoản thành công! Toàn bộ gian hàng và sản phẩm đã được kích hoạt lại." });
             }
             catch (Exception ex)
             {
@@ -339,6 +371,25 @@ namespace TMDT_FINAL_NPKL.Controllers
                         if (user != null)
                         {
                             user.Status = "ACTIVE";
+
+                            // Nếu là SELLER -> Mở lại Shop và khôi phục sản phẩm APPROVED
+                            if (user.Role == "SELLER")
+                            {
+                                var shop = await _context.Shops.FirstOrDefaultAsync(s => s.SellerId == user.UserId);
+                                if (shop != null && shop.Status == "BANNED")
+                                {
+                                    shop.Status = "ACTIVE";
+
+                                    var shopProducts = await _context.Products.Where(p => p.ShopId == shop.ShopId).ToListAsync();
+                                    foreach (var prod in shopProducts)
+                                    {
+                                        if (prod.ApprovalStatus == "REJECTED")
+                                        {
+                                            prod.ApprovalStatus = "APPROVED";
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -432,6 +483,9 @@ namespace TMDT_FINAL_NPKL.Controllers
                 }
 
                 shop.Status = "REJECTED";
+                string adminId = User.FindFirst("UserId")?.Value ?? "ADMIN";
+                await HandleShopDisableInternalAsync(shop.ShopId, "Hồ sơ gian hàng bị Admin từ chối.", adminId);
+
                 await _context.SaveChangesAsync();
 
                 return Ok(new { Success = true, Message = "Đã từ chối đơn đăng ký cửa hàng!" });
@@ -454,9 +508,12 @@ namespace TMDT_FINAL_NPKL.Controllers
                 }
 
                 shop.Status = "INACTIVE";
+                string adminId = User.FindFirst("UserId")?.Value ?? "ADMIN";
+                await HandleShopDisableInternalAsync(shop.ShopId, "Gian hàng chuyển sang trạng thái Tạm Nghỉ. Toàn bộ sản phẩm chuyển sang chưa duyệt.", adminId);
+
                 await _context.SaveChangesAsync();
 
-                return Ok(new { Success = true, Message = "Đã chuyển cửa hàng sang trạng thái Tạm Nghỉ!" });
+                return Ok(new { Success = true, Message = "Đã chuyển cửa hàng sang trạng thái Tạm Nghỉ, từ chối duyệt sản phẩm và hủy các đơn hàng chưa hoàn tất!" });
             }
             catch (Exception ex)
             {
@@ -476,9 +533,12 @@ namespace TMDT_FINAL_NPKL.Controllers
                 }
 
                 shop.Status = "BANNED";
+                string adminId = User.FindFirst("UserId")?.Value ?? "ADMIN";
+                await HandleShopDisableInternalAsync(shop.ShopId, "Gian hàng bị Admin cấm hoạt động. Toàn bộ sản phẩm bị từ chối duyệt.", adminId);
+
                 await _context.SaveChangesAsync();
 
-                return Ok(new { Success = true, Message = "Đã cấm cửa hàng hoạt động!" });
+                return Ok(new { Success = true, Message = "Đã cấm cửa hàng hoạt động, từ chối toàn bộ sản phẩm và tự động hủy các đơn hàng chưa hoàn tất!" });
             }
             catch (Exception ex)
             {
@@ -498,13 +558,69 @@ namespace TMDT_FINAL_NPKL.Controllers
                 }
 
                 shop.Status = "ACTIVE";
+
+                // Phục hồi lại các sản phẩm của shop sang APPROVED (nếu trước đó bị chuyển sang REJECTED do cấm shop)
+                var shopProducts = await _context.Products.Where(p => p.ShopId == shopId).ToListAsync();
+                foreach (var prod in shopProducts)
+                {
+                    if (prod.ApprovalStatus == "REJECTED")
+                    {
+                        prod.ApprovalStatus = "APPROVED";
+                    }
+                }
+
                 await _context.SaveChangesAsync();
 
-                return Ok(new { Success = true, Message = "Đã gỡ cấm cửa hàng thành công!" });
+                return Ok(new { Success = true, Message = "Đã gỡ cấm cửa hàng và kích hoạt lại toàn bộ sản phẩm thành công!" });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { Success = false, Message = "Lỗi máy chủ: " + ex.Message });
+            }
+        }
+
+        // Helper: Khi Shop bị Cấm/Tạm nghỉ/Khóa -> Từ chối các yêu cầu PENDING + Hủy các đơn hàng PENDING/CONFIRMED/SHIPPING
+        private async Task HandleShopDisableInternalAsync(string shopId, string reasonNote, string adminId)
+        {
+            // 1. Chỉ từ chối các yêu cầu đăng sản phẩm mới đang chờ duyệt (PENDING)
+            var pendingProducts = await _context.Products.Where(p => p.ShopId == shopId && p.ApprovalStatus == "PENDING").ToListAsync();
+            foreach (var prod in pendingProducts)
+            {
+                prod.ApprovalStatus = "REJECTED";
+                _context.ProductApprovalLogs.Add(new ProductApprovalLog
+                {
+                    LogId = GenID.GenerateProductApprovalLogId(),
+                    ProductId = prod.ProductId,
+                    AdminId = adminId,
+                    Action = "REJECTED",
+                    Note = reasonNote,
+                    CreatedAt = DateTime.Now
+                });
+            }
+
+            // 2. Hủy các đơn hàng chưa hoàn tất (PENDING, CONFIRMED, SHIPPING) và hoàn tồn kho
+            var activeOrders = await _context.Orders
+                .Include(o => o.Payments)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Product)
+                .Where(o => o.ShopId == shopId && o.Status != "DELIVERED" && o.Status != "CANCELLED")
+                .ToListAsync();
+
+            foreach (var order in activeOrders)
+            {
+                order.Status = "CANCELLED";
+                foreach (var detail in order.OrderDetails)
+                {
+                    if (detail.Product != null)
+                    {
+                        detail.Product.StockQuantity += detail.Quantity;
+                    }
+                }
+                var payment = order.Payments.FirstOrDefault();
+                if (payment != null && payment.PaymentStatus != "PAID")
+                {
+                    payment.PaymentStatus = "FAILED";
+                }
             }
         }
     }

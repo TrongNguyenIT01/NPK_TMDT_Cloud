@@ -88,11 +88,12 @@ namespace TMDT_FINAL_NPKL.Controllers
                     return Unauthorized(new { Success = false, Message = "Vui lòng đăng nhập để thực hiện đặt hàng!" });
                 }
 
-                // Truy vấn giỏ hàng của người dùng kèm sản phẩm & shop
+                // Truy vấn giỏ hàng của người dùng kèm sản phẩm, shop & chủ shop
                 var cart = await _context.Carts
                     .Include(c => c.CartItems)
                         .ThenInclude(ci => ci.Product)
                             .ThenInclude(p => p.Shop)
+                                .ThenInclude(s => s.Seller)
                     .FirstOrDefaultAsync(c => c.CustomerId == userId);
 
                 if (cart == null || !cart.CartItems.Any())
@@ -113,12 +114,14 @@ namespace TMDT_FINAL_NPKL.Controllers
                     return BadRequest(new { Success = false, Message = "Không tìm thấy sản phẩm hợp lệ trong giỏ hàng để đặt hàng!" });
                 }
 
-                // Kiểm tra trạng thái sản phẩm & số lượng tồn kho
+                // Kiểm tra trạng thái sản phẩm, gian hàng, chủ gian hàng & số lượng tồn kho
                 foreach (var item in activeItems)
                 {
-                    if (item.Product == null || item.Product.IsDeleted || item.Product.ApprovalStatus != "APPROVED")
+                    if (item.Product == null || item.Product.IsDeleted || item.Product.ApprovalStatus != "APPROVED"
+                        || item.Product.Shop == null || item.Product.Shop.Status != "ACTIVE"
+                        || item.Product.Shop.Seller == null || item.Product.Shop.Seller.Status != "ACTIVE")
                     {
-                        return BadRequest(new { Success = false, Message = $"Sản phẩm '{item.Product?.ProductName ?? item.ProductId}' không còn kinh doanh!" });
+                        return BadRequest(new { Success = false, Message = $"Sản phẩm '{item.Product?.ProductName ?? item.ProductId}' thuộc gian hàng đang bị tạm khóa hoặc ngừng kinh doanh, không thể đặt hàng!" });
                     }
 
                     if (item.Product.StockQuantity < item.Quantity)
@@ -590,6 +593,11 @@ namespace TMDT_FINAL_NPKL.Controllers
                 if (!isSellerOfShop)
                 {
                     return BadRequest(new { Success = false, Message = "Chỉ Người bán (Seller) sở hữu đơn hàng mới có quyền chủ động cập nhật trạng thái!" });
+                }
+
+                if (order.Shop != null && order.Shop.Status != "ACTIVE")
+                {
+                    return BadRequest(new { Success = false, Message = "Gian hàng của bạn hiện đang bị khóa hoặc tạm nghỉ, không thể cập nhật trạng thái đơn hàng!" });
                 }
 
                 string oldStatus = order.Status;

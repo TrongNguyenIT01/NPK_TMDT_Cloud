@@ -178,14 +178,25 @@ function renderProductsTable(products) {
             statusClass = "rejected";
         }
 
+        const isShopActive = (product.shopStatus === "ACTIVE" && product.sellerStatus === "ACTIVE");
+        let shopBadge = "";
+        if (!isShopActive && product.shopStatus) {
+            const statusLabel = product.shopStatus === "BANNED" ? "Shop Bị Cấm" : (product.shopStatus === "INACTIVE" ? "Shop Tạm Nghỉ" : "Shop Bị Khóa");
+            shopBadge = `<div style="margin-top:3px;"><span style="font-size:0.72rem; background:#FEE2E2; color:#DC2626; padding:2px 6px; border-radius:4px; font-weight:600;">⚠️ ${statusLabel}</span></div>`;
+        }
+
         let actionHtml = "";
         if (product.approvalStatus === "PENDING") {
-            actionHtml = `
-                <div class="btn-action-group">
-                    <button class="btn-tb approve btn-product-action" data-id="${product.productId}" data-action="APPROVED">✓ Duyệt Bán</button>
-                    <button class="btn-tb reject btn-product-action" data-id="${product.productId}" data-action="REJECTED">✕ Từ Chối</button>
-                </div>
-            `;
+            if (!isShopActive && product.shopStatus) {
+                actionHtml = `<span style="color:#DC2626; font-size: 0.8rem; font-weight:600;">Shop bị khóa<br>(Không thể duyệt)</span>`;
+            } else {
+                actionHtml = `
+                    <div class="btn-action-group">
+                        <button class="btn-tb approve btn-product-action" data-id="${product.productId}" data-action="APPROVED">✓ Duyệt Bán</button>
+                        <button class="btn-tb reject btn-product-action" data-id="${product.productId}" data-action="REJECTED">✕ Từ Chối</button>
+                    </div>
+                `;
+            }
         } else {
             actionHtml = `<span style="color:#64748B; font-size: 0.85rem;">Đã xử lý</span>`;
         }
@@ -193,6 +204,10 @@ function renderProductsTable(products) {
         const fullImageUrl = product.image ? `https://localhost:3001${product.image}` : '../TrangChinh/images/default.jpg';
 
         const tr = document.createElement("tr");
+        if (!isShopActive && product.shopStatus) {
+            tr.style.backgroundColor = "#FFF5F5";
+        }
+
         tr.innerHTML = `
             <td><strong>${product.productId}</strong></td>
             <td class="product-name-cell">
@@ -201,7 +216,7 @@ function renderProductsTable(products) {
                     <span>${product.productName}</span>
                 </div>
             </td>
-            <td>${product.shopName}</td>
+            <td><strong>${product.shopName}</strong>${shopBadge}</td>
             <td>${product.categoryName}</td>
             <td>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</td>
             <td>${product.stockQuantity}</td>
