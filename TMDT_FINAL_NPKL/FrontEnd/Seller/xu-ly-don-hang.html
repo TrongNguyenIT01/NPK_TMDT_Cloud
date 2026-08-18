@@ -130,6 +130,17 @@
                         <h3>Danh Sách Đơn Mua Từ Khách Hàng</h3>
                         <p>Xác nhận đơn hàng, chuẩn bị đóng gói và bàn giao đơn cho nhà vận chuyển</p>
                     </div>
+                    <div class="table-filters">
+                        <label for="orderStatusFilter" style="font-weight:700; font-size:0.88rem; color:#0B2238;">🔍 Trạng Thái:</label>
+                        <select id="orderStatusFilter" class="filter-select" style="padding:8px 14px; border-radius:8px; font-weight:700;">
+                            <option value="ALL"> Tất Cả Trạng Thái</option>
+                            <option value="PENDING"> Chờ Duyệt (PENDING)</option>
+                            <option value="CONFIRMED"> Đã Xác Nhận (CONFIRMED)</option>
+                            <option value="SHIPPING"> Đang Giao Hàng (SHIPPING)</option>
+                            <option value="DELIVERED"> Giao Thành Công (DELIVERED)</option>
+                            <option value="CANCELLED"> Đã Hủy (CANCELLED)</option>
+                        </select>
+                    </div>
                 </div>
                 <table class="seller-table">
                     <thead>
@@ -154,6 +165,70 @@
             </div>
         </div>
     </main>
+
+    <!-- MODAL CHI TIẾT ĐƠN HÀNG DÀNH CHO SELLER -->
+    <div class="modal-overlay" id="sellerOrderDetailsModal" style="display: none;">
+        <div class="modal-card" style="max-width: 850px; width: 92%; max-height: 90vh; overflow-y: auto; padding: 28px;">
+            <div class="modal-header" style="border-bottom: 1px solid #E2E8F0; padding-bottom: 14px; margin-bottom: 20px;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: #0B2238; margin: 0;">🧾 Chi Tiết Đơn Hàng <span id="seller_order_id" style="color: #E05A2B;"></span></h3>
+                <button class="btn-close-modal" id="closeSellerOrderDetailsModal" style="font-size: 1.5rem; cursor: pointer; border: none; background: none; color: #64748B;">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #F8FAFC; padding: 14px 18px; border-radius: 10px; border: 1px solid #E2E8F0; margin-bottom: 20px;">
+                    <div>
+                        <span style="color: #64748B; font-size: 0.9rem;">Ngày đặt hàng: </span>
+                        <strong id="seller_order_date" style="color: #0F172A; font-size: 0.95rem;">...</strong>
+                    </div>
+                    <div>
+                        <span class="badge-status" id="seller_order_status" style="font-size: 0.85rem; padding: 6px 14px;">...</span>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+                    <div style="background: #F8FAFC; padding: 18px; border-radius: 12px; border: 1px solid #E2E8F0;">
+                        <h4 style="margin-top: 0; margin-bottom: 12px; color: #0B2238; font-size: 1rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                            👤 Thông Tin Khách Hàng
+                        </h4>
+                        <p style="margin: 6px 0; color: #475569; font-size: 0.9rem;"><strong>Mã KH:</strong> <span id="seller_customer_id">...</span></p>
+                        <p style="margin: 6px 0; color: #475569; font-size: 0.9rem;"><strong>Họ tên:</strong> <span id="seller_customer_name">...</span></p>
+                        <p style="margin: 6px 0; color: #475569; font-size: 0.9rem;"><strong>Địa chỉ giao:</strong> <span id="seller_shipping_address" style="color: #0F172A; font-weight: 600;">...</span></p>
+                    </div>
+                    <div style="background: #F8FAFC; padding: 18px; border-radius: 12px; border: 1px solid #E2E8F0;">
+                        <h4 style="margin-top: 0; margin-bottom: 12px; color: #0B2238; font-size: 1rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                            💳 Thanh Toán & Vận Chuyển
+                        </h4>
+                        <p style="margin: 6px 0; color: #475569; font-size: 0.9rem;"><strong>Phương thức:</strong> <span id="seller_payment_method">...</span></p>
+                        <p style="margin: 6px 0; color: #475569; font-size: 0.9rem;"><strong>Trạng thái TT:</strong> <span id="seller_payment_status" class="badge-status active">...</span></p>
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom: 14px; color: #0B2238; font-size: 1rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                    📦 Danh Sách Sản Phẩm Trong Đơn
+                </h4>
+                <div style="border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden; margin-bottom: 20px;">
+                    <table class="seller-table" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Mã SP</th>
+                                <th>Sản Phẩm</th>
+                                <th>Đơn Giá</th>
+                                <th>Số Lượng</th>
+                                <th>Thành Tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="seller_order_details_list">
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="text-align: right; padding-top: 14px; border-top: 1px solid #E2E8F0;">
+                    <span style="font-size: 1rem; font-weight: 700; color: #64748B;">Tổng giá trị thanh toán: </span>
+                    <span id="seller_total_amount" style="font-size: 1.35rem; font-weight: 800; color: #E05A2B; margin-left: 8px;">0đ</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

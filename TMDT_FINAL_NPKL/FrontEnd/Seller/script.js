@@ -220,6 +220,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return isNaN(d.getTime()) ? dateStr : d.toLocaleString('vi-VN');
     }
 
+    let allSellerOrdersCache = [];
+
     async function loadSellerOrders() {
         if (!orderTableBody) return;
         const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
@@ -243,8 +245,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (response.ok && result.success) {
-                const orders = result.data || result.Data || [];
-                renderSellerOrdersTable(orders);
+                allSellerOrdersCache = result.data || result.Data || [];
+                applyOrderFiltersAndRender();
             } else {
                 orderTableBody.innerHTML = `
                     <tr>
@@ -264,6 +266,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
             `;
         }
+    }
+
+    function applyOrderFiltersAndRender() {
+        const filterVal = (document.querySelector('#orderStatusFilter')?.value || 'ALL').toUpperCase();
+        let filteredOrders = allSellerOrdersCache;
+        if (filterVal !== 'ALL') {
+            filteredOrders = allSellerOrdersCache.filter(o => (o.status || o.Status || '').toUpperCase() === filterVal);
+        }
+        renderSellerOrdersTable(filteredOrders);
+    }
+
+    const orderStatusFilterSelect = document.querySelector('#orderStatusFilter');
+    if (orderStatusFilterSelect) {
+        orderStatusFilterSelect.addEventListener('change', () => {
+            applyOrderFiltersAndRender();
+        });
     }
 
     function renderSellerOrdersTable(orders) {
@@ -325,11 +343,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td><strong>${orderId}</strong></td>
                     <td>${orderDate}</td>
                     <td><strong>${customerName}</strong></td>
-                    <td><span title="${itemsSummary}">${itemsSummary.length > 35 ? itemsSummary.substring(0, 35) + '...' : itemsSummary}</span></td>
+                    <td><span title="${itemsSummary}" style="display:inline-block; max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:middle;">${itemsSummary}</span></td>
                     <td><strong style="color:#10b981;">${totalAmount}</strong></td>
                     <td class="order-status-cell">${statusBadgeHtml}</td>
                     <td>
                         <div class="btn-action-group">
+                            <button class="btn-tb primary btn-view-seller-order-detail" data-id="${orderId}">🔍 Chi Tiết</button>
                             ${actionButtonsHtml}
                         </div>
                     </td>
@@ -338,8 +357,120 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
+    async function showSellerOrderDetailsModal(orderId) {
+        const modal = document.getElementById('sellerOrderDetailsModal');
+        if (!modal) return;
+
+        document.getElementById('seller_order_id').textContent = '#' + orderId;
+        document.getElementById('seller_order_date').textContent = '⏳ Đang tải...';
+
+        const statusSpan = document.getElementById('seller_order_status');
+        if (statusSpan) {
+            statusSpan.textContent = '...';
+            statusSpan.className = 'badge-status';
+        }
+
+        if (document.getElementById('seller_customer_id')) document.getElementById('seller_customer_id').textContent = '...';
+        if (document.getElementById('seller_customer_name')) document.getElementById('seller_customer_name').textContent = '...';
+        if (document.getElementById('seller_shipping_address')) document.getElementById('seller_shipping_address').textContent = '...';
+        if (document.getElementById('seller_payment_method')) document.getElementById('seller_payment_method').textContent = '...';
+        if (document.getElementById('seller_payment_status')) document.getElementById('seller_payment_status').textContent = '...';
+
+        const detailsList = document.getElementById('seller_order_details_list');
+        if (detailsList) detailsList.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">⏳ Đang tải danh sách sản phẩm...</td></tr>';
+        if (document.getElementById('seller_total_amount')) document.getElementById('seller_total_amount').textContent = '0đ';
+
+        modal.style.display = 'flex';
+
+        const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
+        try {
+            const response = await fetch(`https://localhost:3001/api/DonHang/${orderId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const result = await response.json();
+
+            if (response.ok && result.success && result.data) {
+                const data = result.data;
+                document.getElementById('seller_order_date').textContent = formatDate(data.orderDate);
+
+                if (statusSpan) {
+                    const statusMap = {
+                        'PENDING': { label: 'Chờ duyệt (PENDING)', class: 'pending' },
+                        'CONFIRMED': { label: 'Đã xác nhận (CONFIRMED)', class: 'active' },
+                        'SHIPPING': { label: 'Đang giao (SHIPPING)', class: 'shipping' },
+                        'DELIVERED': { label: 'Giao thành công (DELIVERED)', class: 'delivered' },
+                        'CANCELLED': { label: 'Đã hủy (CANCELLED)', class: 'blocked' }
+                    };
+                    const stInfo = statusMap[data.status] || { label: data.status, class: '' };
+                    statusSpan.textContent = stInfo.label;
+                    statusSpan.className = `badge-status ${stInfo.class}`;
+                }
+
+                if (document.getElementById('seller_customer_id')) document.getElementById('seller_customer_id').textContent = data.customerId || 'N/A';
+                if (document.getElementById('seller_customer_name')) document.getElementById('seller_customer_name').textContent = data.customerName || 'N/A';
+                if (document.getElementById('seller_shipping_address')) document.getElementById('seller_shipping_address').textContent = data.shippingAddress || 'Chưa cung cấp';
+
+                const payment = data.payment || {};
+                if (document.getElementById('seller_payment_method')) document.getElementById('seller_payment_method').textContent = payment.paymentMethod || 'COD (Thanh toán khi nhận hàng)';
+                
+                const payStatusEl = document.getElementById('seller_payment_status');
+                if (payStatusEl) {
+                    if (payment.paymentStatus === 'FAILED' || data.status === 'CANCELLED') {
+                        payStatusEl.textContent = 'THẤT BẠI / ĐÃ HỦY (FAILED)';
+                        payStatusEl.className = 'badge-status blocked';
+                    } else if (payment.paymentStatus === 'PAID' || data.status === 'DELIVERED') {
+                        payStatusEl.textContent = 'ĐÃ THANH TOÁN (PAID)';
+                        payStatusEl.className = 'badge-status active';
+                    } else {
+                        payStatusEl.textContent = 'CHƯA THANH TOÁN (PENDING)';
+                        payStatusEl.className = 'badge-status pending';
+                    }
+                }
+
+                const items = data.orderDetails || [];
+                if (detailsList) {
+                    if (items.length === 0) {
+                        detailsList.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">Không có dữ liệu chi tiết sản phẩm.</td></tr>';
+                    } else {
+                        detailsList.innerHTML = items.map(item => `
+                            <tr>
+                                <td><strong>${item.productId}</strong></td>
+                                <td>
+                                    <div style="display:flex; align-items:center; gap:10px;">
+                                        ${item.productImage ? `<img src="${item.productImage.startsWith('/') ? 'https://localhost:3001' + item.productImage : item.productImage}" style="width:40px; height:40px; border-radius:6px; object-fit:cover;" onerror="this.style.display='none'" />` : ''}
+                                        <strong style="color:#0F172A;">${item.productName}</strong>
+                                    </div>
+                                </td>
+                                <td>${formatVND(item.price)}</td>
+                                <td><strong>x${item.quantity}</strong></td>
+                                <td><strong style="color:#10B981;">${formatVND(item.price * item.quantity)}</strong></td>
+                            </tr>
+                        `).join('');
+                    }
+                }
+
+                if (document.getElementById('seller_total_amount')) document.getElementById('seller_total_amount').textContent = formatVND(data.totalAmount);
+            } else {
+                alert(result.message || 'Không thể lấy thông tin chi tiết đơn hàng!');
+            }
+        } catch (err) {
+            console.error('Lỗi khi lấy chi tiết đơn hàng Seller:', err);
+            alert('Không thể kết nối máy chủ!');
+        }
+    }
+
     if (orderTableBody) {
         orderTableBody.addEventListener('click', async (e) => {
+            const detailBtn = e.target.closest('.btn-view-seller-order-detail');
+            if (detailBtn) {
+                const orderId = detailBtn.getAttribute('data-id');
+                if (orderId) showSellerOrderDetailsModal(orderId);
+                return;
+            }
+
             const btn = e.target.closest('.btn-order-action');
             if (!btn) return;
 
@@ -377,6 +508,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Lỗi đổi trạng thái đơn Seller:', err);
                     alert('Lỗi kết nối máy chủ!');
                 }
+            }
+        });
+    }
+
+    const closeSellerOrderModalBtn = document.getElementById('closeSellerOrderDetailsModal');
+    const sellerOrderModal = document.getElementById('sellerOrderDetailsModal');
+
+    if (closeSellerOrderModalBtn && sellerOrderModal) {
+        closeSellerOrderModalBtn.addEventListener('click', () => {
+            sellerOrderModal.style.display = 'none';
+        });
+
+        sellerOrderModal.addEventListener('click', (e) => {
+            if (e.target === sellerOrderModal) {
+                sellerOrderModal.style.display = 'none';
             }
         });
     }
@@ -608,5 +754,345 @@ document.addEventListener('DOMContentLoaded', () => {
     // Tự động tải dữ liệu nếu đang ở trang cấu hình cửa hàng
     if (document.querySelector('#shopProfileForm')) {
         loadShopProfile();
+    }
+
+    // 5. Revenue Tracking Page Logic & Chart.js Integration
+    let dailyChartInstance = null;
+    let orderStatusChartInstance = null;
+
+    async function loadSellerRevenueStats(selectedMonth, selectedYear) {
+        const dailyTableBody = document.querySelector('#dailyRevenueTableBody');
+        const monthTitle = document.querySelector('#revenueMonthTitle');
+        const totalRevenueEl = document.querySelector('#totalRevenueVal');
+        const successfulOrdersEl = document.querySelector('#successfulOrdersVal');
+        const averageOrderEl = document.querySelector('#averageOrderVal');
+        const successRateEl = document.querySelector('#successRateText');
+
+        if (!dailyTableBody) return; // Không ở trang Theo Dõi Doanh Thu
+
+        const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
+        if (!token) return;
+
+        const now = new Date();
+        const m = selectedMonth || (document.querySelector('#revenueMonthSelect')?.value) || (now.getMonth() + 1);
+        const y = selectedYear || (document.querySelector('#revenueYearSelect')?.value) || now.getFullYear();
+
+        // Đồng bộ giá trị vào select dropdown
+        const monthSelect = document.querySelector('#revenueMonthSelect');
+        const yearSelect = document.querySelector('#revenueYearSelect');
+        if (monthSelect) monthSelect.value = m;
+        if (yearSelect) yearSelect.value = y;
+
+        if (monthTitle) monthTitle.textContent = `Tổng Doanh Thu Tháng ${m}/${y}`;
+        dailyTableBody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align:center; padding:25px; color:#64748b;">
+                    ⏳ Đang tải dữ liệu báo cáo doanh thu Tháng ${m}/${y}...
+                </td>
+            </tr>
+        `;
+
+        try {
+            const response = await fetch(`https://localhost:3001/api/ThkeSeller/revenue-stats?month=${m}&year=${y}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            const result = await response.json();
+
+            if (response.ok && result.success && result.data) {
+                const data = result.data;
+
+                // 1. Cập nhật Thẻ Metric Chỉ Số
+                if (totalRevenueEl) totalRevenueEl.textContent = formatVND(data.totalRevenue || 0);
+                if (successfulOrdersEl) successfulOrdersEl.textContent = `${data.successfulOrdersCount || 0} Đơn`;
+                if (averageOrderEl) averageOrderEl.textContent = `${formatVND(data.averageOrderValue || 0)} / đơn`;
+                if (successRateEl) successRateEl.textContent = `Tỷ lệ thành công: ${data.successRate || 0}% (${data.successfulOrdersCount}/${data.totalOrdersCount} đơn)`;
+
+                // 2. Render Bảng Biến Động Doanh Thu Theo Ngày
+                const dailyStats = data.dailyStats || [];
+                if (dailyStats.length === 0) {
+                    dailyTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align:center; padding:25px; color:#64748b;">
+                                📦 Chưa có doanh thu ghi nhận trong tháng ${m}/${y}.
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    dailyTableBody.innerHTML = dailyStats.map(stat => {
+                        return `
+                            <tr>
+                                <td><strong>${stat.date} (Ngày ${stat.dayNumber})</strong></td>
+                                <td><strong>${stat.successfulOrdersCount}</strong> đơn</td>
+                                <td><strong style="color: #10B981;">${formatVND(stat.dailyRevenue)}</strong></td>
+                                <td>${formatVND(stat.averageOrderValue)}</td>
+                                <td><span class="badge-status active">Đã Ghi Nhận</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+
+                // 3. Vẽ Biểu Đồ Cột (Daily Revenue Chart)
+                renderDailyRevenueChart(dailyStats);
+
+                // 4. Vẽ Biểu Đồ Tròn (Order Status Donut Chart)
+                renderOrderStatusChart(data.successfulOrdersCount, (data.totalOrdersCount - data.successfulOrdersCount));
+            } else {
+                dailyTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding:25px; color:#ef4444;">
+                            ${result.message || 'Không thể tải báo cáo doanh thu.'}
+                        </td>
+                    </tr>
+                `;
+            }
+        } catch (err) {
+            console.error("Lỗi tải báo cáo doanh thu Seller:", err);
+            dailyTableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align:center; padding:25px; color:#ef4444;">
+                        Lỗi kết nối máy chủ!
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function renderDailyRevenueChart(dailyStats) {
+        const canvas = document.getElementById('dailyRevenueChart');
+        if (!canvas || typeof Chart === 'undefined') return;
+
+        const labels = dailyStats.map(d => `Ngày ${d.dayNumber}`);
+        const revenues = dailyStats.map(d => d.dailyRevenue);
+
+        if (dailyChartInstance) {
+            dailyChartInstance.destroy();
+        }
+
+        const ctx = canvas.getContext('2d');
+        dailyChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Doanh thu ngày (VNĐ)',
+                    data: revenues,
+                    backgroundColor: 'rgba(59, 130, 246, 0.75)',
+                    borderColor: '#2563EB',
+                    borderWidth: 1.5,
+                    borderRadius: 4,
+                    hoverBackgroundColor: '#1D4ED8'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Doanh thu: ' + formatVND(context.raw);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 10 } }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                if (value >= 1000000) return (value / 1000000) + ' triệu';
+                                if (value >= 1000) return (value / 1000) + 'k';
+                                return value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function renderOrderStatusChart(successCount, otherCount) {
+        const canvas = document.getElementById('orderStatusChart');
+        if (!canvas || typeof Chart === 'undefined') return;
+
+        if (orderStatusChartInstance) {
+            orderStatusChartInstance.destroy();
+        }
+
+        const safeOtherCount = Math.max(0, otherCount);
+        const ctx = canvas.getContext('2d');
+
+        orderStatusChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Đơn Thành Công / Paid', 'Các Trạng Thái Khác'],
+                datasets: [{
+                    data: [successCount, safeOtherCount],
+                    backgroundColor: ['#10B981', '#E2E8F0'],
+                    borderColor: ['#059669', '#CBD5E1'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { size: 11, weight: 'bold' } }
+                    }
+                }
+            }
+        });
+    }
+
+    // Sự kiện nút lọc Doanh Thu
+    const btnFilterRevenue = document.querySelector('#btnFilterRevenue');
+    if (btnFilterRevenue) {
+        btnFilterRevenue.addEventListener('click', () => {
+            const m = document.querySelector('#revenueMonthSelect')?.value;
+            const y = document.querySelector('#revenueYearSelect')?.value;
+            loadSellerRevenueStats(m, y);
+        });
+    }
+
+    // Tự động tải báo cáo doanh thu khi truy cập theo-doi-doanh-thu.html
+    if (document.querySelector('#dailyRevenueTableBody')) {
+        const now = new Date();
+        loadSellerRevenueStats(now.getMonth() + 1, now.getFullYear());
+    }
+
+    // 6. Seller Overview Dashboard (index.html) Data Loading
+    async function loadSellerDashboardStats() {
+        const totalRevenueEl = document.querySelector('#dashTotalRevenue');
+        const revenueTrendEl = document.querySelector('#dashRevenueTrend');
+        const pendingCountEl = document.querySelector('#dashPendingOrdersCount');
+        const pendingBadgeEl = document.querySelector('#dashPendingBadge');
+        const totalProductsEl = document.querySelector('#dashTotalProducts');
+        const productBadgeEl = document.querySelector('#dashProductBadge');
+        const recentOrdersTableBody = document.querySelector('#dashRecentOrdersTableBody');
+
+        if (!totalRevenueEl && !recentOrdersTableBody) return; // Không phải trang Overview Dashboard
+
+        const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
+        if (!token) return;
+
+        const now = new Date();
+        const m = now.getMonth() + 1;
+        const y = now.getFullYear();
+
+        // 1. Tải Doanh Thu Bán Hàng Tháng Này từ ThkeSellerController API
+        try {
+            const revRes = await fetch(`https://localhost:3001/api/ThkeSeller/revenue-stats?month=${m}&year=${y}`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const revData = await revRes.json();
+            const isRevSuccess = revData.success || revData.Success;
+            if (revRes.ok && isRevSuccess) {
+                const dataObj = revData.data || revData.Data || {};
+                const totalRev = dataObj.totalRevenue !== undefined ? dataObj.totalRevenue : (dataObj.TotalRevenue || 0);
+                if (totalRevenueEl) totalRevenueEl.textContent = formatVND(totalRev);
+                if (revenueTrendEl) revenueTrendEl.textContent = `Tháng ${m}/${y}`;
+            }
+        } catch (err) {
+            console.error("Lỗi tải doanh thu dashboard:", err);
+        }
+
+        // 2. Tải Danh Sách Đơn Hàng từ DonHangController API (Đếm Đơn PENDING & Render Bảng Đơn Mới Nhất)
+        try {
+            const orderRes = await fetch("https://localhost:3001/api/DonHang/shop-orders", {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const orderData = await orderRes.json();
+            const isOrderSuccess = orderData.success || orderData.Success;
+            if (orderRes.ok && isOrderSuccess) {
+                const orders = orderData.data || orderData.Data || [];
+                const pendingOrders = orders.filter(o => (o.status || o.Status || '').toUpperCase() === 'PENDING');
+                
+                if (pendingCountEl) pendingCountEl.textContent = `${pendingOrders.length} Đơn Hàng`;
+                if (pendingBadgeEl) pendingBadgeEl.textContent = `${pendingOrders.length} Đơn chờ duyệt`;
+
+                if (recentOrdersTableBody) {
+                    if (pendingOrders.length === 0) {
+                        recentOrdersTableBody.innerHTML = `
+                            <tr>
+                                <td colspan="6" style="text-align:center; padding:25px; color:#64748b;">
+                                    📦 Không có đơn hàng nào đang chờ phê duyệt.
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        recentOrdersTableBody.innerHTML = pendingOrders.map(order => {
+                            const orderId = order.orderId || order.OrderId;
+                            const customerName = order.customerName || order.CustomerName || order.customerId || 'Khách hàng';
+                            const orderDate = formatDate(order.orderDate || order.OrderDate);
+                            const totalAmount = formatVND(order.totalAmount || order.TotalAmount || 0);
+
+                            const itemsCount = (order.orderDetails || order.OrderDetails || []).length;
+                            const itemsSummary = (order.orderDetails || order.OrderDetails || [])
+                                .map(i => `${i.productName || i.ProductName} (x${i.quantity || i.Quantity})`)
+                                .join(', ') || `${itemsCount} sản phẩm`;
+
+                            return `
+                                <tr>
+                                    <td><strong>${orderId}</strong></td>
+                                    <td>${orderDate}</td>
+                                    <td><strong>${customerName}</strong></td>
+                                    <td><span title="${itemsSummary}" style="display:inline-block; max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:middle;">${itemsSummary}</span></td>
+                                    <td><strong style="color:#10b981;">${totalAmount}</strong></td>
+                                    <td><span class="badge-status pending">Chờ Duyệt</span></td>
+                                </tr>
+                            `;
+                        }).join('');
+                    }
+                }
+            }
+        } catch (err) {
+            console.error("Lỗi tải danh sách đơn hàng dashboard:", err);
+        }
+
+        // 3. Tải Danh Sách Sản Phẩm Đang Kinh Doanh từ LaySPSellerController API (Chỉ đếm các sản phẩm đang kinh doanh is_deleted = false)
+        try {
+            const prodRes = await fetch("https://localhost:3001/api/LaySPSeller/seller-list?page=1&pageSize=1000&status=visible", {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const prodData = await prodRes.json();
+            const isSuccess = prodData.success || prodData.Success;
+            if (prodRes.ok && isSuccess) {
+                const dataObj = prodData.data || prodData.Data || {};
+                const pagObj = dataObj.pagination || dataObj.Pagination || {};
+                const itemsList = (dataObj.items || dataObj.Items || []).filter(item => {
+                    const deleted = item.isDeleted !== undefined ? item.isDeleted : item.IsDeleted;
+                    return !deleted;
+                });
+
+                let totalCount = 0;
+                if (pagObj.totalItems !== undefined && pagObj.totalItems !== null) {
+                    totalCount = pagObj.totalItems;
+                } else if (pagObj.TotalItems !== undefined && pagObj.TotalItems !== null) {
+                    totalCount = pagObj.TotalItems;
+                } else {
+                    totalCount = itemsList.length;
+                }
+
+                if (totalProductsEl) totalProductsEl.textContent = `${totalCount}`;
+                if (productBadgeEl) productBadgeEl.textContent = `${totalCount} Sản phẩm`;
+            }
+        } catch (err) {
+            console.error("Lỗi tải tổng số sản phẩm dashboard:", err);
+        }
+    }
+
+    // Tự động kích hoạt tải dữ liệu nếu ở trang Tổng Quan Dashboard (index.html)
+    if (document.querySelector('#dashTotalRevenue') || document.querySelector('#dashRecentOrdersTableBody')) {
+        loadSellerDashboardStats();
     }
 });

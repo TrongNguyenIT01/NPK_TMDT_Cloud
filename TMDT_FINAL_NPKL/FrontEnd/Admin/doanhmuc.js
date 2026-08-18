@@ -21,13 +21,14 @@ document.addEventListener("DOMContentLoaded", () => {
             categories.forEach(cat => {
                 const date = new Date(cat.createdAt).toLocaleDateString('vi-VN');
                 const desc = cat.description ? cat.description : 'Chưa có mô tả';
+                const productCount = cat.productCount !== undefined ? cat.productCount : 0;
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><strong>${cat.categoryId}</strong></td>
                     <td><strong>${cat.categoryName}</strong></td>
                     <td>${desc}</td>
-                    <td>0 SP</td> <!-- Kết nối số lượng Sản phẩm sau -->
+                    <td><strong>${productCount}</strong> SP</td>
                     <td>${date}</td>
                     <td>
                         <button class="btn-tb primary btn-edit-cat" 
