@@ -1,4 +1,4 @@
-﻿namespace TMDT_FINAL_NPKL.Models
+namespace TMDT_FINAL_NPKL.Models
 {
     public class DashboardAD
     {
@@ -9,6 +9,7 @@
           
             public int TotalProducts { get; set; }
             public int PendingProducts { get; set; }
-        
+
+            public decimal TotalRevenue { get; set; }
     }
 }

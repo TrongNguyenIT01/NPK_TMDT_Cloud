@@ -22,12 +22,20 @@ async function fetchDashboardMetrics() {
             document.getElementById('total-item').innerText = data.totalProducts;
             document.getElementById('pending-item').innerText = `${data.pendingProducts} Chờ duyệt`;
 
+            // 4. Cập nhật số liệu Tổng doanh thu giao dịch
+            const revenueElem = document.getElementById('total-revenue');
+            if (revenueElem) {
+                const formattedRevenue = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(data.totalRevenue || 0);
+                revenueElem.innerText = formattedRevenue;
+            }
+
         } catch (error) {
             console.error("Lỗi khi tải số liệu Dashboard:", error);
             // Nếu lỗi, có thể cho hiển thị chữ 'Lỗi' hoặc '---' để giao diện không bị trống
-            document.getElementById('total-user').innerText = "Lỗi";
-            document.getElementById('total-shop').innerText = "Lỗi";
-            document.getElementById('total-item').innerText = "Lỗi";
+            if (document.getElementById('total-user')) document.getElementById('total-user').innerText = "Lỗi";
+            if (document.getElementById('total-shop')) document.getElementById('total-shop').innerText = "Lỗi";
+            if (document.getElementById('total-item')) document.getElementById('total-item').innerText = "Lỗi";
+            if (document.getElementById('total-revenue')) document.getElementById('total-revenue').innerText = "Lỗi";
         }
     }
 

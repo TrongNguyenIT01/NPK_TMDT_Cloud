@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -36,6 +36,11 @@ namespace TMDT_FINAL_NPKL.Controllers
                 var pendingProducts = await _context.Products
                     .CountAsync(p => p.ApprovalStatus == "PENDING" && p.IsDeleted == false);
 
+                // Tính tổng doanh thu giao dịch thành công trên toàn sàn (không phân biệt shop)
+                var totalRevenue = await _context.Orders
+                    .Where(o => o.Status != "CANCELLED" && (o.Status == "DELIVERED" || o.Payments.Any(p => p.PaymentStatus == "PAID")))
+                    .SumAsync(o => (decimal?)o.TotalAmount) ?? 0m;
+
                 // Gán dữ liệu vào class DashboardAD của bạn
                 var metrics = new DashboardAD
                 {
@@ -43,7 +48,8 @@ namespace TMDT_FINAL_NPKL.Controllers
                     PendingUsers = pendingUsers,
                     ActiveShops = activeShops,
                     TotalProducts = totalProducts,
-                    PendingProducts = pendingProducts
+                    PendingProducts = pendingProducts,
+                    TotalRevenue = totalRevenue
                 };
 
                 return Ok(metrics);
