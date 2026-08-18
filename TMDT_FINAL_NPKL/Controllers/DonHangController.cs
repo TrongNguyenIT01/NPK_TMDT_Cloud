@@ -495,6 +495,7 @@ namespace TMDT_FINAL_NPKL.Controllers
                 }
 
                 var order = await _context.Orders
+                    .Include(o => o.Payments)
                     .Include(o => o.OrderDetails)
                         .ThenInclude(od => od.Product)
                     .FirstOrDefaultAsync(o => o.OrderId == orderId);
@@ -523,6 +524,13 @@ namespace TMDT_FINAL_NPKL.Controllers
                     {
                         detail.Product.StockQuantity += detail.Quantity;
                     }
+                }
+
+                // Cập nhật trạng thái thanh toán thành FAILED khi hủy đơn
+                var payment = order.Payments.FirstOrDefault();
+                if (payment != null)
+                {
+                    payment.PaymentStatus = "FAILED";
                 }
 
                 await _context.SaveChangesAsync();
@@ -586,7 +594,13 @@ namespace TMDT_FINAL_NPKL.Controllers
 
                 string oldStatus = order.Status;
 
-                // Nếu chuyển sang CANCELLED mà trước đó chưa CANCELLED -> Hoàn tồn kho sản phẩm
+                // KHÓA TRẠNG THÁI: Nếu đơn đã ở CANCELLED -> Không cho phép đổi sang bất kỳ trạng thái nào khác!
+                if (oldStatus == "CANCELLED")
+                {
+                    return BadRequest(new { Success = false, Message = "Đơn hàng này đã bị hủy, không thể thay đổi trạng thái nữa!" });
+                }
+
+                // Nếu chuyển sang CANCELLED mà trước đó chưa CANCELLED -> Hoàn tồn kho sản phẩm & Đánh dấu PaymentStatus = FAILED
                 if (newStatus == "CANCELLED" && oldStatus != "CANCELLED")
                 {
                     foreach (var detail in order.OrderDetails)
@@ -595,6 +609,12 @@ namespace TMDT_FINAL_NPKL.Controllers
                         {
                             detail.Product.StockQuantity += detail.Quantity;
                         }
+                    }
+
+                    var payment = order.Payments.FirstOrDefault();
+                    if (payment != null)
+                    {
+                        payment.PaymentStatus = "FAILED";
                     }
                 }
 

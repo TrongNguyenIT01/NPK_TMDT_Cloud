@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
@@ -119,8 +119,8 @@ namespace TMDT_FINAL_NPKL.Controllers
                         CategoryId = c.CategoryId,
                         CategoryName = c.CategoryName,
                         Description = c.Description,
-                        CreatedAt = c.CreatedAt
-              
+                        CreatedAt = c.CreatedAt,
+                        ProductCount = c.Products.Count(p => !p.IsDeleted)
                     })
                     .ToListAsync();
 

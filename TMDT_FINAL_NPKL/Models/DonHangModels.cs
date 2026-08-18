@@ -84,4 +84,27 @@ namespace TMDT_FINAL_NPKL.Models
         public ThanhToanDonHangDto? Payment { get; set; }
         public List<ChiTietSanPhamDonHangDto> OrderDetails { get; set; } = new List<ChiTietSanPhamDonHangDto>();
     }
+
+    public class ThongKeDoanhThuNgayDto
+    {
+        public string Date { get; set; } = null!;
+        public int DayNumber { get; set; }
+        public int SuccessfulOrdersCount { get; set; }
+        public decimal DailyRevenue { get; set; }
+        public decimal AverageOrderValue { get; set; }
+    }
+
+    public class DoanhThuSellerResponseDto
+    {
+        public string ShopId { get; set; } = null!;
+        public string? ShopName { get; set; }
+        public int Month { get; set; }
+        public int Year { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public int SuccessfulOrdersCount { get; set; }
+        public decimal AverageOrderValue { get; set; }
+        public int TotalOrdersCount { get; set; }
+        public double SuccessRate { get; set; }
+        public List<ThongKeDoanhThuNgayDto> DailyStats { get; set; } = new List<ThongKeDoanhThuNgayDto>();
+    }
 }

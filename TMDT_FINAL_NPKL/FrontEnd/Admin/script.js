@@ -497,56 +497,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. Add Category Modal & Form
-    const addCatBtn = document.querySelector('#addCatBtn');
-    const catModal = document.querySelector('#catModal');
-    const closeCatModalBtn = document.querySelector('#closeCatModal');
-    const catForm = document.querySelector('#catForm');
-    const catTableBody = document.querySelector('#catTableBody');
+    // 5. Category management is handled by doanhmuc.js
 
-    if (addCatBtn && catModal) {
-        addCatBtn.addEventListener('click', () => {
-            catModal.classList.add('active');
-        });
-    }
-
-    if (closeCatModalBtn && catModal) {
-        closeCatModalBtn.addEventListener('click', () => {
-            catModal.classList.remove('active');
-        });
-    }
-
-    if (catForm) {
-        catForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const catName = document.querySelector('#catNameInput').value.trim();
-            const catDesc = document.querySelector('#catDescInput').value.trim();
-
-            if (!catName) return;
-
-            const newId = 'CAT' + Math.floor(1000 + Math.random() * 9000);
-            const now = new Date().toLocaleDateString('vi-VN');
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><strong>${newId}</strong></td>
-                <td><strong>${catName}</strong></td>
-                <td>${catDesc || 'Không có mô tả'}</td>
-                <td>0 SP</td>
-                <td>${now}</td>
-                <td>
-                    <button class="btn-tb primary">Sửa</button>
-                    <button class="btn-tb reject" onclick="this.closest('tr').remove()">Xóa</button>
-                </td>
-            `;
-
-            if (catTableBody) catTableBody.appendChild(tr);
-            alert(`Đã thêm danh mục mới "${catName}" [${newId}]!`);
-
-            if (catModal) catModal.classList.remove('active');
-            catForm.reset();
-        });
-    }
 
     // 6. User Table Filter
     const userRoleFilter = document.querySelector('#userRoleFilter');
