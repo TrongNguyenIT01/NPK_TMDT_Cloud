@@ -63,6 +63,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Trạng thái 200 OK -> Thành công
                     alert(data.message || "Cấp tài khoản thành công!");
                     grantAccountForm.reset(); // Xóa trắng form để chuẩn bị nhập người tiếp theo
+                    if (typeof loadGrantedUsers === 'function') {
+                        loadGrantedUsers(); // Tự động load lại bảng danh sách tài khoản ngay lập tức
+                    }
                 } else {
                     // Xử lý các mã lỗi cụ thể
                     if (response.status === 403) {

@@ -85,33 +85,36 @@ async function loadProducts() {
                             <button class="btn-view-reason" onclick="viewApprovalLog('${pId}')" title="Xem chi tiết">🔍</button>
                         </div>`;
                 } else {
-                    const canResubmit = (shopStatus === "ACTIVE" || !shopStatus);
-                    const resubmitBtnHtml = canResubmit 
-                        ? `<button class="btn-tb approve" style="padding:2px 8px; font-size:0.75rem; margin-top:3px;" onclick="resubmitProductApproval('${pId}')" title="Gửi yêu cầu duyệt lại">🚀 Gửi duyệt lại</button>` 
-                        : '';
-
                     approvalStatusHtml = `
-                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;">
-                            <div style="display:flex; align-items:center; gap:4px;">
-                                <span class="badge-status reject">Từ Chối</span>
-                                <button class="btn-view-reason" onclick="viewApprovalLog('${pId}')" title="Xem lý do từ chối">📋 Lý do</button>
-                            </div>
-                            ${resubmitBtnHtml}
+                        <div style="display:flex; align-items:center; justify-content:center; gap:4px;">
+                            <span class="badge-status reject">Từ Chối</span>
+                            <button class="btn-view-reason" onclick="viewApprovalLog('${pId}')" title="Xem lý do từ chối">📋 Lý do</button>
                         </div>`;
                 }
 
                 // Trạng thái ẩn/hiện thực tế của sản phẩm (is_deleted dùng làm cờ ẩn)
                 const isHidden = item.isDeleted !== undefined ? item.isDeleted : item.IsDeleted;
-
-                const displayStatusHtml = isHidden
-                    ? `<span class="badge-status reject">Đã Ẩn</span>`
-                    : `<span class="badge-status active">Đang Bán</span>`;
-
                 const productId = item.productId || item.ProductId;
 
-                const actionButtonHtml = isHidden
-                    ? `<button class="btn-tb primary btn-toggle-vis" onclick="showProduct('${productId}')">Hiện SP</button>`
-                    : `<button class="btn-tb block btn-toggle-vis" onclick="hideProduct('${productId}')">Ẩn SP</button>`;
+                let displayStatusHtml = '';
+                let actionButtonHtml = '';
+
+                if (approvalStatus === "REJECTED") {
+                    displayStatusHtml = `<span class="badge-status reject">Bị Từ Chối</span>`;
+                    actionButtonHtml = `<span style="color:#94A3B8; font-size:0.85rem;">--</span>`;
+                } else if (approvalStatus === "PENDING") {
+                    displayStatusHtml = `<span class="badge-status pending">Chờ Duyệt</span>`;
+                    actionButtonHtml = `<span style="color:#94A3B8; font-size:0.85rem;">--</span>`;
+                } else {
+                    // Sản phẩm APPROVED
+                    if (isHidden) {
+                        displayStatusHtml = `<span class="badge-status reject">Đã Ẩn</span>`;
+                        actionButtonHtml = `<button class="btn-tb primary btn-toggle-vis" onclick="showProduct('${productId}')">Hiện SP</button>`;
+                    } else {
+                        displayStatusHtml = `<span class="badge-status active">Đang Bán</span>`;
+                        actionButtonHtml = `<button class="btn-tb block btn-toggle-vis" onclick="hideProduct('${productId}')">Ẩn SP</button>`;
+                    }
+                }
 
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
@@ -145,40 +148,6 @@ async function loadProducts() {
     } catch (error) {
         console.error("Lỗi tải sản phẩm:", error);
         tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:red;">Mất kết nối tới máy chủ!</td></tr>`;
-    }
-}
-
-// Hàm gửi duyệt lại sản phẩm
-async function resubmitProductApproval(productId) {
-    if (!confirm(`Bạn có chắc chắn muốn gửi yêu cầu duyệt lại sản phẩm [${productId}] lên Admin không?`)) {
-        return;
-    }
-
-    const token = localStorage.getItem("jwtToken");
-    if (!token) {
-        alert("Bạn chưa đăng nhập!");
-        return;
-    }
-
-    try {
-        const response = await fetch(`https://localhost:3001/api/LaySPSeller/resubmit-approval/${productId}`, {
-            method: "PUT",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
-            }
-        });
-
-        const result = await response.json();
-        if (response.ok && (result.Success || result.success)) {
-            alert(result.Message || result.message || "Đã gửi yêu cầu duyệt lại thành công!");
-            loadProducts();
-        } else {
-            alert("❌ Lỗi: " + (result.Message || result.message || "Không thể gửi yêu cầu!"));
-        }
-    } catch (err) {
-        console.error("Lỗi khi gửi duyệt lại:", err);
-        alert("Lỗi kết nối máy chủ!");
     }
 }
 

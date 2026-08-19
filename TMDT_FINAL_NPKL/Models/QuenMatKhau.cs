@@ -27,4 +27,15 @@ namespace TMDT_FINAL_NPKL.Models
         [Compare("NewPassword", ErrorMessage = "Mật khẩu xác nhận không khớp.")]
         public string ConfirmPassword { get; set; } = null!;
     }
+
+    public class YeuCauXacThucOtp
+    {
+        [Required(ErrorMessage = "Email không được để trống.")]
+        [EmailAddress(ErrorMessage = "Email không đúng định dạng.")]
+        public string Email { get; set; } = null!;
+
+        [Required(ErrorMessage = "Mã OTP không được để trống.")]
+        [StringLength(6, MinimumLength = 6, ErrorMessage = "Mã OTP phải gồm đúng 6 ký tự.")]
+        public string Otp { get; set; } = null!;
+    }
 }

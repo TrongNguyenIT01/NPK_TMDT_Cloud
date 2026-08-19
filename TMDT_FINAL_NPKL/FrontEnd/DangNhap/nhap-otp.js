@@ -94,7 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    form.addEventListener('submit', (e) => {
+    const API_VERIFY_OTP_URL = 'https://localhost:3001/api/QuenMatKhau/xac-thuc-otp';
+
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const otpVal = otpInput.value.trim();
@@ -103,14 +105,35 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        showPopupModal(
-            'Xác Nhận Thành Công!',
-            'Mã OTP hợp lệ. Vui lòng bấm Tiếp Tục để thiết lập mật khẩu mới.',
-            true,
-            'Tiếp Tục Đặt Mật Khẩu Mới ➔',
-            () => {
-                window.location.href = `dat-lai-mat-khau.html?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otpVal)}`;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+
+        try {
+            const res = await fetch(API_VERIFY_OTP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ Email: email, Otp: otpVal })
+            });
+
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && (data.Success || data.success)) {
+                showPopupModal(
+                    'Xác Nhận Thành Công!',
+                    'Mã OTP chính xác. Vui lòng bấm Tiếp Tục để thiết lập mật khẩu mới.',
+                    true,
+                    'Tiếp Tục Đặt Mật Khẩu Mới ➔',
+                    () => {
+                        window.location.href = `dat-lai-mat-khau.html?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otpVal)}`;
+                    }
+                );
+            } else {
+                showPopupModal('Thông Báo Lỗi', data.message || data.Message || 'Mã OTP không chính xác hoặc đã hết hiệu lực (10 phút)!', false, 'Nhập lại');
             }
-        );
+        } catch (err) {
+            console.error('Lỗi xác thực OTP:', err);
+            showPopupModal('Lỗi Kết Nối', 'Không thể kết nối đến máy chủ Backend (https://localhost:3001)!', false, 'Đóng');
+        } finally {
+            if (submitBtn) submitBtn.disabled = false;
+        }
     });
 });

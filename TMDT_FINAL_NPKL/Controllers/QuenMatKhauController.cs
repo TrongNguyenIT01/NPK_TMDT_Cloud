@@ -105,6 +105,32 @@ namespace TMDT_FINAL_NPKL.Controllers
             }
         }
 
+        [HttpPost("xac-thuc-otp")]
+        public IActionResult XacThucOtp([FromBody] YeuCauXacThucOtp request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                // Kiểm tra OTP từ cache
+                var cacheKey = $"OTP_{request.Email}";
+                if (!_cache.TryGetValue(cacheKey, out string? cachedOtp) || cachedOtp != request.Otp)
+                {
+                    return BadRequest(new { Success = false, Message = "Mã OTP không chính xác hoặc đã hết hiệu lực (10 phút)!" });
+                }
+
+                return Ok(new { Success = true, Message = "Mã OTP hợp lệ." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Loi xac thuc OTP: {ex}");
+                return StatusCode(500, new { Success = false, Message = "Đã xảy ra lỗi máy chủ: " + ex.Message });
+            }
+        }
+
         [HttpPost("dat-lai-mat-khau")]
         public async Task<IActionResult> DatLaiMatKhau([FromBody] XacNhanMatKhauMoi request)
         {

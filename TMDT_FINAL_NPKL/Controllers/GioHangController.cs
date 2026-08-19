@@ -32,12 +32,6 @@ namespace TMDT_FINAL_NPKL.Controllers
         private async Task<Cart> GetOrCreateCartAsync(string userId)
         {
             var cart = await _context.Carts
-                .Include(c => c.CartItems)
-                    .ThenInclude(ci => ci.Product)
-                        .ThenInclude(p => p.Category)
-                .Include(c => c.CartItems)
-                    .ThenInclude(ci => ci.Product)
-                        .ThenInclude(p => p.Shop)
                 .FirstOrDefaultAsync(c => c.CustomerId == userId);
 
             if (cart == null)
@@ -55,11 +49,16 @@ namespace TMDT_FINAL_NPKL.Controllers
             return cart;
         }
 
-        // Helper: Format CartResponse
-        private CartResponse BuildCartResponse(Cart cart, string message = "Thành công")
+        // Helper: Format CartResponse trực tiếp từ CSDL
+        private async Task<CartResponse> BuildCartResponseAsync(string cartId, string message = "Thành công")
         {
-            var activeItems = cart.CartItems
-                .Where(ci => ci.Product != null && ci.Product.IsDeleted != true)
+            var activeItems = await _context.CartItems
+                .AsNoTracking()
+                .Include(ci => ci.Product)
+                    .ThenInclude(p => p.Category)
+                .Include(ci => ci.Product)
+                    .ThenInclude(p => p.Shop)
+                .Where(ci => ci.CartId == cartId && ci.Product != null && ci.Product.IsDeleted != true)
                 .Select(ci => new CartItemDto
                 {
                     CartItemId = ci.CartItemId,
@@ -69,16 +68,16 @@ namespace TMDT_FINAL_NPKL.Controllers
                     Img = ci.Product.Image,
                     Qty = ci.Quantity,
                     StockQuantity = ci.Product.StockQuantity,
-                    CategoryTag = ci.Product.Category?.CategoryName ?? "Sản phẩm",
-                    Author = ci.Product.Shop?.ShopName ?? "Cửa hàng"
+                    CategoryTag = ci.Product.Category != null ? ci.Product.Category.CategoryName : "Sản phẩm",
+                    Author = ci.Product.Shop != null ? (ci.Product.Shop.ShopName ?? "Cửa hàng") : "Cửa hàng"
                 })
-                .ToList();
+                .ToListAsync();
 
             return new CartResponse
             {
                 Success = true,
                 Message = message,
-                CartId = cart.CartId,
+                CartId = cartId,
                 TotalItemsCount = activeItems.Sum(i => i.Qty),
                 SubtotalAmount = activeItems.Sum(i => i.Subtotal),
                 Items = activeItems
@@ -98,7 +97,8 @@ namespace TMDT_FINAL_NPKL.Controllers
                 }
 
                 var cart = await GetOrCreateCartAsync(userId);
-                return Ok(BuildCartResponse(cart, "Lấy dữ liệu giỏ hàng thành công."));
+                var responseData = await BuildCartResponseAsync(cart.CartId, "Lấy dữ liệu giỏ hàng thành công.");
+                return Ok(responseData);
             }
             catch (Exception ex)
             {
@@ -118,11 +118,16 @@ namespace TMDT_FINAL_NPKL.Controllers
                     return Ok(new { Success = true, Count = 0 });
                 }
 
-                var cart = await _context.Carts
-                    .Include(c => c.CartItems)
-                    .FirstOrDefaultAsync(c => c.CustomerId == userId);
+                var cart = await _context.Carts.FirstOrDefaultAsync(c => c.CustomerId == userId);
+                if (cart == null)
+                {
+                    return Ok(new { Success = true, Count = 0 });
+                }
 
-                int count = cart?.CartItems.Sum(ci => ci.Quantity) ?? 0;
+                int count = await _context.CartItems
+                    .Where(ci => ci.CartId == cart.CartId)
+                    .SumAsync(ci => ci.Quantity);
+
                 return Ok(new { Success = true, Count = count });
             }
             catch (Exception ex)
@@ -165,7 +170,7 @@ namespace TMDT_FINAL_NPKL.Controllers
                 var cart = await GetOrCreateCartAsync(userId);
 
                 // Tìm sản phẩm trong giỏ
-                var existingItem = cart.CartItems.FirstOrDefault(ci => ci.ProductId == request.ProductId);
+                var existingItem = await _context.CartItems.FirstOrDefaultAsync(ci => ci.CartId == cart.CartId && ci.ProductId == request.ProductId);
                 int desiredQty = (existingItem?.Quantity ?? 0) + request.Quantity;
 
                 if (desiredQty > product.StockQuantity)
@@ -191,14 +196,13 @@ namespace TMDT_FINAL_NPKL.Controllers
                         Quantity = request.Quantity
                     };
                     await _context.CartItems.AddAsync(newItem);
-                    cart.CartItems.Add(newItem);
                 }
 
                 await _context.SaveChangesAsync();
 
-                // Nạp lại chi tiết để trả về response đầy đủ
-                var updatedCart = await GetOrCreateCartAsync(userId);
-                return Ok(BuildCartResponse(updatedCart, "Đã thêm sản phẩm vào giỏ hàng thành công!"));
+                // Nạp lại chi tiết trực tiếp từ DB để trả về response chuẩn xác
+                var responseData = await BuildCartResponseAsync(cart.CartId, "Đã thêm sản phẩm vào giỏ hàng thành công!");
+                return Ok(responseData);
             }
             catch (Exception ex)
             {
@@ -224,7 +228,7 @@ namespace TMDT_FINAL_NPKL.Controllers
                 }
 
                 var cart = await GetOrCreateCartAsync(userId);
-                var item = cart.CartItems.FirstOrDefault(ci => ci.ProductId == request.ProductId);
+                var item = await _context.CartItems.FirstOrDefaultAsync(ci => ci.CartId == cart.CartId && ci.ProductId == request.ProductId);
                 if (item == null)
                 {
                     return NotFound(new { Success = false, Message = "Sản phẩm không có trong giỏ hàng!" });
@@ -234,7 +238,6 @@ namespace TMDT_FINAL_NPKL.Controllers
                 {
                     // Nếu số lượng <= 0, thực hiện xóa khỏi giỏ
                     _context.CartItems.Remove(item);
-                    cart.CartItems.Remove(item);
                 }
                 else
                 {
@@ -253,8 +256,8 @@ namespace TMDT_FINAL_NPKL.Controllers
 
                 await _context.SaveChangesAsync();
 
-                var updatedCart = await GetOrCreateCartAsync(userId);
-                return Ok(BuildCartResponse(updatedCart, "Đã cập nhật số lượng thành công!"));
+                var responseData = await BuildCartResponseAsync(cart.CartId, "Đã cập nhật số lượng thành công!");
+                return Ok(responseData);
             }
             catch (Exception ex)
             {
@@ -280,16 +283,15 @@ namespace TMDT_FINAL_NPKL.Controllers
                 }
 
                 var cart = await GetOrCreateCartAsync(userId);
-                var item = cart.CartItems.FirstOrDefault(ci => ci.ProductId == productId);
+                var item = await _context.CartItems.FirstOrDefaultAsync(ci => ci.CartId == cart.CartId && ci.ProductId == productId);
                 if (item != null)
                 {
                     _context.CartItems.Remove(item);
-                    cart.CartItems.Remove(item);
                     await _context.SaveChangesAsync();
                 }
 
-                var updatedCart = await GetOrCreateCartAsync(userId);
-                return Ok(BuildCartResponse(updatedCart, "Đã xóa sản phẩm khỏi giỏ hàng!"));
+                var responseData = await BuildCartResponseAsync(cart.CartId, "Đã xóa sản phẩm khỏi giỏ hàng!");
+                return Ok(responseData);
             }
             catch (Exception ex)
             {
@@ -310,15 +312,15 @@ namespace TMDT_FINAL_NPKL.Controllers
                 }
 
                 var cart = await GetOrCreateCartAsync(userId);
-                if (cart.CartItems.Any())
+                var items = await _context.CartItems.Where(ci => ci.CartId == cart.CartId).ToListAsync();
+                if (items.Any())
                 {
-                    _context.CartItems.RemoveRange(cart.CartItems);
-                    cart.CartItems.Clear();
+                    _context.CartItems.RemoveRange(items);
                     await _context.SaveChangesAsync();
                 }
 
-                var updatedCart = await GetOrCreateCartAsync(userId);
-                return Ok(BuildCartResponse(updatedCart, "Đã làm trống giỏ hàng thành công!"));
+                var responseData = await BuildCartResponseAsync(cart.CartId, "Đã làm trống giỏ hàng thành công!");
+                return Ok(responseData);
             }
             catch (Exception ex)
             {
