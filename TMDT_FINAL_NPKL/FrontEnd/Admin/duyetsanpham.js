@@ -4,6 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.querySelector(".search-input-admin");
     if (searchInput) searchInput.addEventListener("input", debounce(loadProducts, 300));
 
+    const statusFilter = document.getElementById("productStatusFilter");
+    if (statusFilter) {
+        statusFilter.addEventListener("change", () => loadProducts());
+    }
+
     const tbody = document.getElementById("productApprovalBody");
     const rejectModal = document.getElementById("rejectModal");
     const closeRejectModalBtn = document.getElementById("closeRejectModal");
@@ -19,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const productId = btn.getAttribute("data-id");
             const action = btn.getAttribute("data-action"); // APPROVED hoặc REJECTED
-            const token = localStorage.getItem("jwtToken");
+            const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
 
             if (!token) {
                 alert("Bạn chưa đăng nhập hoặc không có quyền truy cập!");
@@ -53,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const token = localStorage.getItem("jwtToken");
+            const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
             if (!token) {
                 alert("Bạn chưa đăng nhập hoặc không có quyền truy cập!");
                 return;
@@ -94,20 +99,17 @@ async function approveOrRejectProduct(productId, status, note, token) {
 }
 
 async function loadProducts() {
-    const token = localStorage.getItem("jwtToken");
+    const token = sessionStorage.getItem("jwtToken") || localStorage.getItem("jwtToken");
     if (!token) {
         alert("Bạn chưa đăng nhập hoặc không có quyền truy cập!");
         window.location.href = "../DangNhap/index.html";
         return;
     }
 
-    // Currently no status filter in HTML, we will fetch 'PENDING' by default, or 'ALL' and filter in JS if needed.
-    // Let's fetch 'all' and render all of them, or 'PENDING'. The HTML says "Danh Sách Sản Phẩm Chờ Duyệt Công Khai", so let's fetch PENDING
-    // Actually, I'll fetch 'ALL' for now or just follow the search
-    const searchVal = document.querySelector(".search-input-admin")?.value.toLowerCase() || "";
+    const statusFilter = document.getElementById("productStatusFilter")?.value || "ALL";
+    const searchVal = document.querySelector(".search-input-admin")?.value.toLowerCase().trim() || "";
 
     try {
-        // Fetch all products (status=all or status=pending based on what's best. Let's do 'all' to show history if we want, or 'pending' by default. Let's do 'all' for now)
         const response = await fetch(`https://localhost:3001/api/AdminDuyetSP/all-products?page=1&pageSize=1000&status=all`, {
             method: "GET",
             headers: {
@@ -118,21 +120,27 @@ async function loadProducts() {
 
         const result = await response.json();
         if (response.ok && result.success) {
-            let products = result.data.items || [];
-            
-            // Lọc theo search input
+            const allItems = result.data.items || [];
+            let products = [...allItems];
+
+            // 1. Lọc theo trạng thái phê duyệt (ALL, PENDING, APPROVED, REJECTED)
+            if (statusFilter && statusFilter !== "ALL") {
+                products = products.filter(p => p.approvalStatus && p.approvalStatus.toUpperCase() === statusFilter.toUpperCase());
+            }
+
+            // 2. Lọc theo từ khóa tìm kiếm
             if (searchVal) {
                 products = products.filter(p => 
-                    p.productName.toLowerCase().includes(searchVal) || 
-                    p.shopName.toLowerCase().includes(searchVal) ||
-                    p.productId.toLowerCase().includes(searchVal)
+                    (p.productName && p.productName.toLowerCase().includes(searchVal)) || 
+                    (p.shopName && p.shopName.toLowerCase().includes(searchVal)) ||
+                    (p.productId && p.productId.toLowerCase().includes(searchVal)) ||
+                    (p.categoryName && p.categoryName.toLowerCase().includes(searchVal))
                 );
             }
 
             renderProductsTable(products);
             
             // Cập nhật các chỉ số ở phần đầu trang (Metric Cards)
-            const allItems = result.data.items || [];
             const pendingCount = allItems.filter(p => p.approvalStatus === "PENDING").length;
             const approvedCount = allItems.filter(p => p.approvalStatus === "APPROVED").length;
             const rejectedCount = allItems.filter(p => p.approvalStatus === "REJECTED").length;
