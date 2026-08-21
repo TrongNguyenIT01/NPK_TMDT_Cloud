@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             try {
-                const response = await fetch(`https://localhost:3001/api/Admin/appeals/resolve/${appealId}`, {
+                const response = await fetch(`${window.location.origin}/api/Admin/appeals/resolve/${appealId}`, {
                     method: "POST",
                     headers: {
                         "Authorization": `Bearer ${token}`,
@@ -73,7 +73,7 @@ async function loadAppeals() {
     const searchVal = document.getElementById("appealSearchInput")?.value || "";
 
     try {
-        const response = await fetch(`https://localhost:3001/api/Admin/appeals?status=${statusVal}&search=${encodeURIComponent(searchVal)}`, {
+        const response = await fetch(`${window.location.origin}/api/Admin/appeals?status=${statusVal}&search=${encodeURIComponent(searchVal)}`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,

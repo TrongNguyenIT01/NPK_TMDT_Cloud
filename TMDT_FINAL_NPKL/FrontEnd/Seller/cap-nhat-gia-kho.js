@@ -52,7 +52,7 @@ async function loadApprovedProducts() {
                 const stockQuantity = item.stockQuantity !== undefined ? item.stockQuantity : item.StockQuantity;
                 const categoryName = item.categoryName || item.CategoryName || item.categoryId || item.CategoryId || "Chưa phân loại";
                 const imagePath = item.image || item.Image;
-                const fullImageUrl = imagePath ? `https://localhost:3001${imagePath}` : '../TrangChinh/images/default.jpg';
+                const fullImageUrl = imagePath ? `${window.location.origin}${imagePath}` : '../TrangChinh/images/default.jpg';
 
                 const tr = document.createElement("tr");
                 tr.id = `row_${productId}`;
@@ -135,7 +135,7 @@ async function savePriceAndStock(productId) {
     }
 
     try {
-        const response = await fetch(`https://localhost:3001/api/LaySPSeller/update-price-stock/${productId}`, {
+        const response = await fetch(`${window.location.origin}/api/LaySPSeller/update-price-stock/${productId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

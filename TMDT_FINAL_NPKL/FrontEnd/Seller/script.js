@@ -384,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
         try {
-            const response = await fetch(`https://localhost:3001/api/DonHang/${orderId}`, {
+            const response = await fetch(`${window.location.origin}/api/DonHang/${orderId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -489,7 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (confirm(`Bạn có chắc chắn muốn [${statusNames[targetStatus] || targetStatus}] cho đơn #${orderId}?`)) {
                 try {
-                    const response = await fetch(`https://localhost:3001/api/DonHang/${orderId}/status`, {
+                    const response = await fetch(`${window.location.origin}/api/DonHang/${orderId}/status`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -793,7 +793,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         try {
-            const response = await fetch(`https://localhost:3001/api/ThkeSeller/revenue-stats?month=${m}&year=${y}`, {
+            const response = await fetch(`${window.location.origin}/api/ThkeSeller/revenue-stats?month=${m}&year=${y}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -991,7 +991,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 1. Tải Doanh Thu Bán Hàng Tháng Này từ ThkeSellerController API
         try {
-            const revRes = await fetch(`https://localhost:3001/api/ThkeSeller/revenue-stats?month=${m}&year=${y}`, {
+            const revRes = await fetch(`${window.location.origin}/api/ThkeSeller/revenue-stats?month=${m}&year=${y}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             const revData = await revRes.json();

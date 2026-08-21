@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (err) {
                 console.error('Lỗi kết nối API đổi mật khẩu:', err);
-                showAlert('Không thể kết nối đến máy chủ Backend (https://localhost:3001). Vui lòng thử lại sau!', false);
+                showAlert('Không thể kết nối đến máy chủ Backend. Vui lòng thử lại sau!', false);
             } finally {
                 if (btnSubmit) {
                     btnSubmit.innerHTML = originalBtnText;

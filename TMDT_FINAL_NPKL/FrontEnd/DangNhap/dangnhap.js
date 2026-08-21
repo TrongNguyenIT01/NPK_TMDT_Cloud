@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             } catch (error) {
                 console.error("Lỗi kết nối:", error);
-                alert("Không thể kết nối đến máy chủ Backend (https://localhost:3001).\nBạn hãy đảm bảo dự án C# Backend đã được Run (F5) trong Visual Studio nhé!");
+                alert("Không thể kết nối đến máy chủ Backend.\nBạn hãy đảm bảo dự án C# Backend đã được Run (F5) trong Visual Studio nhé!");
             } finally {
                 if (submitBtn) {
                     submitBtn.disabled = false;

@@ -41,7 +41,7 @@ async function showOrderDetailsModal(orderId) {
 
     const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
     try {
-        const response = await fetch(`https://localhost:3001/api/DonHang/${orderId}`, {
+        const response = await fetch(`${window.location.origin}/api/DonHang/${orderId}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`

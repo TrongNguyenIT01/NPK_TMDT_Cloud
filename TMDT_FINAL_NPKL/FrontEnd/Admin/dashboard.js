@@ -79,7 +79,7 @@ async function fetchDashboardMetrics() {
 
     async function approveOrRejectDashboardProduct(productId, status, note, token) {
         try {
-            const response = await fetch(`https://localhost:3001/api/AdminDuyetSP/approve/${productId}`, {
+            const response = await fetch(`${window.location.origin}/api/AdminDuyetSP/approve/${productId}`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -113,7 +113,7 @@ async function fetchDashboardMetrics() {
             tbody.innerHTML = `<tr><td colspan="7" style="text-align: center;">Đang tải dữ liệu...</td></tr>`;
             
             // Lấy 5 sản phẩm chờ duyệt mới nhất
-            const response = await fetch(`https://localhost:3001/api/AdminDuyetSP/all-products?page=1&pageSize=5&status=PENDING`, {
+            const response = await fetch(`${window.location.origin}/api/AdminDuyetSP/all-products?page=1&pageSize=5&status=PENDING`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,

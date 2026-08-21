@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (action === "ACTIVE") {
                 if (confirm(`Bạn có chắc muốn duyệt kích hoạt tài khoản: "${userName}" [${userId}]?`)) {
                     try {
-                        const response = await fetch(`https://localhost:3001/api/Admin/approve/${userId}`, {
+                        const response = await fetch(`${window.location.origin}/api/Admin/approve/${userId}`, {
                             method: "POST",
                             headers: {
                                 "Authorization": `Bearer ${token}`,
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 try {
-                    const response = await fetch(`https://localhost:3001/api/Admin/reject/${userId}`, {
+                    const response = await fetch(`${window.location.origin}/api/Admin/reject/${userId}`, {
                         method: "POST",
                         headers: {
                             "Authorization": `Bearer ${token}`,
@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 try {
-                    const response = await fetch(`https://localhost:3001/api/Admin/block/${userId}`, {
+                    const response = await fetch(`${window.location.origin}/api/Admin/block/${userId}`, {
                         method: "POST",
                         headers: {
                             "Authorization": `Bearer ${token}`,
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (action === "UNBLOCK") {
                 if (confirm(`Bạn có chắc muốn mở khóa cho tài khoản: "${userName}" [${userId}]?`)) {
                     try {
-                        const response = await fetch(`https://localhost:3001/api/Admin/unblock/${userId}`, {
+                        const response = await fetch(`${window.location.origin}/api/Admin/unblock/${userId}`, {
                             method: "POST",
                             headers: {
                                 "Authorization": `Bearer ${token}`,
@@ -209,7 +209,7 @@ async function loadPendingUsers() {
     }
 
     try {
-        const url = `https://localhost:3001/api/Admin/users?status=${encodeURIComponent(statusFilter)}&role=${encodeURIComponent(roleFilter)}&search=${encodeURIComponent(searchVal)}`;
+        const url = `${window.location.origin}/api/Admin/users?status=${encodeURIComponent(statusFilter)}&role=${encodeURIComponent(roleFilter)}&search=${encodeURIComponent(searchVal)}`;
         const response = await fetch(url, {
             method: "GET",
             headers: {
