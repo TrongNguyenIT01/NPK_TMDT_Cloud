@@ -1,33 +1,14 @@
 version: '3.8'
 
 services:
-  database:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sqlserver_db
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=Npk@2005!
-      - MSSQL_PID=Express
-    ports:
-      - "1433:1433"
-    volumes:
-      - sqlserver_data:/var/opt/mssql
-    restart: unless-stopped
-
   web:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: tmdt_webapp
     environment:
-      - ConnectionStrings__WEB_TMDT=Server=database,1433;Database=WEB_TMDT;User Id=sa;Password=Npk@2005!;TrustServerCertificate=True;
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
     ports:
       - "80:80"
-    depends_on:
-      - database
     restart: unless-stopped
-
-volumes:
-  sqlserver_data:
