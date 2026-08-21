@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using TMDT_FINAL_NPKL.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.FileProviders;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,11 +16,16 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500") // Chỉ định Port của Frontend
-                                .AllowAnyHeader()                     // Cho phép mọi header (Content-Type, Authorization...)
-                                .AllowAnyMethod()                     // Cho phép mọi HTTP method (GET, POST, PUT, DELETE, OPTIONS)
-                                .AllowCredentials();                  // Bắt buộc nếu có dùng Cookie hoặc Token Authentication
+                          policy.SetIsOriginAllowed(origin => true) // Cho phép cả localhost và domain/IP Cloud
+                                .AllowAnyHeader()
+                                .AllowAnyMethod()
+                                .AllowCredentials();
                       });
+});
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -78,6 +85,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseForwardedHeaders();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors(MyAllowSpecificOrigins);
@@ -85,12 +93,24 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseStaticFiles();
+
+var frontEndPath = Path.Combine(builder.Environment.ContentRootPath, "FrontEnd");
+if (Directory.Exists(frontEndPath))
+{
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(frontEndPath),
+        RequestPath = "/FrontEnd"
+    });
+}
+
 app.MapStaticAssets();
+
+app.MapGet("/", () => Results.Redirect("/FrontEnd/TrangChinh/index.html"));
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

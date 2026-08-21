@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const BASE_API_URL = 'https://localhost:3001';
+    const BASE_API_URL = window.location.origin;
 
     // 1. Kiểm tra Đăng nhập - Bắt buộc phải đăng nhập mới được xem danh sách yêu thích
     const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');

@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
                 // 4. Gọi API bằng fetch
                 // Lưu ý: Thay đổi domain và cổng (localhost:xxxx) cho đúng với Backend của anh
-                const apiUrl = "https://localhost:3001/api/CapTaiKhoan/CapTK"; 
+                const apiUrl = `${window.location.origin}/api/CapTaiKhoan/CapTK`; 
 
                 const response = await fetch(apiUrl, {
                     method: "POST",

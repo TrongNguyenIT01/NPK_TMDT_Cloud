@@ -24,7 +24,7 @@ async function fetchLogs() {
         }
 
         // Tùy theo cấu hình URL, chỉnh lại domain nếu cần
-        const response = await fetch('https://localhost:3001/api/AdminDuyetSP/logs', {
+        const response = await fetch(`${window.location.origin}/api/AdminDuyetSP/logs`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

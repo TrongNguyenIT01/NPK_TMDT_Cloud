@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_RESEND_URL = 'https://localhost:3001/api/QuenMatKhau/gui-otp';
+    const API_RESEND_URL = `${window.location.origin}/api/QuenMatKhau/gui-otp`;
     const form = document.getElementById('otpForm');
     const otpInput = document.getElementById('otp');
     const displayEmail = document.getElementById('displayEmail');
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const API_VERIFY_OTP_URL = 'https://localhost:3001/api/QuenMatKhau/xac-thuc-otp';
+    const API_VERIFY_OTP_URL = `${window.location.origin}/api/QuenMatKhau/xac-thuc-otp`;
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();

@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Checkout
     const btnCheckout = document.getElementById('btnCheckout');
 
-    const BASE_API_URL = 'https://localhost:3001';
+    const BASE_API_URL = window.location.origin;
 
     // [Thay đổi] Chuyển cartItems từ chỉ đọc LocalStorage sang đồng bộ trực tiếp từ Database qua API Backend
     // Dữ liệu từ LocalStorage vẫn được dùng làm fallback khởi tạo để tránh màn hình trắng khi đang tải API

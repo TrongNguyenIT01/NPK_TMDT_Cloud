@@ -1,7 +1,7 @@
 async function fetchDashboardMetrics() {
         try {
             // Gọi đến đường dẫn API trong DashboardController
-            const response = await fetch('https://localhost:3001/api/dashboard/dashboard-metrics'); 
+            const response = await fetch(`${window.location.origin}/api/dashboard/dashboard-metrics`); 
             
             // Kiểm tra nếu lỗi (ví dụ 404, 500)
             if (!response.ok) {

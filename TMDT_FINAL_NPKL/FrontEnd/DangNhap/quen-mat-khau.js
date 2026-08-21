@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = 'https://localhost:3001/api/QuenMatKhau/gui-otp';
+    const API_URL = `${window.location.origin}/api/QuenMatKhau/gui-otp`;
     const form = document.getElementById('step1EmailForm');
     const emailInput = document.getElementById('email');
     const btnSend = document.getElementById('btnSendOtp');

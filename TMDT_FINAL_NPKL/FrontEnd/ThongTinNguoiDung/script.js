@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const API_BASE_URL = 'https://localhost:3001/api/DangNhap';
+    const API_BASE_URL = `${window.location.origin}/api/DangNhap`;
 
     // 0. Auth Check
     const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');

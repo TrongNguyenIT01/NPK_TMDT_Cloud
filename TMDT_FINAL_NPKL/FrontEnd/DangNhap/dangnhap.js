@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             try {
-                const apiUrl = "https://localhost:3001/api/DangNhap/login"; 
+                const apiUrl = `${window.location.origin}/api/DangNhap/login`; 
                 
                 const response = await fetch(apiUrl, {
                     method: "POST",

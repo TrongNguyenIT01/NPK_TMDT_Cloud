@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const baseUrl = "https://localhost:3001";
+    const baseUrl = window.location.origin;
     const catForm = document.getElementById("catForm");
     const catModal = document.getElementById("catModal");
     const closeCatModal = document.getElementById("closeCatModal");

@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.querySelector('#registerForm');
     
     // Đảm bảo URL này khớp với port Backend của bạn đang chạy
-    const API_URL = "https://localhost:3001/api/DangKy/register";
+    const API_URL = `${window.location.origin}/api/DangKy/register`;
 
   
  

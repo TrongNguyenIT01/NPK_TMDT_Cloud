@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Tự động tải thông tin người dùng mới nhất từ Backend Profile API để Autofill đầy đủ
     async function loadUserProfileAndAutofill() {
         try {
-            const response = await fetch('https://localhost:3001/api/DangNhap/profile', {
+            const response = await fetch(`${window.location.origin}/api/DangNhap/profile`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkoutShippingEl = document.getElementById('checkoutShipping');
     const checkoutTotalAmountEl = document.getElementById('checkoutTotalAmount');
 
-    const BASE_API_URL = 'https://localhost:3001';
+    const BASE_API_URL = window.location.origin;
 
     function fixImgSrc(src) {
         if (!src) return '../TrangChinh/images/dac_nhan_tam.jpg';

@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const response = await fetch('https://localhost:3001/api/DangNhap/change-password', {
+                const response = await fetch(`${window.location.origin}/api/DangNhap/change-password`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const BASE_API_URL = 'https://localhost:3001';
+    const BASE_API_URL = window.location.origin;
 
     // 0. Auth Check
     const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');

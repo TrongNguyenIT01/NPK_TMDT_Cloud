@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!title || !message) return;
 
             try {
-                const response = await fetch("https://localhost:3001/api/KhieuNai/create", {
+                const response = await fetch(`${window.location.origin}/api/KhieuNai/create`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

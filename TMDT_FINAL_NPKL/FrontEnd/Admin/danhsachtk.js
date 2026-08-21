@@ -88,7 +88,7 @@ async function loadGrantedUsers() {
 
     try {
         // Đường dẫn API (Nhớ kiểm tra lại cổng localhost của anh)
-        const apiUrl = "https://localhost:3001/api/CapTaiKhoan/DanhSach";
+        const apiUrl = `${window.location.origin}/api/CapTaiKhoan/DanhSach`;
         
         const response = await fetch(apiUrl, {
             method: "GET",

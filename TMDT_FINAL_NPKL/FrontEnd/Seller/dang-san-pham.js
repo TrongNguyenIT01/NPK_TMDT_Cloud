@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 console.log("Đang gửi yêu cầu tạo sản phẩm lên API...");
 
-                const response = await fetch('https://localhost:3001/api/SanPham/add-product', {
+                const response = await fetch(`${window.location.origin}/api/SanPham/add-product`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`

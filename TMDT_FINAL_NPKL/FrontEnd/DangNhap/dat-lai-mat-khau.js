@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = 'https://localhost:3001/api/QuenMatKhau/dat-lai-mat-khau';
+    const API_URL = `${window.location.origin}/api/QuenMatKhau/dat-lai-mat-khau`;
     const form = document.getElementById('resetForm');
     const newPasswordInput = document.getElementById('newPassword');
     const confirmPasswordInput = document.getElementById('confirmPassword');

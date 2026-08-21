@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadCategories() {
     try {
-        const apiUrl = 'https://localhost:3001/api/DoanhMuc/getDM'; 
+        const apiUrl = `${window.location.origin}/api/DoanhMuc/getDM`; 
         
         const response = await fetch(apiUrl);
         

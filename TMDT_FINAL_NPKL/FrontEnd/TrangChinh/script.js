@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const BASE_API_URL = 'https://localhost:3001';
+    const BASE_API_URL = window.location.origin;
     const API_CATEGORIES = `${BASE_API_URL}/api/DoanhMuc/getDM`;
     const API_PRODUCTS = `${BASE_API_URL}/api/SanPham/public-products`;
 

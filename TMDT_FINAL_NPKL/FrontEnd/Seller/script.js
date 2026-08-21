@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!token) return; // checkUser.js sẽ tự xử lý đẩy về trang Login
 
         try {
-            const response = await fetch("https://localhost:3001/api/Shop/my-shop", {
+            const response = await fetch(`${window.location.origin}/api/Shop/my-shop`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         try {
-            const response = await fetch("https://localhost:3001/api/DonHang/shop-orders", {
+            const response = await fetch(`${window.location.origin}/api/DonHang/shop-orders`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -440,7 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <td><strong>${item.productId}</strong></td>
                                 <td>
                                     <div style="display:flex; align-items:center; gap:10px;">
-                                        ${item.productImage ? `<img src="${item.productImage.startsWith('/') ? 'https://localhost:3001' + item.productImage : item.productImage}" style="width:40px; height:40px; border-radius:6px; object-fit:cover;" onerror="this.style.display='none'" />` : ''}
+                                        ${item.productImage ? `<img src="${item.productImage.startsWith('/') ? window.location.origin + item.productImage : item.productImage}" style="width:40px; height:40px; border-radius:6px; object-fit:cover;" onerror="this.style.display='none'" />` : ''}
                                         <strong style="color:#0F172A;">${item.productName}</strong>
                                     </div>
                                 </td>
@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!token) return;
 
         try {
-            const response = await fetch("https://localhost:3001/api/Shop/my-shop", {
+            const response = await fetch(`${window.location.origin}/api/Shop/my-shop`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -712,7 +712,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const status = document.querySelector('#profileShopStatus').value;
 
             const isNewShop = localStorage.getItem("myShopStatus") === "NONE";
-            const url = isNewShop ? "https://localhost:3001/api/Shop/create" : "https://localhost:3001/api/Shop/update-profile";
+            const url = isNewShop ? `${window.location.origin}/api/Shop/create` : `${window.location.origin}/api/Shop/update-profile`;
             const method = isNewShop ? "POST" : "PUT";
 
             const payload = {
@@ -1008,7 +1008,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. Tải Danh Sách Đơn Hàng từ DonHangController API (Đếm Đơn PENDING & Render Bảng Đơn Mới Nhất)
         try {
-            const orderRes = await fetch("https://localhost:3001/api/DonHang/shop-orders", {
+            const orderRes = await fetch(`${window.location.origin}/api/DonHang/shop-orders`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             const orderData = await orderRes.json();
@@ -1061,7 +1061,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 3. Tải Danh Sách Sản Phẩm Đang Kinh Doanh từ LaySPSellerController API (Chỉ đếm các sản phẩm đang kinh doanh is_deleted = false)
         try {
-            const prodRes = await fetch("https://localhost:3001/api/LaySPSeller/seller-list?page=1&pageSize=1000&status=visible", {
+            const prodRes = await fetch(`${window.location.origin}/api/LaySPSeller/seller-list?page=1&pageSize=1000&status=visible`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             const prodData = await prodRes.json();

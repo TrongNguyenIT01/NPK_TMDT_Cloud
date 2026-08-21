@@ -20,7 +20,7 @@ async function loadApprovedProducts() {
     try {
         tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 24px; color: #64748B;">⏳ Đang tải danh sách sản phẩm đã duyệt...</td></tr>`;
 
-        const response = await fetch("https://localhost:3001/api/LaySPSeller/approved-products", {
+        const response = await fetch(`${window.location.origin}/api/LaySPSeller/approved-products`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`

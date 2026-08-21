@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const BASE_API_URL = 'https://localhost:3001';
+    const BASE_API_URL = window.location.origin;
     const productDetailModal = document.getElementById('productDetailModal');
     const closeDetailModalBtn = document.getElementById('closeDetailModalBtn');
     let currentModalProductData = null;

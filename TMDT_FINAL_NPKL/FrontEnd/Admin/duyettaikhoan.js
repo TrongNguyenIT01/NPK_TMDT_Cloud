@@ -157,7 +157,7 @@ async function loadApprovalMetrics() {
     if (!token) return;
 
     try {
-        const response = await fetch("https://localhost:3001/api/Admin/user-approval-metrics", {
+        const response = await fetch(`${window.location.origin}/api/Admin/user-approval-metrics`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
