@@ -17,4 +17,6 @@ jobs:
           script: |
             cd ~/tmdt_web_project
             git pull origin main
+            docker image prune -f
+            docker container prune -f
             docker compose up -d --build
