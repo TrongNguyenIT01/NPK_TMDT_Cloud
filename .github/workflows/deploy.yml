@@ -2,7 +2,7 @@ name: Deploy Web API to EC2
 
 on:
   push:
-    branches: [ "main" ] # Kịch bản sẽ chạy khi có code mới đẩy lên nhánh main
+    branches: [ "main" ]
 
 jobs:
   deploy:
@@ -15,6 +15,21 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            echo "== whoami =="
+            whoami
+            echo "== id =="
+            id
+            echo "== HOME =="
+            echo $HOME
+            echo "== PATH =="
+            echo $PATH
+            echo "== which docker =="
+            which docker
+            echo "== docker compose version =="
+            docker compose version
+            echo "== ls cli-plugins =="
+            ls -la ~/.docker/cli-plugins 2>&1
+            echo "== bat dau deploy =="
             cd ~/tmdt_web_project
             git pull origin main
-            sudo docker compose up -d --build
+            docker compose up -d --build
