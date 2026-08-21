@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchVal = document.querySelector('#userSearchInput')?.value || '';
 
         try {
-            const response = await fetch(`https://localhost:3001/api/Admin/users?status=${statusFilter}&role=${roleFilter}&search=${encodeURIComponent(searchVal)}`, {
+            const response = await fetch(`${window.location.origin}/api/Admin/users?status=${statusFilter}&role=${roleFilter}&search=${encodeURIComponent(searchVal)}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (action === 'ACTIVE') {
                 if (confirm(`Bạn có chắc muốn duyệt kích hoạt tài khoản: ${userName}?`)) {
                     try {
-                        const response = await fetch(`https://localhost:3001/api/Admin/approve/${userId}`, {
+                        const response = await fetch(`${window.location.origin}/api/Admin/approve/${userId}`, {
                             method: "POST",
                             headers: {
                                 "Authorization": `Bearer ${token}`,
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 try {
-                    const response = await fetch(`https://localhost:3001/api/Admin/reject/${userId}`, {
+                    const response = await fetch(`${window.location.origin}/api/Admin/reject/${userId}`, {
                         method: "POST",
                         headers: {
                             "Authorization": `Bearer ${token}`,
@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 try {
-                    const response = await fetch(`https://localhost:3001/api/Admin/block/${userId}`, {
+                    const response = await fetch(`${window.location.origin}/api/Admin/block/${userId}`, {
                         method: "POST",
                         headers: {
                             "Authorization": `Bearer ${token}`,
@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (action === 'UNBLOCK') {
                 if (confirm(`Bạn có chắc muốn mở khóa tài khoản: ${userName}?`)) {
                     try {
-                        const response = await fetch(`https://localhost:3001/api/Admin/unblock/${userId}`, {
+                        const response = await fetch(`${window.location.origin}/api/Admin/unblock/${userId}`, {
                             method: "POST",
                             headers: {
                                 "Authorization": `Bearer ${token}`,
@@ -323,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusFilter = shopStatusFilter?.value || 'ALL';
 
         try {
-            const response = await fetch(`https://localhost:3001/api/Admin/shops?status=ALL&search=${encodeURIComponent(searchVal)}`, {
+            const response = await fetch(`${window.location.origin}/api/Admin/shops?status=ALL&search=${encodeURIComponent(searchVal)}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -457,19 +457,19 @@ document.addEventListener('DOMContentLoaded', () => {
             let confirmMsg = "";
 
             if (action === 'APPROVE') {
-                url = `https://localhost:3001/api/Admin/shops/approve/${shopId}`;
+                url = `${window.location.origin}/api/Admin/shops/approve/${shopId}`;
                 confirmMsg = `Bạn có chắc muốn DUYỆT mở gian hàng "${shopName}"?`;
             } else if (action === 'REJECT') {
-                url = `https://localhost:3001/api/Admin/shops/reject/${shopId}`;
+                url = `${window.location.origin}/api/Admin/shops/reject/${shopId}`;
                 confirmMsg = `Bạn có chắc muốn TỪ CHỐI hồ sơ mở gian hàng "${shopName}"?`;
             } else if (action === 'SUSPEND') {
-                url = `https://localhost:3001/api/Admin/shops/suspend/${shopId}`;
+                url = `${window.location.origin}/api/Admin/shops/suspend/${shopId}`;
                 confirmMsg = `Bạn có chắc muốn chuyển gian hàng "${shopName}" sang TẠM NGHỈ?`;
             } else if (action === 'BAN') {
-                url = `https://localhost:3001/api/Admin/shops/ban/${shopId}`;
+                url = `${window.location.origin}/api/Admin/shops/ban/${shopId}`;
                 confirmMsg = `CẢNH BÁO: Bạn có chắc muốn CẤM hoạt động gian hàng "${shopName}"?`;
             } else if (action === 'UNBAN') {
-                url = `https://localhost:3001/api/Admin/shops/unban/${shopId}`;
+                url = `${window.location.origin}/api/Admin/shops/unban/${shopId}`;
                 confirmMsg = `Bạn có chắc muốn GỠ CẤM và kích hoạt lại gian hàng "${shopName}"?`;
             }
 

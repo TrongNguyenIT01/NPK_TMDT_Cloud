@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (err) {
             console.error('Lỗi gửi lại OTP:', err);
-            showPopupModal('Lỗi Kết Nối', 'Không thể kết nối đến máy chủ Backend (https://localhost:3001)!', false, 'Đóng');
+            showPopupModal('Lỗi Kết Nối', 'Không thể kết nối đến máy chủ Backend!', false, 'Đóng');
             btnResend.disabled = false;
         }
     });
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (err) {
             console.error('Lỗi xác thực OTP:', err);
-            showPopupModal('Lỗi Kết Nối', 'Không thể kết nối đến máy chủ Backend (https://localhost:3001)!', false, 'Đóng');
+            showPopupModal('Lỗi Kết Nối', 'Không thể kết nối đến máy chủ Backend!', false, 'Đóng');
         } finally {
             if (submitBtn) submitBtn.disabled = false;
         }

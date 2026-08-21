@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Lỗi kết nối API gửi OTP:', err);
             showPopupModal(
                 'Lỗi Kết Nối',
-                'Không thể kết nối đến máy chủ Backend (https://localhost:3001). Vui lòng đảm bảo Backend đang chạy!',
+                'Không thể kết nối đến máy chủ Backend. Vui lòng đảm bảo Backend đang chạy!',
                 false,
                 'Đóng'
             );

@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 try {
-                    const response = await fetch(`https://localhost:3001/api/Admin/block/${userId}`, {
+                    const response = await fetch(`${window.location.origin}/api/Admin/block/${userId}`, {
                         method: "POST",
                         headers: {
                             "Authorization": `Bearer ${token}`,
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else if (action === "ACTIVE") {
                 if (confirm(`Bạn có chắc muốn mở khóa cho tài khoản ${userName}?`)) {
                     try {
-                        const response = await fetch(`https://localhost:3001/api/Admin/unblock/${userId}`, {
+                        const response = await fetch(`${window.location.origin}/api/Admin/unblock/${userId}`, {
                             method: "POST",
                             headers: {
                                 "Authorization": `Bearer ${token}`,

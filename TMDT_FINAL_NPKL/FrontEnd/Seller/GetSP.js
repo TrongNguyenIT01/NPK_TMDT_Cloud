@@ -28,7 +28,7 @@ async function loadProducts() {
         tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Đang tải dữ liệu...</td></tr>`;
 
 
-        const response = await fetch(`https://localhost:3001/api/LaySPSeller/seller-list?page=1&pageSize=50&status=${filterStatus}`, {
+        const response = await fetch(`${window.location.origin}/api/LaySPSeller/seller-list?page=1&pageSize=50&status=${filterStatus}`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -70,7 +70,7 @@ async function loadProducts() {
             items.forEach(item => {
                 const formattedPrice = new Intl.NumberFormat('vi-VN').format(item.price || item.Price) + 'đ';
                 const imagePath = item.image || item.Image;
-                const fullImageUrl = imagePath ? `https://localhost:3001${imagePath}` : '../TrangChinh/images/default.jpg';
+                const fullImageUrl = imagePath ? `${window.location.origin}${imagePath}` : '../TrangChinh/images/default.jpg';
 
                 let approvalStatusHtml = '';
                 const approvalStatus = (item.approvalStatus || item.ApprovalStatus || "").toUpperCase();
@@ -161,7 +161,7 @@ async function hideProduct(productId) {
 
     try {
         // ĐÃ SỬA URL: Trỏ đúng vào LaySPSellerController
-        const response = await fetch(`https://localhost:3001/api/LaySPSeller/hide-product/${productId}`, {
+        const response = await fetch(`${window.location.origin}/api/LaySPSeller/hide-product/${productId}`, {
             method: "PUT",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -193,7 +193,7 @@ async function showProduct(productId) {
     const token = localStorage.getItem("jwtToken");
 
     try {
-        const response = await fetch(`https://localhost:3001/api/LaySPSeller/show-product/${productId}`, {
+        const response = await fetch(`${window.location.origin}/api/LaySPSeller/show-product/${productId}`, {
             method: "PUT",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -222,7 +222,7 @@ async function viewApprovalLog(productId) {
     if (!token) return;
 
     try {
-        const response = await fetch(`https://localhost:3001/api/LaySPSeller/approval-log/${productId}`, {
+        const response = await fetch(`${window.location.origin}/api/LaySPSeller/approval-log/${productId}`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,

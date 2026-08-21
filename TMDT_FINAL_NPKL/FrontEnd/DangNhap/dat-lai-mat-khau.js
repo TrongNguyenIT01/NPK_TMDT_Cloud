@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Lỗi kết nối API đặt lại mật khẩu:', err);
             showPopupModal(
                 'Lỗi Kết Nối',
-                'Không thể kết nối đến máy chủ Backend (https://localhost:3001). Vui lòng thử lại sau!',
+                'Không thể kết nối đến máy chủ Backend. Vui lòng thử lại sau!',
                 false,
                 'Đóng'
             );

@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } catch (err) {
             console.error('Lỗi khi tải thông tin hồ sơ:', err);
-            showAlert('Không thể kết nối đến máy chủ Backend (https://localhost:3001)!', false);
+            showAlert('Không thể kết nối đến máy chủ Backend!', false);
         }
     }
 
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             } catch (err) {
                 console.error('Lỗi khi cập nhật hồ sơ:', err);
-                showAlert('Không thể kết nối đến máy chủ Backend (https://localhost:3001). Vui lòng thử lại!', false);
+                showAlert('Không thể kết nối đến máy chủ Backend. Vui lòng thử lại!', false);
             } finally {
                 if (btnSave) {
                     btnSave.textContent = originalBtnText;

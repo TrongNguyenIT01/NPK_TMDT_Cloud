@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function approveOrRejectProduct(productId, status, note, token) {
     try {
-        const response = await fetch(`https://localhost:3001/api/AdminDuyetSP/approve/${productId}`, {
+        const response = await fetch(`${window.location.origin}/api/AdminDuyetSP/approve/${productId}`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -110,7 +110,7 @@ async function loadProducts() {
     const searchVal = document.querySelector(".search-input-admin")?.value.toLowerCase().trim() || "";
 
     try {
-        const response = await fetch(`https://localhost:3001/api/AdminDuyetSP/all-products?page=1&pageSize=1000&status=all`, {
+        const response = await fetch(`${window.location.origin}/api/AdminDuyetSP/all-products?page=1&pageSize=1000&status=all`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -209,7 +209,7 @@ function renderProductsTable(products) {
             actionHtml = `<span style="color:#64748B; font-size: 0.85rem;">Đã xử lý</span>`;
         }
 
-        const fullImageUrl = product.image ? `https://localhost:3001${product.image}` : '../TrangChinh/images/default.jpg';
+        const fullImageUrl = product.image ? `${window.location.origin}${product.image}` : '../TrangChinh/images/default.jpg';
 
         const tr = document.createElement("tr");
         if (!isShopActive && product.shopStatus) {
