@@ -1,0 +1,20 @@
+name: Deploy Web API to EC2
+
+on:
+  push:
+    branches: [ "main" ] # Kịch bản sẽ chạy khi có code mới đẩy lên nhánh main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH vào EC2 và Deploy code mới
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/tmdt_web_project
+            git pull origin main
+            sudo docker compose up -d --build
