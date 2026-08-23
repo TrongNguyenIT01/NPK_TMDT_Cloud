@@ -45,7 +45,7 @@ public partial class WebTmdtContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer("\"Server=52.63.231.41,1433;Database=WEB_TMDT;User Id=sa;Password=Npk@2005!;TrustServerCertificate=True;Encrypt=False;");
+            optionsBuilder.UseSqlServer("\"Server=10.0.3.24,1433;Database=WEB_TMDT;User Id=sa;Password=Npk@2005!;TrustServerCertificate=True;Encrypt=False;");
         }
     }
 
