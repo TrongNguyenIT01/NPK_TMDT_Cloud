@@ -15,8 +15,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-southeast-2
 
-      - name: Trigger ASG Instance Refresh (rolling deploy)
+      - name: Update ASG to latest Launch Template version and refresh
         run: |
+          LATEST_VERSION=$(aws ec2 describe-launch-templates \
+            --launch-template-ids lt-0b2e4f09ddefcb2cd \
+            --query 'LaunchTemplates[0].LatestVersionNumber' --output text)
+
+          echo "Latest Launch Template version: $LATEST_VERSION"
+
+          aws autoscaling update-auto-scaling-group \
+            --auto-scaling-group-name web-tmdt-asg \
+            --launch-template "LaunchTemplateId=lt-0b2e4f09ddefcb2cd,Version=$LATEST_VERSION"
+
           aws autoscaling start-instance-refresh \
             --auto-scaling-group-name web-tmdt-asg \
             --preferences '{"MinHealthyPercentage": 50, "InstanceWarmup": 300}'
